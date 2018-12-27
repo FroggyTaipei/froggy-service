@@ -1,5 +1,58 @@
 # WWW
 
+### Eslint setup
+
+VSCode settings.json
+
+```
+{
+  "eslint.validate": [
+    {
+      "language": "vue",
+      "autoFix": true //Autofix any fixable errors when linting
+    },
+    {
+      "language": "javascript",
+      "autoFix": true
+    },
+    {
+      "language": "javascriptreact",
+      "autoFix": true
+    }
+  ],
+  "eslint.autoFixOnSave": true,
+  "vetur.validation.template": false
+}
+```
+
+.eslintrc.js
+
+```
+//https://vuejs.github.io/eslint-plugin-vue/user-guide/
+module.exports = {
+  env: {
+    browser: true
+  },
+  extends: [
+    // add more generic rulesets here, such as:
+    'plugin:vue/strongly-recommended',
+    'standard'
+  ],
+  rules: {
+    // override/add rules settings here, such as:
+    'vue/html-closing-bracket-newline': ['error', {
+      'multiline': 'never'
+    }]
+  }
+}
+```
+
+.eslintignore
+
+```
+build/*.js
+```
+
 ### Project setup
 ```
 npm install
