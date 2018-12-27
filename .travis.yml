@@ -1,0 +1,19 @@
+services: docker
+
+before_install:
+  - docker -v
+  # Stop the postgres instance travis sets up automatically
+  - sudo /etc/init.d/postgresql stop
+  - sudo service mysql stop
+install:
+  # Start the docker stuff
+  - docker-compose up -d
+  - sleep 10
+script:
+  # Code styles
+  - docker-compose exec backend sh -c "pycodestyle --exclude=migrations --ignore=E123,E133,E226,E241,E242,E402,E501,W503 ./"
+  - docker-compose exec backend sh -c "flake8 --exclude=migrations --ignore=E123,E133,E226,E241,E242,E402,E501,F401,F403,F405,W503 ./"
+  # Seed database
+  - docker-compose exec backend sh -c "python manage.py migrate"
+  # Run tests
+  - docker-compose exec backend sh -c "python manage.py test"
