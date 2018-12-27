@@ -1,5 +1,8 @@
 .DS_Store
 /dist
+.eslintignore
+.eslintrc.js
+babel.config.js
 
 # local env files
 .env.local
