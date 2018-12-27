@@ -1,0 +1,25 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+services:
+  - postgresql
+env:
+  global:
+    DJANGO_SETTINGS_MODULE=froggy_service.settings.travis
+  matrix:
+    - DJANGO=2.1 DB=postgres
+install:
+  - pip install -q Django==$DJANGO
+  - pip install psycopg2
+  - pip install pycodestyle
+  - pip install flake8
+  - pip install -q -r api/requirements.txt
+before_script:
+  - "pycodestyle --exclude=migrations --ignore=E123,E133,E226,E241,E242,E402,E501,W503 ./api"
+  - "flake8 --exclude=migrations --ignore=E123,E133,E226,E241,E242,E402,E501,F401,F403,F405,W503 ./api"
+  - psql -c 'create database test_db;' -U postgres
+script:
+  - cd api/
+  - python manage.py migrate
+  - python manage.py test
