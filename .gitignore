@@ -1,5 +1,9 @@
+### ENV
+.env
+
 ### Django
-local_settings.py
+local.py
+production.py
 
 ### OSX ###
 .DS_Store

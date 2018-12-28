@@ -1,96 +1,111 @@
 # Froggy's service
 Project setup using [cookiecutter-django-vue](https://github.com/vchaptsev/cookiecutter-django-vue)
 
-## Development
+### Development
 
-    docker-compose up --build
+Create your own `.env` file at root, e.g. using `.env.example`:
+```
+$ sudo cp .env.example .env
+```
+```
+$ docker-compose up --build
+```
 
-## Frontend
+Cusotm your compose file e.g. `docker-compose.custom.yml`:
+```
+$ docker-compose -f docker-compose.custom.yml up --build
+```
 
-#### Project setup
+### Architecture
+
+![Architecture diagram](architecture.png)
+
+### Frontend
+
+Project setup
+
     npm install
 
+Compiles and hot-reloads for development
 
-#### Compiles and hot-reloads for development
     npm run serve
 
 
-#### Compiles and minifies for production
+Compiles and minifies for production
+
     npm run build
 
 
-#### Run your tests
+Run your tests
+
     npm run test
 
 
-#### Lints and fixes files
+Lints and fixes files
+
     npm run lint
 
 
-#### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Customize configuration
+* See [Configuration Reference](https://cli.vuejs.org/config/).
+* VSCode settings.json
+    ```
+    {
+        "vetur.validation.template": false,
+        "eslint.autoFixOnSave": true,
+        "eslint.validate": [
+            "javascript",
+            "javascriptreact",
+            { "language": "vue", "autoFix": true }
+        ]
+    }
+    ```
+* .eslintrc.js
+    ```
+    //https://vuejs.github.io/eslint-plugin-vue/user-guide/
+    module.exports = {
+      env: {
+        browser: true
+      },
+      extends: [
+        // add more generic rulesets here, such as:
+        'plugin:vue/strongly-recommended',
+        'standard'
+      ],
+      rules: {
+        // override/add rules settings here, such as:
+        'vue/html-closing-bracket-newline': ['error', {
+          'multiline': 'never'
+        }]
+      }
+    }
+    ```
+* .eslintignore
+    ```
+    build/*.js
+    ```
 
-VSCode settings.json
-```
-{
-    "vetur.validation.template": false,
-    "eslint.autoFixOnSave": true,
-    "eslint.validate": [
-        "javascript",
-        "javascriptreact",
-        { "language": "vue", "autoFix": true }
-    ]
-}
-```
+### Backend
 
-.eslintrc.js
-```
-//https://vuejs.github.io/eslint-plugin-vue/user-guide/
-module.exports = {
-  env: {
-    browser: true
-  },
-  extends: [
-    // add more generic rulesets here, such as:
-    'plugin:vue/strongly-recommended',
-    'standard'
-  ],
-  rules: {
-    // override/add rules settings here, such as:
-    'vue/html-closing-bracket-newline': ['error', {
-      'multiline': 'never'
-    }]
-  }
-}
-```
-
-.eslintignore
-```
-build/*.js
-```
-
-## Backend
-
-### Requires
+Requires
 
     pip install -r backend/requirements.txt
 
-### Django settings.py
-Create and edit local_settings.py in backend/config to configing your database parameter(notice **USER**, **PASSWORD** below) and **SECRET_KEY**,
+Django configuration
 
-See [Django tutorial](https://docs.djangoproject.com/en/dev/intro/tutorial01/) or maybe use [online generator](http://www.miniwebtool.com/django-secret-key-generator/) to get SECRET_KEY for convenience
-```
-SECRET_KEY = '' # put random string inside and don't share it with anybody.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'mydb', # Or path to database file if using sqlite3.
-        # The following settings are not used with sqlite3:
-        'USER': 'username',
-        'PASSWORD': 'password',
-        'HOST': 'localhost', # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
-        'PORT': '', # Set to empty string for default.
-    }
-}
-```
-Because local_settings.py is list in .gitignore, so this file won't be appear in source control, for safety.
+* settings
+    Create and edit `local.py` in backend/config/settings to configure your local settings e.g. database. For safety, we list `local.py` in .gitignore.
+
+    For example, use custom plugin:
+    ```
+    # local.py
+    from .base import INSTALLED_APPS
+    INSTALLED_APPS = INSTALLED_APPS + [
+      'your_custom_apps'
+    ]
+    ```
+* environment variable
+    We use [django-environ](https://github.com/joke2k/django-environ), it's more easy for docker image building and CI testing.
+    You might want to change it base on how your variable in Django settings are passing.
+
+    For safety, use list `.env` in .gitignore.
