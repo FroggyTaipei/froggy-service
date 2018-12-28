@@ -93,19 +93,22 @@ Requires
 
 Django configuration
 
-* settings
-    Create and edit `local.py` in backend/config/settings to configure your local settings e.g. database. For safety, we list `local.py` in .gitignore.
+**settings**
 
-    For example, use custom plugin:
-    ```
-    # local.py
-    from .base import INSTALLED_APPS
-    INSTALLED_APPS = INSTALLED_APPS + [
-      'your_custom_apps'
-    ]
-    ```
-* environment variable
-    We use [django-environ](https://github.com/joke2k/django-environ), it's more easy for docker image building and CI testing.
-    You might want to change it base on how your variable in Django settings are passing.
+Create and edit `local.py` in backend/config/settings to configure your local settings e.g. database. For safety, we list `local.py` in .gitignore.
 
-    For safety, use list `.env` in .gitignore.
+For example, use custom plugin:
+```
+# local.py
+from .base import INSTALLED_APPS
+INSTALLED_APPS = INSTALLED_APPS + [
+  'your_custom_apps'
+]
+```
+
+**environment variable**
+
+We use [django-environ](https://github.com/joke2k/django-environ), it's more easy for docker image building and CI testing.
+You might want to change it base on how your variable in Django settings are passing.
+
+For safety, we list `.env` in .gitignore.
