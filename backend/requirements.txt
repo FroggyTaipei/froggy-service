@@ -42,7 +42,7 @@ urllib3==1.23
 wcwidth==0.1.7
 Werkzeug==0.14.1
 raven==6.9.0
-
+PyYAML==3.13
 djangorestframework==3.8.2
 
 

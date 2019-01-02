@@ -1,0 +1,39 @@
+- model: cases.Type
+  pk: 1
+  fields:
+    name: 交通運輸
+
+- model: cases.Type
+  pk: 2
+  fields:
+    name: 公共設施
+
+- model: cases.Type
+  pk: 3
+  fields:
+    name: 衛福勞動
+
+- model: cases.Type
+  pk: 4
+  fields:
+    name: 文教科技
+
+- model: cases.Type
+  pk: 5
+  fields:
+    name: 環境建管
+
+- model: cases.Type
+  pk: 6
+  fields:
+    name: 警消政風
+
+- model: cases.Type
+  pk: 7
+  fields:
+    name: 市政議題
+
+- model: cases.Type
+  pk: 8
+  fields:
+    name: 其他服務

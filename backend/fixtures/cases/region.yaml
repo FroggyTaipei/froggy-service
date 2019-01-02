@@ -1,0 +1,64 @@
+- model: cases.Region
+  pk: 1
+  fields:
+    name: 松山區
+
+- model: cases.Region
+  pk: 2
+  fields:
+    name: 信義區
+
+- model: cases.Region
+  pk: 3
+  fields:
+    name: 士林區
+
+- model: cases.Region
+  pk: 4
+  fields:
+    name: 北投區
+
+- model: cases.Region
+  pk: 5
+  fields:
+    name: 內湖區
+
+- model: cases.Region
+  pk: 6
+  fields:
+    name: 文山區
+
+- model: cases.Region
+  pk: 7
+  fields:
+    name: 中山區
+
+- model: cases.Region
+  pk: 8
+  fields:
+    name: 大同區
+
+- model: cases.Region
+  pk: 9
+  fields:
+    name: 中正區
+
+- model: cases.Region
+  pk: 10
+  fields:
+    name: 萬華區
+
+- model: cases.Region
+  pk: 11
+  fields:
+    name: 南港區
+
+- model: cases.Region
+  pk: 12
+  fields:
+    name: 大安區
+
+- model: cases.Region
+  pk: 13
+  fields:
+    name: 非台北市民
