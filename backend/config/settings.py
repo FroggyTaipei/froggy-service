@@ -8,9 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
-from datetime import timedelta
 
-ROOT_DIR = environ.Path(__file__) - 3
+ROOT_DIR = environ.Path(__file__) - 2
 
 # Load operating system environment variables and then prepare to use them
 env = environ.Env()
@@ -33,6 +32,9 @@ THIRD_PARTY_APPS = [
 
 LOCAL_APPS = [
     'apps.users',
+    'apps.cases',
+    'apps.arranges',
+    'apps.files',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -281,3 +283,8 @@ LOGGING = {
 RAVEN_CONFIG = {
     'DSN': SENTRY_DSN,
 }
+
+# Fixtures
+FIXTURE_DIRS = (
+    str(ROOT_DIR('fixtures/cases')),
+)
