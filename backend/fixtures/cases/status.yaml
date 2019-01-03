@@ -1,14 +1,19 @@
 - model: cases.Status
   pk: 1
   fields:
-    name: 已排程
+    name: 不受理
 
 - model: cases.Status
   pk: 2
   fields:
-    name: 處理中
+    name: 已排程
 
 - model: cases.Status
   pk: 3
+  fields:
+    name: 處理中
+
+- model: cases.Status
+  pk: 4
   fields:
     name: 已結案

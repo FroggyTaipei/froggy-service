@@ -44,6 +44,6 @@ Werkzeug==0.14.1
 raven==6.9.0
 PyYAML==3.13
 djangorestframework==3.8.2
-
-
-
+django-ckeditor==5.6.1
+django-storages==1.7.1
+boto3==1.9.71

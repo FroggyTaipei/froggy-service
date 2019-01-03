@@ -31,14 +31,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file: .env
 
-
   mailhog:
     image: mailhog/mailhog
     ports:
       - "8025:8025"
     logging:
       driver: none
-
 
   nginx:
     image: nginx:alpine
@@ -51,4 +49,4 @@ services:
       - ./backend/staticfiles/:/staticfiles/
       - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
     logging:
-      driver: none
+      driver: "json-file"
