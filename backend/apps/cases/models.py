@@ -7,14 +7,13 @@ from django.db.models import (
     TextField,
     ForeignKey,
     EmailField,
-    DateField,
 )
 
 
 class Type(Model):
-    """Case type"""
+    """案件類別"""
     name = CharField(max_length=50, verbose_name=_('Name'))
-    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated'))
+    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:
         verbose_name = _('Case Type')
@@ -26,9 +25,9 @@ class Type(Model):
 
 
 class Region(Model):
-    """User region"""
+    """使用者所在選區"""
     name = CharField(max_length=50, verbose_name=_('Name'))
-    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated'))
+    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:
         verbose_name = _('User Region')
@@ -40,9 +39,9 @@ class Region(Model):
 
 
 class Status(Model):
-    """Case status"""
+    """案件狀態"""
     name = CharField(max_length=50, verbose_name=_('Name'))
-    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated'))
+    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:
         verbose_name = _('Case Status')
@@ -54,20 +53,34 @@ class Status(Model):
 
 
 class Case(Model):
-    """Case"""
+    """案件
+    * status: 案件狀態
+    * case_id: 案件編號（6碼）
+    * type: 案件類別
+    * region: 使用者所在選區
+    * title: 標題
+    * content: 陳情內容
+    * location: 相關地址
+    * username: 使用者名字
+    * mobile: 手機
+    * email: 信箱
+    * open_time: 成案日期
+    * close_time: 結案日期
+    * update_time: 上次更新時間
+    """
     status = ForeignKey('cases.Status', on_delete=CASCADE, verbose_name=_('Case Status'))
     case_id = CharField(max_length=6, verbose_name=_('Id'))
-    title = CharField(max_length=255, verbose_name=_('Title'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, verbose_name=_('User Region'))
+    title = CharField(max_length=255, verbose_name=_('Title'))
     content = TextField(verbose_name=_('Content'))
     location = CharField(max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
-    open_date = DateField(auto_now=True, verbose_name=_('Open Date'))
-    close_date = DateField(auto_now=True, null=True, blank=True, verbose_name=_('Close Date'))
-    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated'))
+    open_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Opened Time'))
+    close_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Closed Time'))
+    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:
         verbose_name = _('Case')
@@ -79,7 +92,7 @@ class Case(Model):
 
 
 class CaseHistory(Model):
-    """Case history, create via case create/update, delete via case delete"""
+    """案件歷史，案件新增與每次更新時建立"""
     status = ForeignKey('cases.Status', on_delete=CASCADE, verbose_name=_('Case Status'))
     case_id = CharField(max_length=6, verbose_name=_('Id'))
     title = CharField(max_length=255, verbose_name=_('Title'))
@@ -90,9 +103,9 @@ class CaseHistory(Model):
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
-    open_date = DateField(auto_now=True, verbose_name=_('Open Date'))
-    close_date = DateField(auto_now=True, null=True, blank=True, verbose_name=_('Close Date'))
-    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated'))
+    open_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Opened Time'))
+    close_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Closed Time'))
+    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:
         verbose_name = _('Case History')
