@@ -7,6 +7,8 @@ Create your own `.env` file at root, e.g. using `.env.example`:
 ```
 $ sudo cp .env.example .env
 ```
+
+Use `--build` to rebuild image, `-d` to run containers in the background :
 ```
 $ docker-compose up --build
 ```
@@ -14,6 +16,11 @@ $ docker-compose up --build
 Cusotm your compose file e.g. `docker-compose.custom.yml`:
 ```
 $ docker-compose -f docker-compose.custom.yml up --build
+```
+
+Use `-v` to clean volume while stop containers:
+```
+$ docker-compose down -v
 ```
 
 ### Architecture
@@ -93,9 +100,7 @@ Requires
 
 Django configuration
 
-**environment variable**
+* environment variable
 
-We use [django-environ](https://github.com/joke2k/django-environ), it's more easy for docker image building and CI testing.
-You might want to change it base on how your variable in Django settings are passing.
-
-For safety, we list `.env` in .gitignore.
+  We use [django-environ](https://github.com/joke2k/django-environ), it's more easy for docker image building and CI testing. You might want to change it base on how your variable in Django settings are passing.
+  For safety, we list `.env` in .gitignore.
