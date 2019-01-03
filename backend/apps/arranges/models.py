@@ -20,7 +20,7 @@ class Arrange(Model):
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='arranges', verbose_name=_('Case'))
     title = CharField(max_length=120, verbose_name=_('Title'))
     content = RichTextUploadingField(verbose_name=_('Content'))
-    time = DateTimeField(auto_now=True, verbose_name=_('Arranged Time'))
+    time = DateTimeField(null=True, blank=True, verbose_name=_('Arranged Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:
@@ -29,4 +29,8 @@ class Arrange(Model):
         ordering = ('id',)
 
     def __str__(self):
-        return f'{self.case.case_id}-{self.title}'
+        return f'{self.case.number}-{self.title}'
+
+    @property
+    def number(self):
+        return self.case.number
