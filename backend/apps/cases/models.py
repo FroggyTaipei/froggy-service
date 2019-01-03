@@ -10,6 +10,7 @@ from django.db.models import (
     ForeignKey,
     EmailField,
     QuerySet,
+    SET_NULL,
 )
 
 
@@ -95,8 +96,8 @@ class Case(Model):
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
-    open_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Opened Time'))
-    close_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Closed Time'))
+    open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
+    close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     objects = CaseQuerySet.as_manager()
@@ -127,7 +128,10 @@ class Case(Model):
 
 def case_mode_save(sender, instance, *args, **kwargs):
     """案件新增與每次更新時建立案件歷史"""
-    CaseHistory.objects.create(case=instance, **instance.to_dict())
+    editor = None
+    if hasattr(instance, 'user'):  # Get user via admin save_model()
+        editor = instance.user
+    CaseHistory.objects.create(case=instance, editor=editor, **instance.to_dict())
 
 
 post_save.connect(case_mode_save, sender=Case)
@@ -135,6 +139,8 @@ post_save.connect(case_mode_save, sender=Case)
 
 class CaseHistory(Model):
     """案件歷史，案件新增與每次更新時建立"""
+    editor = ForeignKey('users.User', null=True, blank=True, on_delete=SET_NULL, related_name='case_histories',
+                        verbose_name=_('Editor'))
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case'))
     status = ForeignKey('cases.Status', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Status'))
     number = CharField(max_length=6, verbose_name=_('Case Number'))
@@ -153,7 +159,7 @@ class CaseHistory(Model):
     class Meta:
         verbose_name = _('Case History')
         verbose_name_plural = _('Case History')
-        ordering = ('id',)
+        ordering = ('-update_time',)
 
     def __str__(self):
         return self.number

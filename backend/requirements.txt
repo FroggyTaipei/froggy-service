@@ -47,3 +47,5 @@ djangorestframework==3.8.2
 django-ckeditor==5.6.1
 django-storages==1.7.1
 boto3==1.9.71
+django-suit==0.2.26
+django-suit-ckeditor==0.0.2
