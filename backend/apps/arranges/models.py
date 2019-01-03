@@ -17,7 +17,7 @@ class Arrange(Model):
     * time: 案件處理時間
     * update_time: 上次更新時間
     """
-    case = ForeignKey('cases.Case', on_delete=CASCADE, verbose_name=_('Case'))
+    case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='arranges', verbose_name=_('Case'))
     title = CharField(max_length=120, verbose_name=_('Title'))
     content = RichTextUploadingField(verbose_name=_('Content'))
     time = DateTimeField(auto_now=True, verbose_name=_('Arranged Time'))
