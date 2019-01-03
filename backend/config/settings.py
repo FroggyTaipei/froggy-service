@@ -290,6 +290,7 @@ RAVEN_CONFIG = {
 # Fixtures
 FIXTURE_DIRS = (
     str(ROOT_DIR('fixtures/cases')),
+    str(ROOT_DIR('fixtures/arranges')),
 )
 
 # Cloud Storage
