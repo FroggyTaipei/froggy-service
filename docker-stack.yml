@@ -1,46 +1,59 @@
 version: '3.3'
 
 volumes:
-    postgres_data: {}
-    portainer_data: {}
+  postgres_data: {}
+  portainer_data: {}
+
+networks:
+  overlay:
 
 services:
   backend:
-    build:
-      context: ./backend
-    image: froggy-service-api
+    image: froggy-service-api:latest
     depends_on:
       - postgres
     volumes:
       - ./backend:/app
     command: /gunicorn.sh
     entrypoint: /entrypoint.sh
-    restart: on-failure
     env_file: .env
+    networks:
+      - overlay
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
 
   postgres:
     image: postgres:10-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    env_file: .env
+    networks:
+      - overlay
+    deploy:
+      placement:
+        constraints: [node.role == manager]
 
   nginx:
-    build:
-      context: .
-      dockerfile: nginx/Dockerfile
-    image: froggy-service-nginx
+    image: froggy-service-nginx:latest
     ports:
-      - "8000:80"
+      - "80:80"
     depends_on:
       - backend
+    networks:
+      - overlay
     volumes:
       - ./backend/media/:/media/
       - ./backend/staticfiles/:/staticfiles/
       - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
+    deploy:
+        mode: global
 
   backups:
     image: prodrigestivill/postgres-backup-local
-    restart: on-failure
     depends_on:
       - postgres
     volumes:
@@ -55,3 +68,13 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - portainer_data:/data
 
+  visualizer:
+    image: dockersamples/visualizer:stable
+    ports:
+      - "8080:8080"
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
