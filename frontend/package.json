@@ -10,11 +10,14 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "bootstrap": "^4.2.1",
+    "jquery": "^3.3.1",
+    "popper.js": "^1.14.6",
     "register-service-worker": "^1.5.2",
     "vue": "^2.5.17",
-    "vue-router": "^3.0.1",
-    "vue-raven": "^1.0.0",
     "vue-analytics": "^5.16.0",
+    "vue-raven": "^1.0.0",
+    "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
   },
   "devDependencies": {
@@ -28,6 +31,7 @@
     "babel-core": "^6.26.3",
     "babel-jest": "^23.4.2",
     "node-sass": "^4.9.3",
+    "pug-plain-loader": "^1.0.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.17"
   },
