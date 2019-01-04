@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
+from django.utils.html import format_html
+from django.urls import path, reverse
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
@@ -13,7 +15,7 @@ from suit.widgets import (
 )
 
 
-from .models import Type, Case
+from apps.cases.models import Type, Case
 from apps.arranges.models import Arrange
 
 
@@ -97,10 +99,12 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('general', _('General')),
         ('arranges', _('Arranges')),
         ('histories', _('Case Histories')),
+        ('sendgrid_mails', _('Mails')),
     )
 
     suit_form_includes = (
         ('case_history_list.html', '', 'histories'),
+        ('sendgrid_mail_list.html', '', 'sendgrid_mails'),
     )
 
     def save_model(self, request, obj, form, change):

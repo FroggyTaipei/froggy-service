@@ -23,6 +23,7 @@ DJANGO_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     'suit',
     'django.contrib.admin',
 ]
@@ -42,6 +43,7 @@ LOCAL_APPS = [
     'apps.cases',
     'apps.files',
     'apps.arranges',
+    'apps.mails',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -74,6 +76,15 @@ DOMAIN = env.str('DOMAIN')
 # ------------------------------------------------------------------------------
 EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
 EMAIL_HOST = env.str('EMAIL_HOST', default='mailhog')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
+# See: https://github.com/sendgrid/sendgrid-python
+if env.bool('USE_SENDGRID', default=False):
+    EMAIL_PORT = 587
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_USE_TLS = True
+    EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+    SENDGRID_API_KEY = env.str('SENDGRID_API_KEY')
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = DEBUG
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -132,12 +143,14 @@ STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = '/staticfiles/'
 
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
+# See:
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [
     str(ROOT_DIR('static')),
 ]
 
-# See: https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
+# See:
+# https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
@@ -197,8 +210,9 @@ PASSWORD_HASHERS = [
 ]
 
 # PASSWORD VALIDATION
-# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 # ------------------------------------------------------------------------------
+# See:
+# https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -209,7 +223,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # AUTHENTICATION CONFIGURATION
 # ------------------------------------------------------------------------------
 AUTHENTICATION_BACKENDS = [
-
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -234,13 +247,16 @@ REST_FRAMEWORK = {
     ],
 }
 
-# raven sentry client
+# RAVEN SENTRY CLIENT
+# ------------------------------------------------------------------------------
 # See https://docs.sentry.io/clients/python/integrations/django/
 INSTALLED_APPS += ['raven.contrib.django.raven_compat']
-RAVEN_MIDDLEWARE = ['raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
+RAVEN_MIDDLEWARE = [
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware']
 MIDDLEWARE = RAVEN_MIDDLEWARE + MIDDLEWARE
 
 # Sentry Configuration
+# ------------------------------------------------------------------------------
 SENTRY_DSN = env.str('SENTRY_DSN')
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 LOGGING = {
@@ -295,10 +311,13 @@ RAVEN_CONFIG = {
     'DSN': SENTRY_DSN,
 }
 
-# Fixtures
+# INITIAL DATA
+# ------------------------------------------------------------------------------
+# See https://docs.djangoproject.com/en/2.1/howto/initial-data/
 FIXTURE_DIRS = (
     str(ROOT_DIR('fixtures/cases')),
     str(ROOT_DIR('fixtures/arranges')),
+    str(ROOT_DIR('fixtures/mails')),
 )
 
 # Cloud Storage
@@ -313,17 +332,17 @@ if env.bool('USE_AWS_S3', default=False):
     AWS_DEFAULT_ACL = 'public-read'
     AWS_QUERYSTRING_AUTH = False
 
-# CKEditor
-CKEDITOR_UPLOAD_PATH = 'arranges/'
+# CKEDITOR
+# ------------------------------------------------------------------------------
+CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_RESTRICT_BY_DATE = False
 
-# Django suit
+# DJANGO SUIT
+# ------------------------------------------------------------------------------
 SUIT_CONFIG = {
-    # header
     'ADMIN_NAME': _("Froggy's Service"),
     'HEADER_DATE_FORMAT': 'l, Y F j',
     'HEADER_TIME_FORMAT': 'H:i',
-    # misc
     'LIST_PER_PAGE': 30,
 }

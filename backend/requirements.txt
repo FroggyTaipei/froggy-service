@@ -51,3 +51,5 @@ django-suit==0.2.26
 django-suit-ckeditor==0.0.2
 django-fsm==2.6.0
 django-fsm-admin==1.2.4
+sendgrid==5.6.0
+django-sendgrid-v5==0.7.0
