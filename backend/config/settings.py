@@ -8,6 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
+from django.utils.translation import ugettext_lazy as _
 
 ROOT_DIR = environ.Path(__file__) - 2
 
@@ -50,6 +51,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -116,6 +118,11 @@ USE_L10N = True
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
 USE_TZ = True
 
+# See: https://docs.djangoproject.com/en/2.1/topics/i18n/translation/
+LOCALE_PATHS = [
+    str(ROOT_DIR('locale')),
+]
+
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root
@@ -176,7 +183,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 # PASSWORD STORAGE SETTINGS
 # ------------------------------------------------------------------------------
@@ -310,3 +316,13 @@ if env.bool('USE_AWS', default=False):
 CKEDITOR_UPLOAD_PATH = 'arranges/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_RESTRICT_BY_DATE = False
+
+# Django suit
+SUIT_CONFIG = {
+    # header
+    'ADMIN_NAME': _("Froggy's Service"),
+    'HEADER_DATE_FORMAT': 'l, Y F j',
+    'HEADER_TIME_FORMAT': 'H:i',
+    # misc
+    'LIST_PER_PAGE': 30,
+}

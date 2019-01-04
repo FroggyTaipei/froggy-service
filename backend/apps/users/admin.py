@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.utils.translation import ugettext_lazy as _
 
 from apps.users.models import User
 from apps.users.forms import UserChangeForm, UserCreationForm
@@ -15,16 +16,16 @@ class UserAdmin(BaseUserAdmin):
     # that reference specific fields on auth.User.
     list_display = ['full_name', 'email']
     fieldsets = [
-        ['Auth', {'fields': ['email', 'password']}],
-        ['Personal info', {'fields': ['last_name', 'first_name', 'avatar']}],
-        ['Settings', {'fields': ['groups', 'is_admin', 'is_active', 'is_staff', 'is_superuser']}],
-        ['Important dates', {'fields': ['last_login', 'registered_at']}],
+        [_('Auth'), {'fields': ['email', 'password']}],
+        [_('Personal info'), {'fields': ['full_name', 'avatar']}],
+        [_('Settings'), {'fields': ['groups', 'is_admin', 'is_active', 'is_staff', 'is_superuser']}],
+        [_('Important dates'), {'fields': ['last_login', 'registered_at']}],
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
     add_fieldsets = [
         [None, {'classes': ['wide'],
-                'fields': ['email', 'first_name', 'last_name', 'password1', 'password2']}],
+                'fields': ['email', 'full_name', 'password1', 'password2']}],
     ]
     search_fields = ['email']
     ordering = ['email']

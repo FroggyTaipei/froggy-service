@@ -1,5 +1,6 @@
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import model_to_dict
+from django.utils import timezone
 from django.db.models.signals import post_save
 from django.db.models import (
     Model,
@@ -72,7 +73,7 @@ class CaseQuerySet(QuerySet):
 
 class Case(Model):
     """案件
-    * status: 案件狀態
+    * status: 案件狀態, 預設值為未成案
     * case_id: 案件編號（6碼）
     * type: 案件類別
     * region: 使用者所在選區
@@ -86,11 +87,12 @@ class Case(Model):
     * close_time: 結案日期
     * update_time: 上次更新時間
     """
-    status = ForeignKey('cases.Status', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Status'))
+    status = ForeignKey('cases.Status', on_delete=CASCADE, default=1,
+                        related_name='cases', verbose_name=_('Case Status'))
     number = CharField(max_length=6, verbose_name=_('Case Number'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='cases', verbose_name=_('User Region'))
-    title = CharField(max_length=255, verbose_name=_('Title'))
+    title = CharField(max_length=255, verbose_name=_('Case Title'))
     content = TextField(verbose_name=_('Content'))
     location = CharField(max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
@@ -102,10 +104,16 @@ class Case(Model):
 
     objects = CaseQuerySet.as_manager()
 
+    __original_status = None
+
     class Meta:
         verbose_name = _('Case')
-        verbose_name_plural = _('Case')
+        verbose_name_plural = _('Cases')
         ordering = ('id',)
+
+    def __init__(self, *args, **kwargs):
+        super(Case, self).__init__(*args, **kwargs)
+        self.__original_status = self.status
 
     def __str__(self):
         return self.number
@@ -125,11 +133,21 @@ class Case(Model):
         """回傳最早的案件歷史，用於存取原始資料"""
         return self.case_histories.order_by('update_time').first()
 
+    def save(self, *args, **kwargs):
+        """案件每次更新時檢查狀態、紀錄成案、結案時間戳"""
+        if self.status != self.__original_status:
+            if self.status.id == 2:  # 已排程
+                self.open_time = timezone.now()
+            if self.status.id in [4, 5]:  # 不受理、已結案
+                self.close_time = timezone.now()
+        super(Case, self).save(*args, **kwargs)
+
 
 def case_mode_save(sender, instance, *args, **kwargs):
     """案件新增與每次更新時建立案件歷史"""
+    # Get editor via admin save_model()
     editor = None
-    if hasattr(instance, 'user'):  # Get user via admin save_model()
+    if hasattr(instance, 'user'):
         editor = instance.user
     CaseHistory.objects.create(case=instance, editor=editor, **instance.to_dict())
 
@@ -144,7 +162,7 @@ class CaseHistory(Model):
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case'))
     status = ForeignKey('cases.Status', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Status'))
     number = CharField(max_length=6, verbose_name=_('Case Number'))
-    title = CharField(max_length=255, verbose_name=_('Title'))
+    title = CharField(max_length=255, verbose_name=_('Case Title'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='case_histories', verbose_name=_('User Region'))
     content = TextField(verbose_name=_('Content'))
@@ -158,7 +176,7 @@ class CaseHistory(Model):
 
     class Meta:
         verbose_name = _('Case History')
-        verbose_name_plural = _('Case History')
+        verbose_name_plural = _('Case Histories')
         ordering = ('-update_time',)
 
     def __str__(self):

@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
 from suit_ckeditor.widgets import CKEditorWidget
+from django.utils.translation import ugettext_lazy as _
 from suit.widgets import (
     SuitSplitDateTimeWidget,
     EnclosedInput,
@@ -25,7 +26,7 @@ class ArrangeInline(admin.TabularInline):
     form = ArrangeInlineForm
     model = Arrange
     extra = 1
-    verbose_name_plural = 'Arranges'
+    verbose_name_plural = _('Arranges')
     suit_classes = 'suit-tab suit-tab-arranges'
 
 
@@ -50,20 +51,25 @@ class CaseAdmin(ModelAdmin):
     inlines = (ArrangeInline,)
 
     fieldsets = [
-        (None, {
+        (_('Case'), {
             'classes': ('suit-tab suit-tab-general',),
+            'description': _('Case open time and close time base on case status.'),
             'fields': ['number', 'status', 'open_time', 'close_time'],
         }),
-        ('Information', {
+        (_('Information'), {
             'classes': ('suit-tab suit-tab-general',),
-            'description': 'Case Information',
-            'fields': ['type', 'region', 'title', 'content', 'username', 'location']}),
+            'description': _('Case Information'),
+            'fields': ['type', 'region', 'title', 'content', 'location']}),
+        (_('Proposer'), {
+            'classes': ('suit-tab suit-tab-general',),
+            'description': _('Proposer Information'),
+            'fields': ['username', 'email', 'mobile']}),
     ]
 
     suit_form_tabs = (
-        ('general', 'General'),
-        ('arranges', 'Arranges'),
-        ('histories', 'CaseHistories'),
+        ('general', _('General')),
+        ('arranges', _('Arranges')),
+        ('histories', _('Case Histories')),
     )
 
     suit_form_includes = (

@@ -8,6 +8,9 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=on \
     PIP_DEFAULT_TIMEOUT=100
 
+RUN apt-get update \
+    && apt-get install -y gettext libgettextpo-dev
+
 # python dependencies
 COPY ./requirements.txt /
 RUN pip install -r ./requirements.txt

@@ -18,7 +18,7 @@ class Arrange(Model):
     * update_time: 上次更新時間
     """
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='arranges', verbose_name=_('Case'))
-    title = CharField(max_length=120, verbose_name=_('Title'))
+    title = CharField(max_length=120, verbose_name=_('Arrange Title'))
     content = RichTextUploadingField(verbose_name=_('Content'))
     time = DateTimeField(null=True, blank=True, verbose_name=_('Arranged Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
