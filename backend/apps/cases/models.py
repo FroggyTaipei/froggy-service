@@ -1,7 +1,10 @@
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import model_to_dict
 from django.utils import timezone
+from django.conf import settings
 from django.db.models.signals import post_save
+from django_fsm import FSMField, transition
+from apps.mails.models import SendGridMail, SendGridMailTemplate
 from django.db.models import (
     Model,
     CASCADE,
@@ -13,7 +16,6 @@ from django.db.models import (
     QuerySet,
     SET_NULL,
 )
-from django_fsm import FSMField, transition
 
 
 class Type(Model):
@@ -76,7 +78,7 @@ class CaseQuerySet(QuerySet):
 class Case(Model):
     """案件
     * state: 案件狀態, 預設值為未成案
-    * case_id: 案件編號（6碼）
+    * number: 案件編號（6碼）
     * type: 案件類別
     * region: 使用者所在選區
     * title: 標題
@@ -112,8 +114,11 @@ class Case(Model):
         verbose_name_plural = _('Cases')
         ordering = ('id',)
 
-    def __init__(self, *args, **kwargs):
-        super(Case, self).__init__(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        created = self.pk is None
+        super(Case, self).save(*args, **kwargs)
+        if created:
+            self.confirm()
 
     def __str__(self):
         return self.number
@@ -149,9 +154,26 @@ class Case(Model):
     ########################################################
     # Workflow (state) Transitions
 
+    def confirm(self):
+        """寄送確認信"""
+        instance = self.first_history or self
+        data = {
+            'number': instance.number,
+            'username': instance.username,
+            'title': instance.title,
+            'date': instance.update_time,
+            'content': instance.content,
+            'location': instance.location,
+        }
+        template = SendGridMailTemplate.objects.filter(name='收到案件通知').first()
+        SendGridMail.objects.create(case=self, template=template,
+                                    from_email=settings.EMAIL_HOST_USER,
+                                    to_email=instance.email, data=data)
+
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED,
                 custom={'button_name': '設為不受理'})
     def disapprove(self):
+        self.confirm()
         self.close_time = timezone.now()
 
     @transition(field=state, source=State.DRAFT, target=State.ARRANGED, conditions=[can_arrange],

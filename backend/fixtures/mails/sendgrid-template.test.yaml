@@ -1,0 +1,29 @@
+- model: mails.SendGridMailTemplate
+  pk: 1
+  fields:
+    tid: d-a30d7ac86f214d02961d87a649b970d0
+    name: 收到案件通知
+
+- model: mails.SendGridMailTemplate
+  pk: 2
+  fields:
+    tid: d-a30d7ac86f214d02961d87a649b970d0
+    name: 案件不受理通知
+
+- model: mails.SendGridMailTemplate
+  pk: 3
+  fields:
+    tid: d-a30d7ac86f214d02961d87a649b970d0
+    name: 案件成立通知
+
+- model: mails.SendGridMailTemplate
+  pk: 4
+  fields:
+    tid: d-a30d7ac86f214d02961d87a649b970d0
+    name: 案件處理更新通知
+
+- model: mails.SendGridMailTemplate
+  pk: 5
+  fields:
+    tid: d-a30d7ac86f214d02961d87a649b970d0
+    name: 結案通知
