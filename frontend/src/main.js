@@ -15,8 +15,15 @@ import VueRaven from 'vue-raven'
 import App from '@/App.vue'
 import './registerServiceWorker'
 
+import 'bootstrap'
+
+// import VueFullPage from 'vue-fullpage.js'
+// Vue.use(VueFullPage);
+
 Vue.config.productionTip = false
 
+window.$ = require('jquery')
+window.JQuery = require('jquery')
 
 // Sentry for logging frontend errors
 if (process.env.NODE_ENV === 'production') {

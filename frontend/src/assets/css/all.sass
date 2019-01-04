@@ -1,0 +1,24 @@
+@import "~bootstrap/scss/functions"
+@import "./variables"
+@import "~bootstrap/scss/bootstrap"
+
+.section
+  min-height: 100vh
+
+/* Add the below transitions to allow a smooth color change similar to lyft */
+nav
+  background-color: $white
+  -webkit-transition: all 0.6s ease-out
+  -moz-transition: all 0.6s ease-out
+  -o-transition: all 0.6s ease-out
+  -ms-transition: all 0.6s ease-out
+  transition: all 0.6s ease-out
+  opacity: 0
+  &.scrolled
+    opacity: 1
+
+.section
+  padding-top: 80px
+
+hr
+  background-color: black
