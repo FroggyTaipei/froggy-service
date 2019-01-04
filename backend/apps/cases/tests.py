@@ -1,6 +1,6 @@
 from django.test import TestCase
 from django.core.management import call_command
-from apps.cases.models import Case, CaseHistory
+from apps.cases.models import Status, Case, CaseHistory
 
 
 class CaseModelTestCase(TestCase):
@@ -66,3 +66,32 @@ class CaseCrudTestCase(TestCase):
         self.case.delete()
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 0)
+
+    def test_status_change(self):
+        self.assertIsNone(self.case.open_time)
+        self.assertIsNone(self.case.close_time)
+
+        # Change status
+        self.case.status = Status.objects.get(name='已排程')
+        self.case.save()
+
+        first_open_time = self.case.open_time
+        self.assertIsNotNone(first_open_time)
+        self.assertIsNone(self.case.close_time)
+
+        self.case.status = Status.objects.get(name='已結案')
+        self.case.save()
+
+        first_close_time = self.case.close_time
+        self.assertIsNotNone(first_open_time)
+        self.assertIsNotNone(first_close_time)
+
+        # Switch status back
+        self.case.status = Status.objects.get(name='處理中')
+        self.case.save()
+        self.assertIsNotNone(first_open_time)
+        self.assertIsNotNone(first_close_time)
+
+        self.case.status = Status.objects.get(name='已結案')
+        self.case.save()
+        self.assertLess(first_close_time, self.case.close_time)
