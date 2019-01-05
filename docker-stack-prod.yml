@@ -1,7 +1,6 @@
 version: '3.3'
 
 volumes:
-  postgres_data: {}
   portainer_data: {}
 
 networks:
@@ -10,12 +9,9 @@ networks:
 services:
   backend:
     image: froggytaipei/froggy-service-api:latest
-    depends_on:
-      - postgres
     volumes:
       - ./backend:/app
     command: /gunicorn.sh
-    entrypoint: /entrypoint.sh
     env_file: .env
     networks:
       - overlay
@@ -26,14 +22,6 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
-
-  postgres:
-    image: postgres:10-alpine
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    networks:
-      - overlay
-    deploy:
       placement:
         constraints: [node.role == manager]
 
@@ -51,13 +39,6 @@ services:
       - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
     deploy:
         mode: global
-
-  backups:
-    image: prodrigestivill/postgres-backup-local
-    depends_on:
-      - postgres
-    volumes:
-      - /tmp/backups/:/backups/
 
   portainer:
     image: portainer/portainer
