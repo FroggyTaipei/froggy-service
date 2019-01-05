@@ -42,7 +42,7 @@ urllib3==1.23
 wcwidth==0.1.7
 Werkzeug==0.14.1
 raven==6.9.0
-PyYAML==3.13
+PyYAML>=4.2b1
 djangorestframework==3.8.2
 django-ckeditor==5.6.1
 django-storages==1.7.1
