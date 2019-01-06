@@ -10,7 +10,7 @@ from suit.widgets import (
 )
 
 
-from .models import Case
+from .models import Type, Case
 from apps.arranges.models import Arrange
 
 
@@ -82,3 +82,4 @@ class CaseAdmin(ModelAdmin):
 
 
 admin.site.register(Case, CaseAdmin)
+admin.site.register(Type)

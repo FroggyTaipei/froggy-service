@@ -73,7 +73,6 @@ class UserViewSet(viewsets.ModelViewSet):
             password=password,
             last_name=last_name,
             first_name=first_name,
-            is_admin=False,
         )
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
