@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
 from django.db import models
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
 
 
@@ -33,14 +34,13 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name=_('Email'), unique=True, max_length=255)
-    full_name = models.CharField(verbose_name=_('Full name'), max_length=30, default=_('Unknown User'))
-    avatar = models.ImageField(verbose_name=_('Avatar'), blank=True)
+    full_name = models.CharField(verbose_name=_('Full Name'), max_length=30, default=_('Unknown User'))
+    avatar = models.ImageField(verbose_name=_('Avatar Setting'), blank=True)
     token = models.UUIDField(verbose_name='Token', default=uuid4, editable=False)
 
-    is_admin = models.BooleanField(verbose_name=_('Admin'), default=False)
     is_active = models.BooleanField(verbose_name=_('Active'), default=True)
     is_staff = models.BooleanField(verbose_name=_('Staff'), default=False)
-    registered_at = models.DateTimeField(verbose_name=_('Registered at'), auto_now_add=timezone.now)
+    registered_at = models.DateTimeField(verbose_name=_('Registered At'), auto_now_add=timezone.now)
 
     # Fields settings
     EMAIL_FIELD = 'email'
@@ -51,6 +51,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     class Meta:
         verbose_name = _('User')
         verbose_name_plural = _('Users')
+
+    def avatar_tag(self):
+        if self.avatar:
+            return mark_safe(f'<img src="{self.avatar.url}" width="150"/>')
+        return ''
+    avatar_tag.short_description = _('Avatar')
 
     @property
     def first_name(self):

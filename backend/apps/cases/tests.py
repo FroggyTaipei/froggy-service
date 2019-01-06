@@ -42,10 +42,51 @@ class CaseCrudTestCase(TestCase):
         self.assertEqual(Case.objects.count(), 1)
         self.assertEqual(CaseHistory.objects.count(), 1)
 
-    def test_case_create(self):
-        case = Case.objects.create(**self.case.to_dict())
-        qs = CaseHistory.objects.filter(case=case)
+    def test_history_unique(self):
+        qs = CaseHistory.objects.filter(case=self.case)
+
+        self.case.save()
         self.assertEqual(qs.count(), 1)
+
+        self.case.status = Status.objects.get(name='已排程')
+        self.case.save()
+        self.assertEqual(qs.count(), 2)
+        self.case.save()
+        self.assertEqual(qs.count(), 2)
+
+        self.case.status = Status.objects.get(name='處理中')
+        self.case.save()
+        self.assertEqual(qs.count(), 3)
+        self.case.save()
+        self.assertEqual(qs.count(), 3)
+
+        self.case.title = 'other title'
+        self.case.save()
+        self.assertEqual(qs.count(), 4)
+        self.case.save()
+        self.assertEqual(qs.count(), 4)
+
+        self.case.status = Status.objects.get(name='已結案')
+        self.case.save()
+        first_close_time = self.case.close_time
+        self.assertEqual(qs.count(), 5)
+        self.case.save()
+        self.assertEqual(qs.count(), 5)
+
+        self.case.status = Status.objects.get(name='處理中')
+        self.case.save()
+        self.assertEqual(qs.count(), 6)
+        self.case.save()
+        self.assertEqual(qs.count(), 6)
+
+        self.case.status = Status.objects.get(name='已結案')
+        self.case.save()
+        second_close_time = self.case.close_time
+        self.assertEqual(qs.count(), 7)
+        self.case.save()
+        self.assertEqual(qs.count(), 7)
+
+        self.assertTrue(second_close_time > first_close_time)
 
     def test_case_update(self):
         # Update via instance

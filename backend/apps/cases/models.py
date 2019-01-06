@@ -12,6 +12,7 @@ from django.db.models import (
     EmailField,
     QuerySet,
     SET_NULL,
+    Q,
 )
 
 
@@ -140,16 +141,18 @@ class Case(Model):
                 self.open_time = timezone.now()
             if self.status.id in [4, 5]:  # 不受理、已結案
                 self.close_time = timezone.now()
+        self.__original_status = self.status
         super(Case, self).save(*args, **kwargs)
 
 
 def case_mode_save(sender, instance, *args, **kwargs):
     """案件新增與每次更新時建立案件歷史"""
-    # Get editor via admin save_model()
-    editor = None
-    if hasattr(instance, 'user'):
-        editor = instance.user
-    CaseHistory.objects.create(case=instance, editor=editor, **instance.to_dict())
+    history, created = CaseHistory.objects.get_or_create(case=instance, **instance.to_dict())
+    if created:
+        # Get editor via admin save_model()
+        if hasattr(instance, 'user'):
+            history.editor = instance.user
+            history.save()
 
 
 post_save.connect(case_mode_save, sender=Case)
@@ -170,8 +173,8 @@ class CaseHistory(Model):
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
-    open_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Opened Time'))
-    close_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Closed Time'))
+    open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
+    close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     class Meta:

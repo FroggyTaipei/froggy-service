@@ -15,13 +15,15 @@
         <th>相關地點</th>
         <th>信箱</th>
         <th>電話</th>
+        <th>成案時間</th>
+        <th>結案時間</th>
       </tr>
     </thead>
     <tbody>
       {% for history in original.case_histories.all %}
         <tr>
           <td>{{ history.update_time }}</td>
-          <td>{{ history.editor }}</td>
+          <td>{{ history.editor|default_if_none:"-" }}</td>
           <td>{{ history.status }}</td>
           <td>{{ history.title }}</td>
           <td>{{ history.content }}</td>
@@ -29,6 +31,8 @@
           <td>{{ history.location }}</td>
           <td>{{ history.email }}</td>
           <td>{{ history.mobile }}</td>
+          <td>{{ history.open_time|default_if_none:"-" }}</td>
+          <td>{{ history.close_time|default_if_none:"-" }}</td>
         </tr>
       {% endfor %}
     </tbody>
