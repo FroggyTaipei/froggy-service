@@ -56,7 +56,7 @@ node_modules
 .sass-cache
 
 # User-uploaded media
-media/
+media/*
 
 # Collected staticfiles
 */staticfiles/
