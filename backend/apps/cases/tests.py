@@ -1,13 +1,14 @@
 from django.test import TestCase
+from django_fsm import TransitionNotAllowed
 from django.core.management import call_command
-from apps.cases.models import Status, Case, CaseHistory
+from apps.cases.models import Case, CaseHistory
+from apps.arranges.models import Arrange
 
 
 class CaseModelTestCase(TestCase):
     def setUp(self):
         """Load fixtures"""
         call_command('loaddata', 'region', verbosity=0)
-        call_command('loaddata', 'status', verbosity=0)
         call_command('loaddata', 'type', verbosity=0)
         call_command('loaddata', 'case.test.yaml', verbosity=0)
 
@@ -31,7 +32,6 @@ class CaseCrudTestCase(TestCase):
     def setUp(self):
         """Load fixtures"""
         call_command('loaddata', 'region', verbosity=0)
-        call_command('loaddata', 'status', verbosity=0)
         call_command('loaddata', 'type', verbosity=0)
         call_command('loaddata', 'case.test.yaml', verbosity=0)
 
@@ -42,51 +42,38 @@ class CaseCrudTestCase(TestCase):
         self.assertEqual(Case.objects.count(), 1)
         self.assertEqual(CaseHistory.objects.count(), 1)
 
-    def test_history_unique(self):
+    def test_transition(self):
         qs = CaseHistory.objects.filter(case=self.case)
 
         self.case.save()
         self.assertEqual(qs.count(), 1)
 
-        self.case.status = Status.objects.get(name='已排程')
-        self.case.save()
-        self.assertEqual(qs.count(), 2)
-        self.case.save()
-        self.assertEqual(qs.count(), 2)
+        with self.assertRaises(TransitionNotAllowed):
+            self.case.approve()
 
-        self.case.status = Status.objects.get(name='處理中')
+        self.case.mobile = '0910201940'
         self.case.save()
-        self.assertEqual(qs.count(), 3)
+        self.assertEqual(qs.count(), 2)  # mobile change
+        self.case.approve()
         self.case.save()
-        self.assertEqual(qs.count(), 3)
+        self.assertIsNotNone(self.case.open_time)
+        self.assertEqual(qs.count(), 3)  # state change, open_time -> now
 
-        self.case.title = 'other title'
-        self.case.save()
-        self.assertEqual(qs.count(), 4)
-        self.case.save()
-        self.assertEqual(qs.count(), 4)
+        with self.assertRaises(TransitionNotAllowed):
+            self.case.arrange()
 
-        self.case.status = Status.objects.get(name='已結案')
+        Arrange.objects.create(case=self.case, title='1', content='1')
+
+        self.case.arrange()
         self.case.save()
-        first_close_time = self.case.close_time
+        self.assertEqual(qs.count(), 4)  # state change
+
+        self.case.close()
+        self.case.save()
+        self.assertIsNotNone(self.case.close_time)
         self.assertEqual(qs.count(), 5)
         self.case.save()
         self.assertEqual(qs.count(), 5)
-
-        self.case.status = Status.objects.get(name='處理中')
-        self.case.save()
-        self.assertEqual(qs.count(), 6)
-        self.case.save()
-        self.assertEqual(qs.count(), 6)
-
-        self.case.status = Status.objects.get(name='已結案')
-        self.case.save()
-        second_close_time = self.case.close_time
-        self.assertEqual(qs.count(), 7)
-        self.case.save()
-        self.assertEqual(qs.count(), 7)
-
-        self.assertTrue(second_close_time > first_close_time)
 
     def test_case_update(self):
         # Update via instance
@@ -107,32 +94,3 @@ class CaseCrudTestCase(TestCase):
         self.case.delete()
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 0)
-
-    def test_status_change(self):
-        self.assertIsNone(self.case.open_time)
-        self.assertIsNone(self.case.close_time)
-
-        # Change status
-        self.case.status = Status.objects.get(name='已排程')
-        self.case.save()
-
-        first_open_time = self.case.open_time
-        self.assertIsNotNone(first_open_time)
-        self.assertIsNone(self.case.close_time)
-
-        self.case.status = Status.objects.get(name='已結案')
-        self.case.save()
-
-        first_close_time = self.case.close_time
-        self.assertIsNotNone(first_open_time)
-        self.assertIsNotNone(first_close_time)
-
-        # Switch status back
-        self.case.status = Status.objects.get(name='處理中')
-        self.case.save()
-        self.assertIsNotNone(first_open_time)
-        self.assertIsNotNone(first_close_time)
-
-        self.case.status = Status.objects.get(name='已結案')
-        self.case.save()
-        self.assertLess(first_close_time, self.case.close_time)
