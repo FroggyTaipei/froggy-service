@@ -3,6 +3,7 @@ from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
+from fsm_admin.mixins import FSMTransitionMixin
 from suit.widgets import (
     SuitSplitDateTimeWidget,
     EnclosedInput,
@@ -40,12 +41,12 @@ class CaseForm(ModelForm):
         }
 
 
-class CaseAdmin(ModelAdmin):
+class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     form = CaseForm
     search_fields = ('number',)
-    list_display = ('number', 'status', 'type', 'region', 'title', 'open_time', 'close_time')
+    list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = ('type', 'region')
-    readonly_fields = ('open_time', 'close_time')
+    readonly_fields = ('state', 'open_time', 'close_time')
     list_select_related = True
 
     inlines = (ArrangeInline,)
@@ -53,8 +54,8 @@ class CaseAdmin(ModelAdmin):
     fieldsets = [
         (_('Case'), {
             'classes': ('suit-tab suit-tab-general',),
-            'description': _('Case open time and close time base on case status.'),
-            'fields': ['number', 'status', 'open_time', 'close_time'],
+            'description': _('Case open time and close time base on case state.'),
+            'fields': ['number', 'state', 'open_time', 'close_time'],
         }),
         (_('Information'), {
             'classes': ('suit-tab suit-tab-general',),

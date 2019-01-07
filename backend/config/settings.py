@@ -34,6 +34,7 @@ THIRD_PARTY_APPS = [
     'ckeditor_uploader',
     'storages',
     'suit_ckeditor',
+    'fsm_admin',
 ]
 
 LOCAL_APPS = [
