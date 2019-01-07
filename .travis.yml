@@ -20,10 +20,4 @@ script:
   # Show logs
   - docker-compose logs --tail=20 backend
 after_success:
-  - docker image build -t froggytaipei/froggy-service-nginx -f nginx/Dockerfile .
-  - docker image build -t froggytaipei/froggy-service-api ./backend
-  - if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push froggytaipei/froggy-service-nginx;
-    docker push froggytaipei/froggy-service-api;
-    fi
+  - bash docker_deploy.sh
