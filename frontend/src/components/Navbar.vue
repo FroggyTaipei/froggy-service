@@ -7,7 +7,7 @@ nav.navbar.navbar-expand-lg.navbar-light.fixed-top.bg-custom.scroll(:class="{scr
     #navbarSupportedContent.collapse.navbar-collapse
       ul.navbar-nav.ml-auto
         li.nav-item
-          a.nav-link(href='#dialogue') 我要找呱吉 
+          a.nav-link(href='#dialogue') 我要找呱吉
         li.nav-item
           a.nav-link(href='#cases') 呱吉做什麼
         li.nav-item
@@ -17,21 +17,21 @@ nav.navbar.navbar-expand-lg.navbar-light.fixed-top.bg-custom.scroll(:class="{scr
 <script>
 export default {
   name: 'NavBar',
-  data: function(){
+  data: function () {
     return {
       scrolled: false
     }
   },
-  methods:{
-    checkScroll(){
-      var startY = window.innerHeight/2;
-      this.scrolled = window.scrollY > startY;
+  methods: {
+    checkScroll () {
+      var startY = window.innerHeight / 2
+      this.scrolled = window.scrollY > startY
     }
   },
-  mounted(){
+  mounted () {
     window.addEventListener('scroll', this.checkScroll)
   },
-  destroyed(){
+  destroyed () {
     window.removeEventListener('scroll', this.checkScroll)
   }
 }
