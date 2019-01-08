@@ -9,6 +9,7 @@ from suit.admin import SortableStackedInline
 from suit.widgets import (
     EnclosedInput,
     AutosizedTextarea,
+    SuitSplitDateTimeWidget,
 )
 
 
@@ -20,21 +21,28 @@ class ArrangeInlineForm(ModelForm):
     class Meta:
         widgets = {
             'content': CKEditorWidget(attrs={'class': 'input-mini'}),
+            'arrange_time': SuitSplitDateTimeWidget(),
         }
 
     def clean(self):
-        transition = None
         new_state = self.cleaned_data['state']
+        arrange_time = self.cleaned_data['arrange_time']
 
-        state_available = self.instance.state == new_state
-        create_without_default_state = self.instance.pk is None and new_state != 'draft'
+        if new_state != 'draft':
+            if self.instance.case.state == 'draft':
+                raise ValidationError(f'請先將案件由「尚未成案」設為「處理中」')
+            if arrange_time is None:
+                raise ValidationError(f'請先設定案件處理時間')
+            else:
+                self.instance.arrange_time = arrange_time
 
-        for t in self.instance.get_available_state_transitions():
-            if new_state == t.target:
-                state_available = True
-                transition = t
-        if not state_available or create_without_default_state:
-            raise ValidationError(f'此案件處理紀錄的狀態無法設為{new_state}')
+        transition = None
+        for ts in self.instance.get_available_state_transitions():
+            if new_state == ts.target:
+                transition = ts
+
+        if not transition and self.instance.state != new_state:
+            raise ValidationError('您無法切換案件處理狀態為{new_state}')
 
         if transition:
             transition.method(self.instance)
@@ -82,7 +90,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': _('Proposer Information'),
-            'fields': ['username', 'email', 'mobile']}),
+            'fields': ['username', 'email', 'mobile', 'address']}),
     ]
 
     suit_form_tabs = (

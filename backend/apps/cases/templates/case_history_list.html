@@ -6,33 +6,32 @@
   <table class="table-overview">
     <thead>
       <tr>
-        <th>編輯時間</th>
-        <th>編輯者</th>
         <th>案件狀態</th>
         <th>案件標題</th>
-        <th>案件內容</th>
+        <th style="max-width:320px">案件內容</th>
         <th>陳情人</th>
         <th>相關地點</th>
         <th>信箱</th>
         <th>電話</th>
-        <th>成案時間</th>
-        <th>結案時間</th>
+        <th>地址</th>
       </tr>
     </thead>
     <tbody>
       {% for history in original.case_histories.all %}
         <tr>
-          <td>{{ history.update_time }}</td>
-          <td>{{ history.editor|default_if_none:"-" }}</td>
-          <td>{{ history.state }}</td>
+          <td>{{ history.get_state_display }}</td>
           <td>{{ history.title }}</td>
-          <td>{{ history.content }}</td>
+          <td style="max-width:320px">{{ history.content }}</td>
           <td>{{ history.username }}</td>
           <td>{{ history.location }}</td>
           <td>{{ history.email }}</td>
           <td>{{ history.mobile }}</td>
-          <td>{{ history.open_time|default_if_none:"-" }}</td>
-          <td>{{ history.close_time|default_if_none:"-" }}</td>
+          <td>{{ history.address }}</td>
+        </tr>
+        <tr>
+          <td colspan="8" style="background-color:#dff0d8; border-color:#d6e9c6; color:#468847;">
+            {{ history.update_time }}{% if history.editor %} 由{{ history.editor }}編輯{% endif %}
+          </td>
         </tr>
       {% endfor %}
     </tbody>

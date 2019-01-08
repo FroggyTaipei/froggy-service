@@ -46,18 +46,16 @@ class Region(Model):
 
 class State(object):
     """案件狀態"""
-    DRAFT = 'draft'              # 尚未成案
-    DISAPPROVED = 'disapproved'  # 不受理
-    APPROVED = 'approved'        # 已排程
-    ARRANGED = 'arranged'        # 處理中
-    CLOSED = 'closed'            # 已結案
+    DRAFT = 'draft'
+    DISAPPROVED = 'disapproved'
+    ARRANGED = 'arranged'
+    CLOSED = 'closed'
 
     CHOICES = (
-        (DRAFT, _('Case Draft')),
-        (DISAPPROVED, _('Disapproved')),
-        (APPROVED, _('Approved')),
-        (ARRANGED, _('Arranged')),
-        (CLOSED, _('Closed')),
+        (DRAFT, '尚未成案'),
+        (DISAPPROVED, '不受理'),
+        (ARRANGED, '處理中'),
+        (CLOSED, '已結案'),
     )
 
 
@@ -87,6 +85,7 @@ class Case(Model):
     * username: 使用者名字
     * mobile: 手機
     * email: 信箱
+    * address: 地址
     * open_time: 成案日期
     * close_time: 結案日期
     * update_time: 上次更新時間
@@ -101,6 +100,7 @@ class Case(Model):
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
+    address = CharField(max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
     close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
@@ -119,7 +119,7 @@ class Case(Model):
         return self.number
 
     def to_dict(self):
-        """回傳去除id、Foreign key為實例的字典"""
+        """回傳去除id、將Foreign key轉為實例的字典"""
         model_dict = model_to_dict(self)
         model_dict.pop('id')
         # Foreign keys need to be instances via objects.create()
@@ -135,36 +135,32 @@ class Case(Model):
     ########################################################
     # Transition Conditions
     # These must be defined prior to the actual transitions
-    # to be refrenced.
+    # to be reference.
 
-    def can_approve(self):
+    def can_arrange(self):
         return self.case_histories.all().count() > 1
-    can_approve.hint = _('You need to edit the case before approve it.')
+    can_arrange.hint = '案件編輯過至少一次才能成案'
 
-    def has_arranges(self):
-        return self.arranges.all().count() > 0
-    has_arranges.hint = _('You need to add arrange to this case.')
+    def can_close(self):
+        arranges = self.arranges.all()
+        return arranges and all([arrange.published for arrange in arranges])
+    can_close.hint = '全部的處理進度都發布後才能結案'
 
     ########################################################
     # Workflow (state) Transitions
 
-    @transition(field=state, source=State.DRAFT, target=State.APPROVED, conditions=[can_approve],
-                custom={'button_name': _('Approve this case')})
-    def approve(self):
-        self.open_time = timezone.now()
-
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED,
-                custom={'button_name': _('Disapprove this case')})
+                custom={'button_name': '設為不受理'})
     def disapprove(self):
         self.close_time = timezone.now()
 
-    @transition(field=state, source=State.APPROVED, target=State.ARRANGED, conditions=[has_arranges],
-                custom={'button_name': _('Arrange this case')})
+    @transition(field=state, source=State.DRAFT, target=State.ARRANGED, conditions=[can_arrange],
+                custom={'button_name': '設為處理中'})
     def arrange(self):
-        """Arrange the case."""
+        self.open_time = timezone.now()
 
-    @transition(field=state, source=State.ARRANGED, target=State.CLOSED,
-                custom={'button_name': _('Close this case')})
+    @transition(field=state, source=State.ARRANGED, target=State.CLOSED, conditions=[can_close],
+                custom={'button_name': '設為已結案'})
     def close(self):
         self.close_time = timezone.now()
 
@@ -197,6 +193,7 @@ class CaseHistory(Model):
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
+    address = CharField(max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
     close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
