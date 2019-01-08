@@ -62,7 +62,7 @@ class CaseCrudTestCase(TestCase):
         with self.assertRaises(TransitionNotAllowed):
             self.case.arrange()
 
-        Arrange.objects.create(case=self.case, title='1', content='1')
+        Arrange.objects.create(case=self.case, title='1', content='1', order=1)
 
         self.case.arrange()
         self.case.save()
