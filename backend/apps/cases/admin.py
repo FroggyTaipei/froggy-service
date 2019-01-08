@@ -1,11 +1,12 @@
 from django.contrib import admin
+from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
+from suit.admin import SortableStackedInline
 from suit.widgets import (
-    SuitSplitDateTimeWidget,
     EnclosedInput,
     AutosizedTextarea,
 )
@@ -19,16 +20,33 @@ class ArrangeInlineForm(ModelForm):
     class Meta:
         widgets = {
             'content': CKEditorWidget(attrs={'class': 'input-mini'}),
-            'time': SuitSplitDateTimeWidget,
         }
 
+    def clean(self):
+        transition = None
+        new_state = self.cleaned_data['state']
 
-class ArrangeInline(admin.TabularInline):
+        state_available = self.instance.state == new_state
+        create_without_default_state = self.instance.pk is None and new_state != 'draft'
+
+        for t in self.instance.get_available_state_transitions():
+            if new_state == t.target:
+                state_available = True
+                transition = t
+        if not state_available or create_without_default_state:
+            raise ValidationError(f'此案件處理紀錄的狀態無法設為{new_state}')
+
+        if transition:
+            transition.method(self.instance)
+
+
+class ArrangeInline(FSMTransitionMixin, SortableStackedInline):
     form = ArrangeInlineForm
     model = Arrange
-    extra = 1
+    extra = 0
     verbose_name_plural = _('Arranges')
     suit_classes = 'suit-tab suit-tab-arranges'
+    readonly_fields = ('publish_time',)
 
 
 class CaseForm(ModelForm):

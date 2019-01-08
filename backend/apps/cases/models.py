@@ -53,7 +53,7 @@ class State(object):
     CLOSED = 'closed'            # 已結案
 
     CHOICES = (
-        (DRAFT, _('Draft')),
+        (DRAFT, _('Case Draft')),
         (DISAPPROVED, _('Disapproved')),
         (APPROVED, _('Approved')),
         (ARRANGED, _('Arranged')),

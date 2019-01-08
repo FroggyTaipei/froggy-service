@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-08 02:01+0800\n"
+"POT-Creation-Date: 2019-01-08 18:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,61 +22,85 @@ msgstr ""
 msgid "Arranges App"
 msgstr "處理紀錄應用程式"
 
-#: apps/arranges/models.py:20 apps/cases/admin.py:55 apps/cases/models.py:111
+#: apps/arranges/models.py:22
+msgid "Arrange Draft"
+msgstr "尚未發布"
+
+#: apps/arranges/models.py:23
+msgid "Published"
+msgstr "已發布"
+
+#: apps/arranges/models.py:24
+msgid "Republished"
+msgstr "已重新發布"
+
+#: apps/arranges/models.py:37
+msgid "Arrange State"
+msgstr "處理狀態"
+
+#: apps/arranges/models.py:38 apps/cases/admin.py:73 apps/cases/models.py:111
 #: apps/cases/models.py:189
 msgid "Case"
 msgstr "案件"
 
-#: apps/arranges/models.py:21
+#: apps/arranges/models.py:39
 msgid "Arrange Title"
 msgstr "處理進度"
 
-#: apps/arranges/models.py:22 apps/cases/models.py:99 apps/cases/models.py:195
+#: apps/arranges/models.py:40 apps/cases/models.py:99 apps/cases/models.py:195
 msgid "Content"
 msgstr "內容"
 
-#: apps/arranges/models.py:23
-msgid "Arranged Time"
+#: apps/arranges/models.py:41
+msgid "Arrange Publish Time"
 msgstr "處理時間"
 
-#: apps/arranges/models.py:24 apps/cases/models.py:22 apps/cases/models.py:36
+#: apps/arranges/models.py:42 apps/cases/models.py:22 apps/cases/models.py:36
 #: apps/cases/models.py:106 apps/cases/models.py:202
 msgid "Updated Time"
 msgstr "上次更新"
 
-#: apps/arranges/models.py:27 apps/arranges/models.py:28
+#: apps/arranges/models.py:47 apps/arranges/models.py:48
 msgid "Arrange"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:30 apps/cases/admin.py:72
+#: apps/arranges/models.py:67
+msgid "Publish this arrange"
+msgstr "發布這個處理進度"
+
+#: apps/arranges/models.py:73
+msgid "Republish this arrange"
+msgstr "重新發布這個處理進度"
+
+#: apps/cases/admin.py:47 apps/cases/admin.py:90
 msgid "Arranges"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:57
+#: apps/cases/admin.py:75
 msgid "Case open time and close time base on case state."
 msgstr "成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄"
 
-#: apps/cases/admin.py:60
+#: apps/cases/admin.py:78
 msgid "Information"
 msgstr "資訊"
 
-#: apps/cases/admin.py:62
+#: apps/cases/admin.py:80
 msgid "Case Information"
 msgstr "案件相關資訊"
 
-#: apps/cases/admin.py:64
+#: apps/cases/admin.py:82
 msgid "Proposer"
 msgstr "陳情人"
 
-#: apps/cases/admin.py:66
+#: apps/cases/admin.py:84
 msgid "Proposer Information"
 msgstr "陳情人相關資訊"
 
-#: apps/cases/admin.py:71
+#: apps/cases/admin.py:89
 msgid "General"
 msgstr "一般"
 
-#: apps/cases/admin.py:73 apps/cases/models.py:206
+#: apps/cases/admin.py:91 apps/cases/models.py:206
 msgid "Case Histories"
 msgstr "案件編輯歷史"
 
@@ -99,16 +123,16 @@ msgid "User Region"
 msgstr "地區"
 
 #: apps/cases/models.py:56
-msgid "Draft"
-msgstr ""
+msgid "Case Draft"
+msgstr "尚未成案"
 
 #: apps/cases/models.py:57
 msgid "Disapproved"
-msgstr ""
+msgstr "不受理"
 
 #: apps/cases/models.py:58
 msgid "Approved"
-msgstr ""
+msgstr "已排程"
 
 #: apps/cases/models.py:59
 msgid "Arranged"
@@ -246,6 +270,6 @@ msgstr "使用者"
 msgid "Avatar"
 msgstr "照片"
 
-#: config/settings.py:341
+#: config/settings.py:324
 msgid "Froggy's Service"
 msgstr "邱威傑（呱吉）選民服務系統"
