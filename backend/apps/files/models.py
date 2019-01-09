@@ -1,3 +1,133 @@
 from django.db import models
+from django.db.models.signals import pre_save, pre_delete
+from django.dispatch import receiver
+from django.core.exceptions import FieldError, ValidationError
+from django.utils.translation import ugettext_lazy as _
+from django.conf import settings
+from django.core.files.storage import default_storage, FileSystemStorage
+from .storages import PrivateStorage
 
-# Create your models here.
+
+if settings.USE_AWS_S3:
+    TEMP_BUCKET = settings.AWS_STORAGE_BUCKET_NAME
+    CASE_BUCKET = settings.AWS_STORAGE_CASE_BUCKET_NAME
+    TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
+    CASE_STORAGE = PrivateStorage(bucket=CASE_BUCKET)
+else:
+    TEMP_STORAGE = FileSystemStorage(
+                        location=f'{settings.MEDIA_ROOT}/tempfile',
+                        base_url=f'{settings.MEDIA_URL}tempfile/',
+                    )
+    CASE_STORAGE = FileSystemStorage(
+                        location=f'{settings.MEDIA_ROOT}/casefile',
+                        base_url=f'{settings.MEDIA_URL}casefile/',
+                    )
+
+
+class TempFile(models.Model):
+    """
+    暫存檔案
+    * case: 案件編號，因案件未成立，先以字串紀錄
+    * file: 案件檔案，storage指定到 TEMP
+    * file_name: 案件檔案名稱，不可編輯，save()時自動產生
+    * upload_time: 檔案上傳時間
+    """
+    case = models.CharField(max_length=255, verbose_name=_('Temp Case'))
+    file = models.FileField(storage=TEMP_STORAGE, verbose_name=_('Temp file'))
+    file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('Temp File Name'))
+    size = models.PositiveIntegerField(editable=False, verbose_name=_('Size'))
+    upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
+
+    def __str__(self):
+        return f'{self.case} - {self.file_name}'
+
+    @property
+    def url(self):
+        return self.file.url
+
+    def check_duplicate(self):
+        """
+        以案件編號及檔案名稱去query檢查資料是否重複
+        """
+        if TempFile.objects.filter(case=self.case, file_name=self.file_name):
+            return True
+        else:
+            return False
+
+    def check_size(self):
+        """
+        檢查已上傳案件的總大小與目前上傳的檔案相加是否超過限制
+        """
+        objs = TempFile.objects.filter(case=self.case)
+        size = [i.size for i in objs]
+
+        if self.size + sum(size) > 31457280:
+            return True
+        else:
+            return False
+
+    def save(self, *args, **kwargs):
+        """
+        TempFile save()時觸發
+        給予file_name欄位檔案名稱
+        檢查上傳的檔案是否重複
+        檢查上傳的檔案大小是否超過上限
+        將案件編號及檔案名稱組成路徑+檔案名稱
+        最後再執行原本save()的code
+        """
+        self.file_name = self.file.name
+        self.size = self.file.size
+        if self.check_duplicate():
+            raise ValidationError
+            raise FieldError('Duplicate file')
+        if self.check_size():
+            raise FieldError('File over limit size')
+        self.file.name = f'{self.case}/{self.file_name}'
+        super(TempFile, self).save(*args, **kwargs)
+
+
+class CaseFile(models.Model):
+    """
+    案件檔案
+    * case: 案件編號，案件成立時會根據TempFile紀錄的案件編號，關聯到正確的案件
+    * file: 案件檔案，storage指定到 CASE
+    * file_name: 案件檔案名稱，不可編輯，save()時自動產生
+    * upload_time: 檔案上傳時間
+    """
+    case = models.ForeignKey('cases.Case', on_delete=models.CASCADE, related_name='casefile', verbose_name=_('Case File'))
+    file = models.FileField(storage=CASE_STORAGE, verbose_name=_('Case File'))
+    file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('Case File Name'))
+    upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
+
+    def __str__(self):
+        return f'{self.case} - {self.file_name}'
+
+    @property
+    def url(self):
+        return self.file.url
+
+    def save(self, *args, **kwargs):
+        """
+        CaseFile save()時觸發
+        給予file_name欄位檔案名稱
+        """
+        self.file_name = self.file.name.replace(f'{self.case}/', '')
+        super(CaseFile, self).save(*args, **kwargs)
+
+
+@receiver(pre_delete, sender=TempFile)
+def temp_file_delete_handler(sender, instance, **kwargs):
+    """
+    TempFile delete()時觸發
+    將storage的檔案刪除
+    """
+    instance.file.storage.delete(name=instance.file.name)
+
+
+@receiver(pre_delete, sender=CaseFile)
+def case_file_delete_handler(sender, instance, **kwargs):
+    """
+    CaseFile delete()時觸發
+    將storage的檔案刪除
+    """
+    instance.file.storage.delete(name=instance.file.name)

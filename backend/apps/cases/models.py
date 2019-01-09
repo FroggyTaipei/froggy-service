@@ -77,7 +77,11 @@ class CaseQuerySet(QuerySet):
 
 class Case(Model):
     """案件
+<<<<<<< HEAD
     * state: 案件狀態, 預設值為未成案
+=======
+    * status: 案件狀態, 預設值為未成案
+>>>>>>> File upload to S3
     * number: 案件編號（6碼）
     * type: 案件類別
     * region: 使用者所在選區
