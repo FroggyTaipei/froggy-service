@@ -244,7 +244,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ],
-    'DEFAULT_PERMISSION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        # 'rest_framework.permissions.IsAuthenticated',
+    ],
     'DEFAULT_PARSER_CLASSES': [
         'rest_framework.parsers.JSONParser',
         'rest_framework.parsers.FormParser',
@@ -327,15 +329,21 @@ FIXTURE_DIRS = (
 )
 
 # Cloud Storage
-if env.bool('USE_AWS_S3', default=False):
+USE_AWS_S3 = env.bool('USE_AWS_S3', default=False)
+# USE_AWS_S3 = False
+if USE_AWS_S3:
     DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
     AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID')
     AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY')
+
     AWS_STORAGE_BUCKET_NAME = env.str('AWS_STORAGE_BUCKET_NAME')
+    AWS_STORAGE_CASE_BUCKET_NAME = env.str('AWS_STORAGE_CASE_BUCKET_NAME')
+    AWS_STORAGE_TEST_TEMP_BUCKET_NAME = env.str('AWS_STORAGE_TEST_TEMP_BUCKET_NAME')
+    AWS_STORAGE_TEST_CASE_BUCKET_NAME = env.str('AWS_STORAGE_TEST_CASE_BUCKET_NAME')
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    AWS_DEFAULT_ACL = 'public-read'
+    AWS_DEFAULT_ACL = None
     AWS_QUERYSTRING_AUTH = False
 
 # CKEDITOR
