@@ -9,7 +9,6 @@ from config.api import api
 
 urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
-    path('mail/', include('apps.mails.urls', namespace='mails')),
     path('api/', include(api.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
