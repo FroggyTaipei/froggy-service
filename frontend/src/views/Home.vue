@@ -3,7 +3,7 @@
     <Navbar></Navbar>
     <Dialogue id="dialogue"></Dialogue>
     <hr>
-    <CaseList id="cases"></CaseList>
+    <CaseList id="cases" :lorem="lorem"></CaseList>
     <hr>
     <About id="about" :lorem="lorem"></About>
     <hr>
