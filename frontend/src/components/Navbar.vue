@@ -38,5 +38,6 @@ export default {
 </script>
 
 <style lang="sass">
-
+nav
+  background-color: #fff
 </style>
