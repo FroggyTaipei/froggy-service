@@ -1,4 +1,5 @@
 from django.utils import timezone
+from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from django.db.models import (
     Model,
@@ -10,6 +11,8 @@ from django.db.models import (
 )
 from django_fsm import FSMField, transition
 from ckeditor_uploader.fields import RichTextUploadingField
+from apps.mails.models import SendGridMail, SendGridMailTemplate
+from bs4 import BeautifulSoup
 
 
 class State(object):
@@ -54,8 +57,23 @@ class Arrange(Model):
         return f'{self.case.number}-{self.title}'
 
     @property
+    def arrange_date(self):
+        return self.arrange_time.strftime('%Y/%m/%d')
+
+    @property
     def published(self):
-        return self.state == 'published'
+        return self.state in ['published', 'republished']
+
+    @property
+    def email_content(self):
+        """將圖片取代為連結"""
+        soup = BeautifulSoup(self.content)
+        for img in soup.find_all('img'):
+            link = img['src']
+            a = soup.new_tag('a', href=link, style="color:red;")
+            a.string = '圖片連結'
+            img.replaceWith(a)
+        return str(soup)
 
     ########################################################
     # Transition Conditions
@@ -69,13 +87,30 @@ class Arrange(Model):
     ########################################################
     # Workflow (state) Transitions
 
+    def send(self):
+        origin = self.case.first_history
+        template = SendGridMailTemplate.objects.filter(name='進度報告').first()
+        data = {
+            'number': origin.number,
+            'username': origin.username,
+            'case_title': origin.title,
+            'title': self.title,
+            'date': self.arrange_time.strftime(settings.DATE_FORMAT),
+            'content': self.email_content,
+        }
+        SendGridMail.objects.create(case=self.case, template=template,
+                                    from_email=settings.EMAIL_HOST_USER,
+                                    to_email=origin.email, data=data)
+
     @transition(field=state, source=State.DRAFT, target=State.PUBLISHED, conditions=[can_publish],
                 custom={'button_name': '發布'})
     def publish(self):
+        self.send()
         self.publish_time = timezone.now()
 
     @transition(field=state, source=State.PUBLISHED, target=State.REPUBLISHED,
                 custom={'button_name': '重新發布'})
     def republish(self):
         """"""
+        self.send()
         self.publish_time = timezone.now()

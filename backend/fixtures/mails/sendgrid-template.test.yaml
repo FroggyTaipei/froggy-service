@@ -19,11 +19,11 @@
 - model: mails.SendGridMailTemplate
   pk: 4
   fields:
-    tid: d-a30d7ac86f214d02961d87a649b970d0
-    name: 案件處理更新通知
+    tid: d-b8b8b407fab64b32b95a61cf4bd305cf
+    name: 進度報告
 
 - model: mails.SendGridMailTemplate
   pk: 5
   fields:
-    tid: d-a30d7ac86f214d02961d87a649b970d0
+    tid: d-7970b1ea41e44840bcd21f2d9ba5be83
     name: 結案通知

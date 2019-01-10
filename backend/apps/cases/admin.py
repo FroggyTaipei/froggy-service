@@ -42,7 +42,7 @@ class ArrangeInlineForm(ModelForm):
                 transition = ts
 
         if not transition and self.instance.state != new_state:
-            raise ValidationError('您無法切換案件處理狀態為{new_state}')
+            raise ValidationError(f'您無法切換案件處理狀態為{new_state}')
 
         if transition:
             transition.method(self.instance)
