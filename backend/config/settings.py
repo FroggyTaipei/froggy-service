@@ -135,6 +135,12 @@ LOCALE_PATHS = [
     str(ROOT_DIR('locale')),
 ]
 
+# See: https://docs.djangoproject.com/en/1.9/ref/settings/#date-format
+DATE_FORMAT = '%Y/%m/%d'
+
+# See: https://docs.djangoproject.com/en/1.9/ref/settings/#datetime-format
+DATETIME_FORMAT = '%Y/%m/%d %H:%M'
+
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-root

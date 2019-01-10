@@ -15,6 +15,7 @@ from django.db.models import (
     EmailField,
     BooleanField,
     CharField,
+    IntegerField,
 )
 
 env = environ.Env()

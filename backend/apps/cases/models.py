@@ -156,24 +156,23 @@ class Case(Model):
 
     def confirm(self):
         """寄送確認信"""
-        instance = self.first_history or self
+        first = self.first_history or self
         data = {
-            'number': instance.number,
-            'username': instance.username,
-            'title': instance.title,
-            'date': instance.update_time,
-            'content': instance.content,
-            'location': instance.location,
+            'number': first.number,
+            'username': first.username,
+            'title': first.title,
+            'date': first.update_time.strftime(settings.DATE_FORMAT),
+            'content': first.content,
+            'location': first.location,
         }
         template = SendGridMailTemplate.objects.filter(name='收到案件通知').first()
         SendGridMail.objects.create(case=self, template=template,
                                     from_email=settings.EMAIL_HOST_USER,
-                                    to_email=instance.email, data=data)
+                                    to_email=first.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED,
                 custom={'button_name': '設為不受理'})
     def disapprove(self):
-        self.confirm()
         self.close_time = timezone.now()
 
     @transition(field=state, source=State.DRAFT, target=State.ARRANGED, conditions=[can_arrange],
@@ -184,6 +183,24 @@ class Case(Model):
     @transition(field=state, source=State.ARRANGED, target=State.CLOSED, conditions=[can_close],
                 custom={'button_name': '設為已結案'})
     def close(self):
+        first = self.first_history or self
+        data = {
+            'number': first.number,
+            'username': first.username,
+            'case_title': first.title,
+            'arranges': [
+                {
+                    'title': arrange.title,
+                    'date': arrange.arrange_time.strftime(settings.DATE_FORMAT),
+                    'content': arrange.email_content,
+                }
+                for arrange in self.arranges.all()
+            ],
+        }
+        template = SendGridMailTemplate.objects.filter(name='結案通知').first()
+        SendGridMail.objects.create(case=self, template=template,
+                                    from_email=settings.EMAIL_HOST_USER,
+                                    to_email=first.email, data=data)
         self.close_time = timezone.now()
 
 

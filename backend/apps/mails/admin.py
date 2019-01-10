@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import SendGridMail, SendGridMailTemplate
 
-# Register your models here.
+
+admin.site.register(SendGridMailTemplate)
+admin.site.register(SendGridMail)
