@@ -2,8 +2,6 @@ from django.contrib import admin
 from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
-from django.utils.html import format_html
-from django.urls import path, reverse
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin

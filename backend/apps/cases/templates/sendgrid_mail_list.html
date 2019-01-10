@@ -1,4 +1,3 @@
-
 <h2 class="legend">案件編輯歷史
   <span class="description">以下列出所有案件的編輯歷史</span>
 </h2>
@@ -7,7 +6,6 @@
   <table class="table-overview">
     <thead>
       <tr>
-        <th>SendGrid Template Id</th>
         <th>寄信範本</th>
         <th>收件者</th>
         <th>寄發成功</th>
@@ -18,13 +16,12 @@
     <tbody>
       {% for mail in original.sendgrid_mails.all %}
         <tr>
-          <td>{{ mail.template.tid }}</td>
           <td>{{ mail.template }}</td>
           <td>{{ mail.to_email }}</td>
           <td>{{ mail.success }}</td>
           <td>{{ mail.send_time }}</td>
           <td>
-            <a class="btn btn-info" href="{% url 'mails:resend-email' id=mail.id %}">重新寄送</a>
+            <a class="btn btn-info" href="{% url 'sendgridmail-resend' mail.id %}">重新寄送</a>
           </td>
         </tr>
       {% endfor %}
