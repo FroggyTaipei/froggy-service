@@ -1,4 +1,6 @@
 <template lang="pug">
+//- 呈現案件編號、陳情日期、案件主旨(受編輯)、處理進度(受選擇)
+//- 有關地點(受編輯)、案件內容(受編輯)、處理內容(由團隊編輯)、結案日期(由團隊編輯)
 .container-fluid.section
   h1 呱吉做什麼
   span {{lorem}}
@@ -158,5 +160,4 @@ tbody>tr:hover
 .searchbar:hover > .search_icon
   background: #007bff
   transition: 0.4s linear
-
 </style>

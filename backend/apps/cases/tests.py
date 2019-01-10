@@ -1,4 +1,5 @@
 from django.test import TestCase
+from django.utils import timezone
 from django_fsm import TransitionNotAllowed
 from django.core.management import call_command
 from apps.cases.models import Case, CaseHistory
@@ -49,31 +50,37 @@ class CaseCrudTestCase(TestCase):
         self.assertEqual(qs.count(), 1)
 
         with self.assertRaises(TransitionNotAllowed):
-            self.case.approve()
+            self.case.arrange()
 
         self.case.mobile = '0910201940'
         self.case.save()
-        self.assertEqual(qs.count(), 2)  # mobile change
-        self.case.approve()
-        self.case.save()
-        self.assertIsNotNone(self.case.open_time)
-        self.assertEqual(qs.count(), 3)  # state change, open_time -> now
-
-        with self.assertRaises(TransitionNotAllowed):
-            self.case.arrange()
-
-        Arrange.objects.create(case=self.case, title='1', content='1')
-
+        self.assertEqual(qs.count(), 2)
         self.case.arrange()
         self.case.save()
-        self.assertEqual(qs.count(), 4)  # state change
+        self.assertIsNotNone(self.case.open_time)
+        self.assertEqual(qs.count(), 3)
+
+        with self.assertRaises(TransitionNotAllowed):
+            self.case.close()
+
+        arrange = Arrange.objects.create(case=self.case, title='1', content='1', order=1)
+
+        with self.assertRaises(TransitionNotAllowed):
+            self.case.close()
+
+        with self.assertRaises(TransitionNotAllowed):
+            arrange.publish()
+
+        arrange.arrange_time = timezone.now()
+        arrange.publish()
+        arrange.save()
 
         self.case.close()
         self.case.save()
         self.assertIsNotNone(self.case.close_time)
-        self.assertEqual(qs.count(), 5)
+        self.assertEqual(qs.count(), 4)
         self.case.save()
-        self.assertEqual(qs.count(), 5)
+        self.assertEqual(qs.count(), 4)
 
     def test_case_update(self):
         # Update via instance

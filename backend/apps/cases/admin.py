@@ -1,17 +1,19 @@
 from django.contrib import admin
+from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
+from suit.admin import SortableStackedInline
 from suit.widgets import (
-    SuitSplitDateTimeWidget,
     EnclosedInput,
     AutosizedTextarea,
+    SuitSplitDateTimeWidget,
 )
 
 
-from .models import Type, Case
+from apps.cases.models import Type, Case
 from apps.arranges.models import Arrange
 
 
@@ -19,16 +21,40 @@ class ArrangeInlineForm(ModelForm):
     class Meta:
         widgets = {
             'content': CKEditorWidget(attrs={'class': 'input-mini'}),
-            'time': SuitSplitDateTimeWidget,
+            'arrange_time': SuitSplitDateTimeWidget(),
         }
 
+    def clean(self):
+        new_state = self.cleaned_data['state']
+        arrange_time = self.cleaned_data['arrange_time']
 
-class ArrangeInline(admin.TabularInline):
+        if new_state != 'draft':
+            if self.instance.case.state == 'draft':
+                raise ValidationError(f'請先將案件由「尚未成案」設為「處理中」')
+            if arrange_time is None:
+                raise ValidationError(f'請先設定案件處理時間')
+            else:
+                self.instance.arrange_time = arrange_time
+
+        transition = None
+        for ts in self.instance.get_available_state_transitions():
+            if new_state == ts.target:
+                transition = ts
+
+        if not transition and self.instance.state != new_state:
+            raise ValidationError('您無法切換案件處理狀態為{new_state}')
+
+        if transition:
+            transition.method(self.instance)
+
+
+class ArrangeInline(FSMTransitionMixin, SortableStackedInline):
     form = ArrangeInlineForm
     model = Arrange
-    extra = 1
+    extra = 0
     verbose_name_plural = _('Arranges')
     suit_classes = 'suit-tab suit-tab-arranges'
+    readonly_fields = ('publish_time',)
 
 
 class CaseForm(ModelForm):
@@ -64,17 +90,19 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': _('Proposer Information'),
-            'fields': ['username', 'email', 'mobile']}),
+            'fields': ['username', 'email', 'mobile', 'address']}),
     ]
 
     suit_form_tabs = (
         ('general', _('General')),
         ('arranges', _('Arranges')),
         ('histories', _('Case Histories')),
+        ('sendgrid_mails', _('Mails')),
     )
 
     suit_form_includes = (
         ('case_history_list.html', '', 'histories'),
+        ('sendgrid_mail_list.html', '', 'sendgrid_mails'),
     )
 
     def save_model(self, request, obj, form, change):

@@ -5,9 +5,15 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
+
+Vue.use(VueAxios,axios)
 import App from '@/App.vue'
 import './registerServiceWorker'
 import 'bootstrap'
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+
+import 'axios'
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
@@ -32,6 +38,6 @@ Vue.use(VueAnalytics, {
 new Vue({
   router,
   store,
-  
+
   render: h => h(App)
 }).$mount('#app')

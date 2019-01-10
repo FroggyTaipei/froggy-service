@@ -3,7 +3,7 @@ import axios from 'axios'
 const state = {
   loggedIn: false,
   profile: {},
-  validation: {email: true},
+  validation: { email: true },
   authError: false
 }
 

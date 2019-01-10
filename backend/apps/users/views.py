@@ -1,4 +1,3 @@
-import requests
 from uuid import uuid4
 
 from django.contrib.auth import authenticate, login
@@ -7,7 +6,7 @@ from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 from rest_framework import viewsets, status
-from rest_framework.decorators import list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from apps.users.models import User
@@ -39,14 +38,14 @@ class UserViewSet(viewsets.ModelViewSet):
         instance.is_active = False
         instance.save()
 
-    @list_route(methods=['GET'])
+    @action(methods=['GET'], detail=True)
     def profile(self, request):
         if request.user.is_authenticated:
             serializer = self.serializer_class(request.user)
             return Response(status=status.HTTP_200_OK, data=serializer.data)
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-    @list_route(methods=['POST'])
+    @action(methods=['POST'], detail=True)
     def login(self, request, format=None):
         email = request.data.get('email', None)
         password = request.data.get('password', None)
@@ -57,7 +56,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_200_OK)
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @list_route(methods=['POST'])
+    @action(methods=['POST'], detail=True)
     def register(self, request):
         last_name = request.data.get('last_name', None)
         first_name = request.data.get('first_name', None)
@@ -76,7 +75,7 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
-    @list_route(methods=['POST'])
+    @action(methods=['POST'], detail=True)
     def password_reset(self, request, format=None):
         if User.objects.filter(email=request.data['email']).exists():
             user = User.objects.get(email=request.data['email'])
@@ -91,7 +90,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @list_route(methods=['POST'])
+    @action(methods=['POST'], detail=True)
     def password_change(self, request, format=None):
         if User.objects.filter(token=request.data['token']).exists():
             user = User.objects.get(token=request.data['token'])
