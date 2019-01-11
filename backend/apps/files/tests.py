@@ -12,6 +12,7 @@ from .storages import CleanStorage
 
 import time
 import datetime
+import os
 
 
 ROOT_DIR = settings.ROOT_DIR
@@ -26,6 +27,10 @@ if settings.USE_AWS_S3:
 else:
     TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/test-tempfile', base_url=f'{settings.MEDIA_URL}test-tempfile/')
     CASE_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/test-casefile', base_url=f'{settings.MEDIA_URL}test-casefile/')
+    if not os.path.exists(f'{settings.MEDIA_ROOT}/test-tempfile'):
+        os.mkdir(f'{settings.MEDIA_ROOT}/test-tempfile')
+    if not os.path.exists(f'{settings.MEDIA_ROOT}/test-casefile'):
+        os.mkdir(f'{settings.MEDIA_ROOT}/test-casefile')
 
 
 class CleanStorageTestCase(TestCase):

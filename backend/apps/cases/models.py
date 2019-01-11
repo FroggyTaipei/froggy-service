@@ -15,6 +15,7 @@ from django.db.models import (
     EmailField,
     QuerySet,
     SET_NULL,
+    UUIDField,
 )
 
 
@@ -77,12 +78,8 @@ class CaseQuerySet(QuerySet):
 
 class Case(Model):
     """案件
-<<<<<<< HEAD
     * state: 案件狀態, 預設值為未成案
-=======
-    * status: 案件狀態, 預設值為未成案
->>>>>>> File upload to S3
-    * number: 案件編號（6碼）
+    * uuid: 案件編號（uuid4）
     * type: 案件類別
     * region: 使用者所在選區
     * title: 標題
@@ -97,7 +94,7 @@ class Case(Model):
     * update_time: 上次更新時間
     """
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES)
-    number = CharField(max_length=6, verbose_name=_('Case Number'))
+    uuid = UUIDField(verbose_name=_('UUID'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='cases', verbose_name=_('User Region'))
     title = CharField(max_length=255, verbose_name=_('Case Title'))
@@ -140,6 +137,10 @@ class Case(Model):
     def first_history(self):
         """回傳最早的案件歷史，用於存取原始資料"""
         return self.case_histories.order_by('update_time').first()
+
+    @property
+    def number(self):
+        return str(self.id).zfill(6)
 
     ########################################################
     # Transition Conditions
@@ -227,7 +228,7 @@ class CaseHistory(Model):
                         verbose_name=_('Editor'))
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case'))
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES, protected=True)
-    number = CharField(max_length=6, verbose_name=_('Case Number'))
+    uuid = UUIDField(verbose_name=_('UUID'))
     title = CharField(max_length=255, verbose_name=_('Case Title'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='case_histories', verbose_name=_('User Region'))
@@ -245,6 +246,10 @@ class CaseHistory(Model):
         verbose_name = _('Case History')
         verbose_name_plural = _('Case Histories')
         ordering = ('-update_time',)
+
+    @property
+    def number(self):
+        return str(self.id).zfill(6)
 
     def __str__(self):
         return self.number

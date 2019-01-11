@@ -21,11 +21,11 @@ class CaseModelTestCase(TestCase):
         Case.objects.create(**self.case.to_dict())
 
         self.assertEqual(Case.objects.count(), 3)
-        new_number = '3kD2af'
+        new_uuid = 'ad693ae3-3d1c-4b56-a669-1def019ad370'
         new_username = 'John Doe'
-        Case.objects.all().update(number=new_number, username=new_username)
+        Case.objects.all().update(uuid=new_uuid, username=new_username)
 
-        self.assertEqual(Case.objects.filter(number=new_number).count(), 3)
+        self.assertEqual(Case.objects.filter(uuid=new_uuid).count(), 3)
         self.assertEqual(Case.objects.filter(username=new_username).count(), 3)
 
 
@@ -84,18 +84,18 @@ class CaseCrudTestCase(TestCase):
 
     def test_case_update(self):
         # Update via instance
-        number = self.case.number
-        self.case.number = '12Jj4d'
+        uuid = self.case.uuid
+        self.case.uuid = 'd80d004a-d5d9-4d62-aa92-7fd9ac4dbbc7'
         self.case.save()
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 2)
 
         # Update via Queryset
-        Case.objects.filter(id=self.case.id).update(number='3kvJ3C')
+        Case.objects.filter(id=self.case.id).update(uuid='9968b66c-3821-4148-995f-befcde57127a')
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 3)
 
-        self.assertEqual(self.case.first_history.number, number)
+        self.assertEqual(self.case.first_history.uuid, uuid)
 
     def test_case_delete(self):
         self.case.delete()
