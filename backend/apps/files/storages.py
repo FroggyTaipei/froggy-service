@@ -1,4 +1,8 @@
+from django.conf import settings
+
 from storages.backends.s3boto3 import S3Boto3Storage
+
+import os
 
 
 class PrivateStorage(S3Boto3Storage):
@@ -25,6 +29,7 @@ class CleanStorage():
         self.clean_file(f'{path}{dir}/', storage_list[1])
         for i in storage_list[0]:
             self.clean_dir(f'{path}{dir}/', i)
+        self.storage.delete(f'{path}{dir}/')
 
     def clean_storage(self, storage):
         path = ''
