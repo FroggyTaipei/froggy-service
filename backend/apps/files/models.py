@@ -1,27 +1,23 @@
 from django.db import models
 from django.db.models.signals import pre_save, pre_delete
 from django.dispatch import receiver
-from django.core.exceptions import FieldError, ValidationError
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.core.files.storage import default_storage, FileSystemStorage
+from django.core.files.storage import FileSystemStorage
+
+from rest_framework.exceptions import ValidationError
+
 from .storages import PrivateStorage
 
 
 if settings.USE_AWS_S3:
-    TEMP_BUCKET = settings.AWS_STORAGE_BUCKET_NAME
-    CASE_BUCKET = settings.AWS_STORAGE_CASE_BUCKET_NAME
+    TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-temp'
+    CASE_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-case'
     TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
     CASE_STORAGE = PrivateStorage(bucket=CASE_BUCKET)
 else:
-    TEMP_STORAGE = FileSystemStorage(
-                        location=f'{settings.MEDIA_ROOT}/tempfile',
-                        base_url=f'{settings.MEDIA_URL}tempfile/',
-                    )
-    CASE_STORAGE = FileSystemStorage(
-                        location=f'{settings.MEDIA_ROOT}/casefile',
-                        base_url=f'{settings.MEDIA_URL}casefile/',
-                    )
+    TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/tempfile', base_url=f'{settings.MEDIA_URL}tempfile/')
+    CASE_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/casefile', base_url=f'{settings.MEDIA_URL}casefile/')
 
 
 class TempFile(models.Model):
@@ -32,14 +28,14 @@ class TempFile(models.Model):
     * file_name: 案件檔案名稱，不可編輯，save()時自動產生
     * upload_time: 檔案上傳時間
     """
-    case = models.CharField(max_length=255, verbose_name=_('Temp Case'))
+    case_uuid = models.UUIDField(verbose_name=_('UUID'))
     file = models.FileField(storage=TEMP_STORAGE, verbose_name=_('Temp file'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('Temp File Name'))
     size = models.PositiveIntegerField(editable=False, verbose_name=_('Size'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
 
     def __str__(self):
-        return f'{self.case} - {self.file_name}'
+        return f'{self.case_uuid} - {self.file_name}'
 
     @property
     def url(self):
@@ -49,7 +45,7 @@ class TempFile(models.Model):
         """
         以案件編號及檔案名稱去query檢查資料是否重複
         """
-        if TempFile.objects.filter(case=self.case, file_name=self.file_name):
+        if TempFile.objects.filter(case_uuid=self.case_uuid, file_name=self.file_name):
             return True
         else:
             return False
@@ -58,7 +54,7 @@ class TempFile(models.Model):
         """
         檢查已上傳案件的總大小與目前上傳的檔案相加是否超過限制
         """
-        objs = TempFile.objects.filter(case=self.case)
+        objs = TempFile.objects.filter(case_uuid=self.case_uuid)
         size = [i.size for i in objs]
 
         if self.size + sum(size) > 31457280:
@@ -78,11 +74,10 @@ class TempFile(models.Model):
         self.file_name = self.file.name
         self.size = self.file.size
         if self.check_duplicate():
-            raise ValidationError
-            raise FieldError('Duplicate file')
+            raise ValidationError('Duplicate file')
         if self.check_size():
-            raise FieldError('File over limit size')
-        self.file.name = f'{self.case}/{self.file_name}'
+            raise ValidationError('File over limit size')
+        self.file.name = f'{self.case_uuid}/{self.file_name}'
         super(TempFile, self).save(*args, **kwargs)
 
 

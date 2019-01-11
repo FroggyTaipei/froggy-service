@@ -13,22 +13,9 @@ class TempFileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TempFileSerializer
     queryset = models.TempFile.objects.all()
 
-    def perform_create(self, serializer):
-        try:
-            return Response('test')
-            super(TempFileViewSet, self).perform_create(serializer)
-        except Exception as e:
-            return Response(str(e))
-
-    # def create(self, request, *args, **kwargs):
-    #     try:
-    #         return super(TempFileViewSet, self).create(request, *args, **kwargs)
-    #     except Exception as e:
-    #         return Response(str(e))
-
     @action(methods=['GET'], detail=True)
     def all(self, request, pk=None):
-        queryset = self.queryset.filter(case=pk)
+        queryset = self.queryset.filter(case_uuid=pk)
         serializer = self.get_serializer(queryset, many=True)
 
         if len(serializer.data) > 0:
@@ -40,11 +27,10 @@ class TempFileViewSet(viewsets.ModelViewSet):
 class CaseFileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CaseFileSerializer
     queryset = models.CaseFile.objects.all()
-    permission_classes = []
 
     @action(methods=['GET'], detail=True)
     def all(self, request, pk=None):
-        case = Case.objects.filter(number=pk)
+        case = Case.objects.filter(uuid=pk)
         queryset = self.queryset.filter(case__in=case)
         serializer = self.get_serializer(queryset, many=True)
 
