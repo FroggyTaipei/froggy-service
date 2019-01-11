@@ -69,10 +69,10 @@ class CaseForm(ModelForm):
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     form = CaseForm
-    search_fields = ('number',)
+    search_fields = ('id',)
     list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = ('type', 'region')
-    readonly_fields = ('state', 'open_time', 'close_time')
+    readonly_fields = ('number', 'state', 'open_time', 'close_time')
     list_select_related = True
 
     inlines = (ArrangeInline,)
@@ -108,6 +108,10 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     def save_model(self, request, obj, form, change):
         obj.user = request.user
         super().save_model(request, obj, form, change)
+
+    def number(self, obj):
+        return obj.number if obj.pk else '-'
+    number.short_description = _('Case Number')
 
 
 admin.site.register(Case, CaseAdmin)
