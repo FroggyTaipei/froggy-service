@@ -1,3 +1,4 @@
+import uuid
 from django.utils.translation import ugettext_lazy as _
 from django.forms.models import model_to_dict
 from django.utils import timezone
@@ -94,7 +95,7 @@ class Case(Model):
     * update_time: 上次更新時間
     """
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES)
-    uuid = UUIDField(verbose_name=_('UUID'))
+    uuid = UUIDField(default=uuid.uuid4, verbose_name=_('UUID'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='cases', verbose_name=_('User Region'))
     title = CharField(max_length=255, verbose_name=_('Case Title'))
@@ -140,7 +141,7 @@ class Case(Model):
 
     @property
     def number(self):
-        return str(self.id).zfill(6)
+        return str(self.id).zfill(6) if self.id else '-'
 
     ########################################################
     # Transition Conditions
@@ -249,7 +250,7 @@ class CaseHistory(Model):
 
     @property
     def number(self):
-        return str(self.id).zfill(6)
+        return str(self.id).zfill(6) if self.id else '-'
 
     def __str__(self):
         return self.number

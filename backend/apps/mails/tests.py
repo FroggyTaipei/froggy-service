@@ -27,11 +27,14 @@ class SendGridTestCase(TestCase):
             'number': instance.number,
             'username': instance.username,
             'title': instance.title,
-            'date': instance.update_time,
+            'date': instance.update_time.strftime('%Y/%m/%d'),
             'content': instance.content,
             'location': instance.location,
         }
         template = SendGridMailTemplate.objects.filter(name='收到案件通知').first()
+
+        self.assertIsNotNone(template)
+
         mail = SendGridMail(case=instance, template=template, to_email=instance.email, data=data)
         mail.save()
 
@@ -39,6 +42,7 @@ class SendGridTestCase(TestCase):
 
         mail2 = SendGridMail.objects.create(case=instance, template=template,
                                             to_email=instance.email, data=data)
+
         self.assertTrue(mail2.success, True)
 
     @tag('private')

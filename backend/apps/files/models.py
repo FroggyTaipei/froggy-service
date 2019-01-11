@@ -1,5 +1,6 @@
+import uuid
 from django.db import models
-from django.db.models.signals import pre_save, pre_delete
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -28,9 +29,9 @@ class TempFile(models.Model):
     * file_name: 案件檔案名稱，不可編輯，save()時自動產生
     * upload_time: 檔案上傳時間
     """
-    case_uuid = models.UUIDField(verbose_name=_('UUID'))
+    case_uuid = models.UUIDField(default=uuid.uuid4, verbose_name=_('UUID'))
     file = models.FileField(storage=TEMP_STORAGE, verbose_name=_('Temp file'))
-    file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('Temp File Name'))
+    file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     size = models.PositiveIntegerField(editable=False, verbose_name=_('Size'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
 
@@ -91,7 +92,7 @@ class CaseFile(models.Model):
     """
     case = models.ForeignKey('cases.Case', on_delete=models.CASCADE, related_name='casefile', verbose_name=_('Case File'))
     file = models.FileField(storage=CASE_STORAGE, verbose_name=_('Case File'))
-    file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('Case File Name'))
+    file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
 
     def __str__(self):

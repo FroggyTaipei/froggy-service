@@ -2,7 +2,6 @@
   pk: 1
   fields: {
     state: draft,
-    uuid: 1f1072d6-9cdb-419c-8827-a31e91495bd2,
     type: 1,
     region: 1,
     title: "\u4E0A\u73ED\u6642\u6BB5\u8A08\u7A0B\u8ECA\u904E\u591A",
@@ -10,7 +9,7 @@
     location: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5FA9\u8208\u5317\u8DEF",
     username: "\u738B\u5927\u660E",
     mobile: 0912345678,
-    email: 9.2@mail.com,
+    email: travishen.tw@gmail.com,
     address: "\u53f0\u5317\u5e02\u677e\u5c71\u5340\u5357\u8def3\u6bb538\u865f7\u6a13",
     update_time: ! '2019-01-03 07:07:13.357191+00:00'
   }
