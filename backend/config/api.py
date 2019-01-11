@@ -2,6 +2,11 @@ from rest_framework import routers
 from apps.users.views import UserViewSet
 from apps.mails.views import MailViewSet
 from apps.files.api.views import TempFileViewSet, CaseFileViewSet
+from apps.cases.views import (
+    TypeViewSet,
+    RegionViewSet,
+    CaseViewSet,
+)
 
 
 # Settings
@@ -17,3 +22,8 @@ api.register(r'mails', MailViewSet)
 # Files API
 api.register(r'files/temp', TempFileViewSet)
 api.register(r'files/case', CaseFileViewSet)
+
+# Cases API
+api.register(r'cases', CaseViewSet)
+api.register(r'types', TypeViewSet)
+api.register(r'regions', RegionViewSet)
