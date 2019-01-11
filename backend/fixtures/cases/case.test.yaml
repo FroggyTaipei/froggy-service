@@ -2,7 +2,7 @@
   pk: 1
   fields: {
     state: draft,
-    number: 34sd1A,
+    uuid: 1f1072d6-9cdb-419c-8827-a31e91495bd2,
     type: 1,
     region: 1,
     title: "\u4E0A\u73ED\u6642\u6BB5\u8A08\u7A0B\u8ECA\u904E\u591A",
