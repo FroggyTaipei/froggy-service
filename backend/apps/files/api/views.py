@@ -1,5 +1,5 @@
 from rest_framework import viewsets, status
-from rest_framework.decorators import action, list_route
+from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
@@ -12,6 +12,7 @@ from . import serializers
 class TempFileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.TempFileSerializer
     queryset = models.TempFile.objects.all()
+    permission_classes = [IsAuthenticated]
 
     @action(methods=['GET'], detail=True)
     def all(self, request, pk=None):
@@ -27,6 +28,7 @@ class TempFileViewSet(viewsets.ModelViewSet):
 class CaseFileViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.CaseFileSerializer
     queryset = models.CaseFile.objects.all()
+    permission_classes = [IsAuthenticated]
 
     @action(methods=['GET'], detail=True)
     def all(self, request, pk=None):

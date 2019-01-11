@@ -10,8 +10,9 @@ from .serializers import SendGridMailSerializer
 class MailViewSet(ModelViewSet):
     queryset = SendGridMail.objects.all()
     serializer_class = SendGridMailSerializer
+    permission_classes = [IsAdminUser]
 
-    @action(methods=['GET'], detail=True, permission_classes=[IsAdminUser])
+    @action(methods=['GET'], detail=False)
     def resend(self, request, pk=None):
         mail = SendGridMail.objects.get(id=pk)
         mail.send()
