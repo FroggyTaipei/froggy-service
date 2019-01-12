@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-12 05:03+0800\n"
+"POT-Creation-Date: 2019-01-12 21:00+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -52,7 +52,7 @@ msgstr "上次更新"
 msgid "Arrange"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:55 apps/cases/admin.py:98
+#: apps/cases/admin.py:55 apps/cases/admin.py:100
 msgid "Arranges"
 msgstr "處理紀錄"
 
@@ -68,27 +68,31 @@ msgstr "資訊"
 msgid "Case Information"
 msgstr "案件相關資訊"
 
-#: apps/cases/admin.py:90
+#: apps/cases/admin.py:91
 msgid "Proposer"
 msgstr "陳情人"
 
-#: apps/cases/admin.py:92
+#: apps/cases/admin.py:93
 msgid "Proposer Information"
 msgstr "陳情人相關資訊"
 
-#: apps/cases/admin.py:97
+#: apps/cases/admin.py:99
 msgid "General"
 msgstr "一般"
 
-#: apps/cases/admin.py:99 apps/cases/models.py:248
+#: apps/cases/admin.py:101 apps/cases/models.py:248
 msgid "Case Histories"
 msgstr "案件編輯歷史"
 
-#: apps/cases/admin.py:100
+#: apps/cases/admin.py:102
 msgid "Mails"
 msgstr "信件"
 
-#: apps/cases/admin.py:114
+#: apps/cases/admin.py:103
+msgid "Files"
+msgstr "案件檔案"
+
+#: apps/cases/admin.py:118
 msgid "Case Number"
 msgstr "案件編號"
 
@@ -112,7 +116,7 @@ msgstr "案件狀態"
 
 #: apps/cases/models.py:98 apps/cases/models.py:232 apps/files/models.py:32
 msgid "UUID"
-msgstr ""
+msgstr "UUID"
 
 #: apps/cases/models.py:101 apps/cases/models.py:233
 msgid "Case Title"
@@ -174,6 +178,14 @@ msgstr "大小"
 msgid "Upload Time"
 msgstr "上次更新"
 
+#: apps/files/models.py:78 apps/files/tests.py:150
+msgid "Duplicate file"
+msgstr "重複的檔案名稱"
+
+#: apps/files/models.py:80
+msgid "File over limit size"
+msgstr "總檔案大小超過上限"
+
 #: apps/files/models.py:93 apps/files/models.py:94
 msgid "Case File"
 msgstr "案件檔案"
@@ -186,11 +198,7 @@ msgstr "範本編號"
 msgid "SendGrid Template"
 msgstr "SendGrid信件範本"
 
-#: apps/mails/models.py:61
-msgid "From Email"
-msgstr "寄件者"
-
-#: apps/mails/models.py:62
+#: apps/mails/models.py:61 apps/mails/models.py:62
 msgid "To Email"
 msgstr "收件者"
 
@@ -266,6 +274,9 @@ msgstr "使用者"
 msgid "Avatar"
 msgstr "照片"
 
-#: config/settings.py:356
+#: config/settings.py:357
 msgid "Froggy's Service"
 msgstr "邱威傑（呱吉）選民服務系統"
+
+#~ msgid "From Email"
+#~ msgstr "寄件者"

@@ -75,9 +75,9 @@ class TempFile(models.Model):
         self.file_name = self.file.name
         self.size = self.file.size
         if self.check_duplicate():
-            raise ValidationError('Duplicate file')
+            raise ValidationError(_('Duplicate file'))
         if self.check_size():
-            raise ValidationError('File over limit size')
+            raise ValidationError(_('File over limit size'))
         self.file.name = f'{self.case_uuid}/{self.file_name}'
         super(TempFile, self).save(*args, **kwargs)
 
@@ -90,7 +90,7 @@ class CaseFile(models.Model):
     * file_name: 案件檔案名稱，不可編輯，save()時自動產生
     * upload_time: 檔案上傳時間
     """
-    case = models.ForeignKey('cases.Case', on_delete=models.CASCADE, related_name='casefile', verbose_name=_('Case File'))
+    case = models.ForeignKey('cases.Case', on_delete=models.CASCADE, related_name='casefiles', verbose_name=_('Case File'))
     file = models.FileField(storage=CASE_STORAGE, verbose_name=_('Case File'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
@@ -107,7 +107,8 @@ class CaseFile(models.Model):
         CaseFile save()時觸發
         給予file_name欄位檔案名稱
         """
-        self.file_name = self.file.name.replace(f'{self.case}/', '')
+        self.file_name = self.file.name.replace(f'{self.case.uuid}/', '')
+        self.file.name = f'{self.case.uuid}/{self.file_name}'
         super(CaseFile, self).save(*args, **kwargs)
 
 

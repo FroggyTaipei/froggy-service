@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(storage=django.core.files.storage.FileSystemStorage(base_url='/media/casefile/', location='/app/media/casefile'), upload_to='', verbose_name='Case File')),
                 ('file_name', models.CharField(blank=True, editable=False, max_length=255, null=True, verbose_name='File Name')),
                 ('upload_time', models.DateTimeField(auto_now=True, verbose_name='Upload Time')),
-                ('case', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='casefile', to='cases.Case', verbose_name='Case File')),
+                ('case', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='casefiles', to='cases.Case', verbose_name='Case File')),
             ],
         ),
         migrations.CreateModel(

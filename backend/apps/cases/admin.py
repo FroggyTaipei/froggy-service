@@ -86,11 +86,13 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         (_('Information'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': _('Case Information'),
-            'fields': ['type', 'region', 'title', 'content', 'location']}),
+            'fields': ['type', 'region', 'title', 'content', 'location'],
+        }),
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': _('Proposer Information'),
-            'fields': ['username', 'email', 'mobile', 'address']}),
+            'fields': ['username', 'email', 'mobile', 'address'],
+        }),
     ]
 
     suit_form_tabs = (
@@ -98,11 +100,13 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('arranges', _('Arranges')),
         ('histories', _('Case Histories')),
         ('sendgrid_mails', _('Mails')),
+        ('files', _('Files')),
     )
 
     suit_form_includes = (
         ('case_history_list.html', '', 'histories'),
         ('sendgrid_mail_list.html', '', 'sendgrid_mails'),
+        ('files_list.html', '', 'files'),
     )
 
     def save_model(self, request, obj, form, change):
