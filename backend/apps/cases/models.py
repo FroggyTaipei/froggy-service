@@ -171,7 +171,7 @@ class Case(Model):
             'content': first.content,
             'location': first.location,
         }
-        template = SendGridMailTemplate.objects.filter(name='收到案件通知').first()
+        template = SendGridMailTemplate.objects.filter(name='收件通知').first()
         SendGridMail.objects.create(case=self, template=template,
                                     from_email=settings.EMAIL_HOST_USER,
                                     to_email=first.email, data=data)
