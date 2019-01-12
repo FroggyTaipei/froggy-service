@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils import formats
 from django.db.models import (
     Model,
     CharField,
@@ -54,11 +55,10 @@ class Arrange(Model):
         ordering = ('order',)
 
     def __str__(self):
-        return f'{self.case.number}-{self.title}'
+        return f'{self.case.number()}-{self.title}'
 
-    @property
-    def arrange_date(self):
-        return self.arrange_time.strftime('%Y/%m/%d')
+    def format_arrange_time(self, format_='SHORT_DATETIME_FORMAT'):
+        return formats.date_format(self.arrange_time, format_)
 
     @property
     def published(self):
@@ -91,11 +91,11 @@ class Arrange(Model):
         origin = self.case.first_history
         template = SendGridMailTemplate.objects.filter(name='進度報告').first()
         data = {
-            'number': origin.number,
+            'number': origin.number(),
             'username': origin.username,
             'case_title': origin.title,
             'title': self.title,
-            'date': self.arrange_time.strftime(settings.DATE_FORMAT),
+            'datetime': self.format_arrange_time(),
             'content': self.email_content,
         }
         SendGridMail.objects.create(case=self.case, template=template,
