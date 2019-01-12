@@ -147,7 +147,7 @@ class TempFileTestCase(TestCase):
             temp2.save()
             self.assertEqual(True, False)
         except Exception as e:
-            self.assertEqual(str(e), "[ErrorDetail(string='Duplicate file', code='invalid')]")
+            self.assertEqual(str(e), "[ErrorDetail(string='{}', code='invalid')]".format(_('Duplicate file')))
 
 
 class CaseFileTestCase(TestCase):
@@ -188,7 +188,7 @@ class CaseFileTestCase(TestCase):
         案件成立時，將檔案從暫存bucket複製到案件bucket
         並將每個檔案關聯到案件，暫存bucket的檔案不會被刪除
         """
-        if not settings.USE_AWS_S3:
+        if settings.USE_AWS_S3 is False:
             return True
         for i in self.objs:
             file = TEMP_STORAGE._open(i.file.name)
