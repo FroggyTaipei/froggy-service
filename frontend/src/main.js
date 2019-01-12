@@ -5,19 +5,15 @@ import axios from 'axios'
 import VueAxios from 'vue-axios'
 import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
-
-Vue.use(VueAxios,axios)
 import App from '@/App.vue'
+import Vuelidate from 'vuelidate'
 import './registerServiceWorker'
 import 'bootstrap'
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-
-import 'axios'
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 Vue.use(VueAxios, axios)
+Vue.use(Vuelidate)
 
 Vue.config.productionTip = false
 
@@ -26,13 +22,26 @@ window.JQuery = require('jquery')
 
 // Sentry for logging frontend errors
 if (process.env.NODE_ENV === 'production') {
-  Vue.use(VueRaven, {dsn: process.env.VUE_APP_SENTRY_PUBLIC_DSN})
+  Vue.use(VueRaven, { dsn: process.env.VUE_APP_SENTRY_PUBLIC_DSN })
 }
 
 // more info: https://github.com/MatteoGabriele/vue-analytics
 Vue.use(VueAnalytics, {
   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
   router
+})
+
+Vue.filter('formatSize', function (size) {
+  if (size > 1024 * 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB'
+  } else if (size > 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
+  } else if (size > 1024 * 1024) {
+    return (size / 1024 / 1024).toFixed(2) + ' MB'
+  } else if (size > 1024) {
+    return (size / 1024).toFixed(2) + ' KB'
+  }
+  return size.toString() + ' B'
 })
 
 new Vue({
