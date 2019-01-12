@@ -54,3 +54,4 @@ django-fsm-admin==1.2.4
 sendgrid==5.6.0
 django-sendgrid-v5==0.7.0
 beautifulsoup4==4.7.1
+django-rest-swagger==2.2.0
