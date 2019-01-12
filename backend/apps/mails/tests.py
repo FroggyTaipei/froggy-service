@@ -24,14 +24,14 @@ class SendGridTestCase(TestCase):
     def test_send(self):
         instance = self.case
         data = {
-            'number': instance.number,
+            'number': instance.number(),
             'username': instance.username,
             'title': instance.title,
-            'date': instance.update_time.strftime('%Y/%m/%d'),
+            'datetime': instance.create_time(),
             'content': instance.content,
             'location': instance.location,
         }
-        template = SendGridMailTemplate.objects.filter(name='收到案件通知').first()
+        template = SendGridMailTemplate.objects.filter(name='收件通知').first()
 
         self.assertIsNotNone(template)
 

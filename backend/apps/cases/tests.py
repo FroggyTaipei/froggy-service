@@ -43,6 +43,10 @@ class CaseCrudTestCase(TestCase):
         self.assertEqual(Case.objects.count(), 1)
         self.assertEqual(CaseHistory.objects.count(), 1)
 
+    def test_model(self):
+        print(self.case.number())
+        self.assertIsNotNone(bool(self.case.number()))
+
     def test_transition(self):
         qs = CaseHistory.objects.filter(case=self.case)
 

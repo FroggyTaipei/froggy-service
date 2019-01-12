@@ -3,6 +3,7 @@ from django.utils.translation import ugettext_lazy as _
 from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.conf import settings
+from django.utils import formats
 from django.db.models.signals import post_save
 from django_fsm import FSMField, transition
 from apps.mails.models import SendGridMail, SendGridMailTemplate
@@ -109,6 +110,9 @@ class Case(Model):
     close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
+    disapprove_info = TextField(null=True, blank=True, verbose_name=_('Disapprove Info'))
+    close_info = TextField(null=True, blank=True, verbose_name=_('Close Info'))
+
     objects = CaseQuerySet.as_manager()
 
     class Meta:
@@ -120,15 +124,17 @@ class Case(Model):
         created = self.pk is None
         super(Case, self).save(*args, **kwargs)
         if created:
-            self.confirm()
+            self.confirm(template_name='收件確認')
 
     def __str__(self):
-        return self.number
+        return self.number()
 
     def to_dict(self):
         """回傳去除id、將Foreign key轉為實例的字典"""
         model_dict = model_to_dict(self)
         model_dict.pop('id')
+        model_dict.pop('disapprove_info')
+        model_dict.pop('close_info')
         # Foreign keys need to be instances via objects.create()
         model_dict['type'] = self.type
         model_dict['region'] = self.region
@@ -139,14 +145,22 @@ class Case(Model):
         """回傳最早的案件歷史，用於存取原始資料"""
         return self.case_histories.order_by('update_time').first()
 
-    @property
     def number(self):
-        return str(self.id).zfill(6) if self.id else '-'
+        return str(self.id).zfill(6) if self.pk else '-'
+    number.short_description = _('Case Number')
+
+    def create_time(self, format_='SHORT_DATETIME_FORMAT'):
+        return formats.date_format(self.first_history.update_time, format_)
+    create_time.short_description = _('Case Create Time')
 
     ########################################################
     # Transition Conditions
     # These must be defined prior to the actual transitions
     # to be reference.
+
+    def can_disapprove(self):
+        return bool(self.disapprove_info)
+    can_disapprove.hint = '填寫不受理資訊後方能設為不受理'
 
     def can_arrange(self):
         return self.case_histories.all().count() > 1
@@ -160,30 +174,43 @@ class Case(Model):
     ########################################################
     # Workflow (state) Transitions
 
-    def confirm(self):
+    def confirm(self, template_name):
         """寄送確認信"""
         first = self.first_history or self
         data = {
-            'number': first.number,
+            'number': first.number(),
             'username': first.username,
             'title': first.title,
-            'date': first.update_time.strftime(settings.DATE_FORMAT),
+            'datetime': self.create_time(),
             'content': first.content,
             'location': first.location,
         }
-        template = SendGridMailTemplate.objects.filter(name='收件通知').first()
+        template = SendGridMailTemplate.objects.filter(name=template_name).first()
         SendGridMail.objects.create(case=self, template=template,
                                     from_email=settings.EMAIL_HOST_USER,
                                     to_email=first.email, data=data)
 
-    @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED,
+    @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED, conditions=[can_disapprove],
                 custom={'button_name': '設為不受理'})
     def disapprove(self):
+        first = self.first_history or self
+        data = {
+            'number': first.number(),
+            'username': first.username,
+            'title': first.title,
+            'datetime': self.create_time(),
+            'content': self.disapprove_info,
+        }
+        template = SendGridMailTemplate.objects.filter(name='不受理通知').first()
+        SendGridMail.objects.create(case=self, template=template,
+                                    from_email=settings.EMAIL_HOST_USER,
+                                    to_email=first.email, data=data)
         self.close_time = timezone.now()
 
     @transition(field=state, source=State.DRAFT, target=State.ARRANGED, conditions=[can_arrange],
                 custom={'button_name': '設為處理中'})
     def arrange(self):
+        self.confirm(template_name='成案通知')
         self.open_time = timezone.now()
 
     @transition(field=state, source=State.ARRANGED, target=State.CLOSED, conditions=[can_close],
@@ -191,13 +218,13 @@ class Case(Model):
     def close(self):
         first = self.first_history or self
         data = {
-            'number': first.number,
+            'number': first.number(),
             'username': first.username,
             'case_title': first.title,
             'arranges': [
                 {
                     'title': arrange.title,
-                    'date': arrange.arrange_time.strftime(settings.DATE_FORMAT),
+                    'datetime': arrange.format_arrange_time(),
                     'content': arrange.email_content,
                 }
                 for arrange in self.arranges.all()
@@ -248,9 +275,8 @@ class CaseHistory(Model):
         verbose_name_plural = _('Case Histories')
         ordering = ('-update_time',)
 
-    @property
     def number(self):
-        return str(self.id).zfill(6) if self.id else '-'
+        self.case.number()
 
     def __str__(self):
-        return self.number
+        return self.case.number()

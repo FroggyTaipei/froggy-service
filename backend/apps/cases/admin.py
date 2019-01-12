@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm
+from django.db.models import Q
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
@@ -13,7 +14,7 @@ from suit.widgets import (
 )
 
 
-from apps.cases.models import Type, Case
+from apps.cases.models import Type, Case, CaseHistory
 from apps.arranges.models import Arrange
 
 
@@ -61,9 +62,14 @@ class CaseForm(ModelForm):
     class Meta:
         widgets = {
             'number': TextInput(attrs={'class': 'input-mini'}),
-            'content': AutosizedTextarea,
+            'title': TextInput(attrs={'class': 'input-xxlarge'}),
+            'content': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
+            'location': TextInput(attrs={'class': 'input-xlarge'}),
             'username': EnclosedInput(append='icon-user', attrs={'class': 'input-small'}),
-            'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-small'}),
+            'mobile': EnclosedInput(attrs={'class': 'input-small'}),
+            'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-medium'}),
+            'disapprove_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
+            'close_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
         }
 
 
@@ -72,7 +78,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     search_fields = ('id',)
     list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = ('type', 'region')
-    readonly_fields = ('number', 'state', 'open_time', 'close_time')
+    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
     list_select_related = True
 
     inlines = (ArrangeInline,)
@@ -80,28 +86,25 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     fieldsets = [
         (_('Case'), {
             'classes': ('suit-tab suit-tab-general',),
-            'description': _('Case open time and close time base on case state.'),
-            'fields': ['number', 'state', 'open_time', 'close_time'],
+            'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
+            'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
         }),
         (_('Information'), {
             'classes': ('suit-tab suit-tab-general',),
-            'description': _('Case Information'),
+            'description': '案件相關資訊',
             'fields': ['type', 'region', 'title', 'content', 'location'],
         }),
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
-            'description': _('Proposer Information'),
-            'fields': ['username', 'email', 'mobile', 'address'],
+            'description': '陳情人個人資訊',
+            'fields': ['username', 'mobile', 'email', 'address'],
+        }),
+        (_('Case Close Information'), {
+            'classes': ('suit-tab suit-tab-general',),
+            'description': '結案理由，案件設為不受理前須填寫',
+            'fields': ['disapprove_info', 'close_info'],
         }),
     ]
-
-    suit_form_tabs = (
-        ('general', _('General')),
-        ('arranges', _('Arranges')),
-        ('histories', _('Case Histories')),
-        ('sendgrid_mails', _('Mails')),
-        ('files', _('Files')),
-    )
 
     suit_form_includes = (
         ('case_history_list.html', '', 'histories'),
@@ -109,13 +112,52 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('files_list.html', '', 'files'),
     )
 
+    def get_form(self, request, obj=None, **kwargs):
+        self._obj = obj
+        return super(CaseAdmin, self).get_form(request, obj, **kwargs)
+
+    @property
+    def suit_form_tabs(self):
+        obj = self._obj
+        tabs = [
+            ('general', _('General')),
+        ]
+
+        if obj and obj.casefiles.count() > 0:
+            tabs.append(('files', _('Files')))
+
+        tabs.append(('histories', _('Case Histories')))
+
+        if obj and obj.state in ['arranged', 'closed']:
+            tabs.append(('arranges', _('Arranges')))
+
+        if obj and obj.sendgrid_mails.count() > 0:
+            tabs.append(('sendgrid_mails', _('Mails')))
+
+        return tabs
+
     def save_model(self, request, obj, form, change):
+        """於post_save時取得編輯者"""
         obj.user = request.user
         super().save_model(request, obj, form, change)
 
-    def number(self, obj):
-        return obj.number if obj.pk else '-'
-    number.short_description = _('Case Number')
+    def get_search_results(self, request, queryset, search_term):
+        """用CaseHistory搜尋"""
+        queryset, use_distinct = super(CaseAdmin, self).get_search_results(request, queryset, search_term)
+
+        if search_term:
+            histories = CaseHistory.objects.filter(
+                Q(location=search_term)
+                | Q(content=search_term)
+                | Q(title=search_term)
+                | Q(username=search_term)
+                | Q(mobile=search_term)
+                | Q(email=search_term),
+            )
+            histories_ids = histories.values_list('case__id', flat=True)
+            queryset = queryset.filter(id__in=[histories_ids])
+
+        return queryset, use_distinct
 
 
 admin.site.register(Case, CaseAdmin)

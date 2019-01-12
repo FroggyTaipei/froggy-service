@@ -6,8 +6,8 @@
 
 - model: mails.SendGridMailTemplate
   pk: 2
-  fields: d-e6b254d4a44d476688b7c5ce4d109c61
-    tid:
+  fields:
+    tid: d-e6b254d4a44d476688b7c5ce4d109c61
     name: 不受理通知
 
 - model: mails.SendGridMailTemplate
