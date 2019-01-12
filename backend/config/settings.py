@@ -37,6 +37,7 @@ THIRD_PARTY_APPS = [
     'storages',
     'suit_ckeditor',
     'fsm_admin',
+    'rest_framework_swagger',
 ]
 
 LOCAL_APPS = [
