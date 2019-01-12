@@ -56,7 +56,8 @@ node_modules
 .sass-cache
 
 # User-uploaded media
-media/*
+**/media/*
+!**/media/.gitkeep
 
 # Collected staticfiles
 */staticfiles/
