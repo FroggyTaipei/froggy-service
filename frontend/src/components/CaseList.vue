@@ -1,6 +1,4 @@
 <template lang="pug">
-//- 呈現案件編號、陳情日期、案件主旨(受編輯)、處理進度(受選擇)
-//- 有關地點(受編輯)、案件內容(受編輯)、處理內容(由團隊編輯)、結案日期(由團隊編輯)
 .container-fluid.section
   h1 呱吉做什麼
   span {{lorem}}
@@ -61,7 +59,7 @@
       li.page-item
         a.page-link(href='#') Next
   #people
-    v-server-table(url="https://35.185.163.66/api/cases/vuetable/data", :columns="columns", :options='options')
+    v-server-table(url="/api/cases/vuetable/data", :columns="columns", :options='options')
 </template>
 
 <script>
@@ -194,8 +192,6 @@ tbody>tr:hover
 .searchbar:hover > .search_icon
   background: #007bff
   transition: 0.4s linear
-<<<<<<< HEAD
-=======
 
 .VueTables__child-row-toggler 
     width: 16px
@@ -213,5 +209,4 @@ tbody>tr:hover
     content: "-"
 
 
->>>>>>> add dialogue animation and caselist vue-tables-2
 </style>
