@@ -12,9 +12,9 @@
     //- table.table.table-striped.col-sm-12
       thead
         tr
-          th(scope='col' class='text-center' @click="sortCases('id')") 案件編號
-          th.d-none.d-sm-table-cell(scope='col' @click="sortCases('username')") 陳情日期
-          th(scope='col' @click="sortCases('name')") 案件類別
+          th(scope='col' class='text-center' @click="sortCases('number')") 案件編號
+          th.d-none.d-sm-table-cell(scope='col' @click="sortCases('create_time')") 陳情日期
+          th(scope='col' @click="sortCases('type')") 案件類別
           th(scope='col') 案件主旨
           th.d-none.d-sm-table-cell(scope='col') 處理進度
       tbody
@@ -42,7 +42,7 @@
                   h5 處理內容(由團隊編輯)
                   span {{lorem}}
                   h5 結案日期(由團隊編輯)
-                  
+
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') 關閉
                   //- button.btn.btn-primary(type='button') Save changes
@@ -59,7 +59,7 @@
       li.page-item
         a.page-link(href='#') Next
   #people
-    v-server-table(url="/api/cases/vuetable/data", :columns="columns", :options='options')
+    v-server-table(url="/api/cases/vuetable/", :columns="columns", :options='options')
 </template>
 
 <script>
@@ -70,24 +70,18 @@ export default {
       info: {
         data: null
       },
-      sort: 'id',
+      sort: 'number',
       sortDir: 'asc',
       dataLoaded: false,
-      columns: ['number', 'date', 'title', 'content','location','type','state'],
+      columns: ['number', 'create_time', 'title', 'content', 'location', 'type', 'state'],
       tableData: [],
       options: {
         perPage:5,
         perPageValues:[5],
-        requestAdapter(data) {
-          return {
-            sort: data.orderBy ? data.orderBy : 'name',
-            direction: data.ascending ? 'asc' : 'desc'
-            }
-          },
         responseAdapter({data}) {
           return {
-            data,
-            count: data.length
+            data: data.data,
+            count: data.count,
           }
         },
         filterable: true,
@@ -119,7 +113,7 @@ export default {
     clickRow(){},
     sortCases: function(sortBy) {
       if(sortBy === this.sort){
-        this.sortDir = this.sortDir === 'asc'?'desc':'asc'
+        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
       }
       this.sort = sortBy
     },
@@ -158,7 +152,7 @@ tbody>tr:hover
   margin-bottom: auto
   margin-top: 50px
   height: 60px
-  background-color: #f4f4f4 
+  background-color: #f4f4f4
   border-radius: 30px
   padding: 10px
 
@@ -193,7 +187,7 @@ tbody>tr:hover
   background: #007bff
   transition: 0.4s linear
 
-.VueTables__child-row-toggler 
+.VueTables__child-row-toggler
     width: 16px
     height: 16px
     line-height: 20px
@@ -201,11 +195,11 @@ tbody>tr:hover
     margin: auto
     text-align: center
     background-color: yellow
- 
-.VueTables__child-row-toggler--closed::before 
+
+.VueTables__child-row-toggler--closed::before
     content: "+"
- 
-.VueTables__child-row-toggler--open::before 
+
+.VueTables__child-row-toggler--open::before
     content: "-"
 
 
