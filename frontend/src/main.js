@@ -32,10 +32,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // more info: https://github.com/MatteoGabriele/vue-analytics
-Vue.use(VueAnalytics, {
-  id: process.env.VUE_APP_GOOGLE_ANALYTICS,
-  router
-})
+// Vue.use(VueAnalytics, {
+//   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
+//   router
+// })
 
 Vue.filter('formatSize', function (size) {
   if (size > 1024 * 1024 * 1024 * 1024) {
