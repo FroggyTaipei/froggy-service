@@ -9,9 +9,15 @@ import App from '@/App.vue'
 import Vuelidate from 'vuelidate'
 import './registerServiceWorker'
 import 'bootstrap'
+import moment from 'moment'
+import {ServerTable, ClientTable, Event} from 'vue-tables-2'
+Vue.use(ServerTable, {}, false, 'bulma');
+
+Vue.prototype.$moment = moment
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+window.axios = require('axios');
 Vue.use(VueAxios, axios)
 Vue.use(Vuelidate)
 
@@ -26,10 +32,10 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // more info: https://github.com/MatteoGabriele/vue-analytics
-Vue.use(VueAnalytics, {
-  id: process.env.VUE_APP_GOOGLE_ANALYTICS,
-  router
-})
+// Vue.use(VueAnalytics, {
+//   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
+//   router
+// })
 
 Vue.filter('formatSize', function (size) {
   if (size > 1024 * 1024 * 1024 * 1024) {
@@ -47,6 +53,5 @@ Vue.filter('formatSize', function (size) {
 new Vue({
   router,
   store,
-
   render: h => h(App)
 }).$mount('#app')

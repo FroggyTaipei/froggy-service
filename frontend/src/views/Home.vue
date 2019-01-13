@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <Navbar></Navbar>
-    <Dialogue id="dialogue"></Dialogue>
+    <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
     <hr>
     <CaseList id="cases" :lorem="lorem"></CaseList>
     <hr>

@@ -2,8 +2,14 @@
 @import "./variables"
 @import "~bootstrap/scss/bootstrap"
 
+html,body
+  margin: auto
+  width: 100%
+
 .section
-  min-height: 100vh
+  min-height: 80vh
+  width: 100%
+  border: solid 1px red
 
 /* Add the below transitions to allow a smooth color change similar to lyft */
 nav
@@ -16,9 +22,6 @@ nav
   opacity: 0
   &.scrolled
     opacity: 1
-
-.section
-  padding-top: 80px
 
 hr
   background-color: black
