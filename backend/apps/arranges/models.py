@@ -55,7 +55,7 @@ class Arrange(Model):
         ordering = ('order',)
 
     def __str__(self):
-        return f'{self.case.number()}-{self.title}'
+        return f'{self.case.number}-{self.title}'
 
     def format_arrange_time(self, format_='SHORT_DATETIME_FORMAT'):
         return formats.date_format(self.arrange_time, format_)
@@ -91,7 +91,7 @@ class Arrange(Model):
         origin = self.case.first_history
         template = SendGridMailTemplate.objects.filter(name='進度報告').first()
         data = {
-            'number': origin.number(),
+            'number': self.case.number,
             'username': origin.username,
             'case_title': origin.title,
             'title': self.title,
