@@ -21,9 +21,12 @@
     "vue-axios": "^2.1.4",
     "vue-raven": "^1.0.0",
     "vue-router": "^3.0.1",
+<<<<<<< HEAD
     "vue-upload-component": "^2.8.18",
     "vuelidate": "^0.7.4",
+=======
     "vue-tables-2": "^1.4.70",
+>>>>>>> add dialogue animation and caselist vue-tables-2
     "vuex": "^3.0.1"
   },
   "devDependencies": {
