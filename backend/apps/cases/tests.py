@@ -36,16 +36,12 @@ class CaseCrudTestCase(TestCase):
         call_command('loaddata', 'type', verbosity=0)
         call_command('loaddata', 'case.test.yaml', verbosity=0)
 
-        self.case = Case.objects.first()
+        self.case = Case.objects.filter(state='draft').first()
         self.case_history = CaseHistory.objects.first()
 
     def test_set_up(self):
-        self.assertEqual(Case.objects.count(), 1)
-        self.assertEqual(CaseHistory.objects.count(), 1)
-
-    def test_model(self):
-        print(self.case.number())
-        self.assertIsNotNone(bool(self.case.number()))
+        self.assertTrue(Case.objects.count() > 0)
+        self.assertTrue(CaseHistory.objects.count() > 0)
 
     def test_transition(self):
         qs = CaseHistory.objects.filter(case=self.case)
@@ -88,18 +84,18 @@ class CaseCrudTestCase(TestCase):
 
     def test_case_update(self):
         # Update via instance
-        uuid = self.case.uuid
-        self.case.uuid = 'd80d004a-d5d9-4d62-aa92-7fd9ac4dbbc7'
+        title = self.case.title
+        self.case.title = 'new title'
         self.case.save()
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 2)
 
         # Update via Queryset
-        Case.objects.filter(id=self.case.id).update(uuid='9968b66c-3821-4148-995f-befcde57127a')
+        Case.objects.filter(id=self.case.id).update(title='new title 2')
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 3)
 
-        self.assertEqual(self.case.first_history.uuid, uuid)
+        self.assertEqual(self.case.first_history.title, title)
 
     def test_case_delete(self):
         self.case.delete()

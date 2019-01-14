@@ -7,172 +7,77 @@
     <h3 class="fs-subtitle">
       Fill in your credentials
     </h3>
-    <div
-      class="form-group row"
-      :class="{ 'form-group--error': $v.applicant.name.$error }">
+    <div class="form-row">
       <label
         for="name"
         class="col-sm-2 col-form-label">
         姓名
       </label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          name="name"
-          id="name"
-          placeholder="請輸入真實姓名"
-          v-model.trim="$v.applicant.name.$model">
-      </div>
-      <div v-if="$v.applicant.name.$error">
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.name.required">
-          Field is required
-        </div>
+      <input
+        type="text"
+        name="name"
+        id="name"
+        class="form-control col-sm-10"
+        placeholder="請輸入真實姓名"
+        v-validate="'required'"
+        v-model.trim="applicant.name">
+      <div class="col-sm-12 invalid-feedback">
+        {{ errors.first('name') }}
       </div>
     </div>
-    <div class="form-group row resident-checkbox">
-      <label
-        for="name"
-        class="col-sm-2 col-form-label">
-        身份別
-      </label>
-      <div class="form-inline col-sm-10">
-        <div class="form-inline col-sm-6">
-          <div class="form-check col-sm-4">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="residentCheck"
-              v-model="applicant.isResident">
-            <label
-              class="form-check-label"
-              for="residentCheck">
-              台北市民
-            </label>
-          </div>
-          <div class="col-sm-8">
-            <select
-              class="form-control"
-              v-model="applicant.district">
-              <option
-                disabled
-                value="">
-                Please select one
-              </option>
-              <option
-                v-for="(item, index) in districts"
-                :key="index">
-                {{ item }}
-              </option>
-            </select>
-          </div>
-        </div>
-        <div class="col-sm-6">
-          <div class="form-check">
-            <input
-              class="form-check-input"
-              type="checkbox"
-              id="nonResidentCheck"
-              v-model="applicant.isResident">
-            <label
-              class="form-check-label"
-              for="nonResidentCheck">
-              非台北市民
-            </label>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div
-      class="form-group row"
-      :class="{ 'form-group--error': $v.applicant.mobile.$error }">
+    <div class="form-row">
       <label
         for="mobile"
         class="col-sm-2 col-form-label">
         手機
       </label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          name="mobile"
-          id="mobile"
-          placeholder="請輸入手機號碼"
-          v-model.trim="$v.applicant.mobile.$model">
-      </div>
-      <div v-if="$v.applicant.mobile.$error">
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.mobile.required">
-          Field is required
-        </div>
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.mobile.numeric">
-          Please input numbers
-        </div>
+      <input
+        type="text"
+        name="mobile"
+        id="mobile"
+        class="form-control col-sm-10"
+        placeholder="請輸入手機號碼"
+        v-validate="{ required: true, regex: /^09\d{8}$/ }"
+        v-model.trim="applicant.mobile">
+      <div class="col-sm-12 invalid-feedback">
+        {{ errors.first('mobile') }}
       </div>
     </div>
-    <div
-      class="form-group row"
-      :class="{ 'form-group--error': $v.applicant.phone.$error }">
+    <div class="form-row">
       <label
         for="phone"
         class="col-sm-2 col-form-label">
         市話
       </label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          name="phone"
-          id="phone"
-          placeholder="請輸入市話號碼"
-          v-model.trim="$v.applicant.phone.$model">
-      </div>
-      <div v-if="$v.applicant.phone.$error">
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.phone.required">
-          Field is required
-        </div>
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.phone.numeric">
-          Please input numbers
-        </div>
-      </div>
+      <input
+        type="text"
+        name="phone"
+        id="phone"
+        class="form-control col-sm-10"
+        placeholder="請輸入市話號碼"
+        v-validate="'numeric'"
+        v-model.trim="applicant.phone">
     </div>
-    <div
-      class="form-group row"
-      :class="{ 'form-group--error': $v.applicant.email.$error }">
+    <div class="form-row">
       <label
-        for="mail"
+        for="email"
         class="col-sm-2 col-form-label">
         Email
       </label>
-      <div class="col-sm-10">
-        <input
-          type="text"
-          name="mail"
-          id="mail"
-          placeholder="請輸入電子郵件帳號"
-          v-model="$v.applicant.email.$model">
-      </div>
-      <div v-if="$v.applicant.email.$error">
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.email.required">
-          Field is required
-        </div>
-        <div
-          class="error col-sm-12"
-          v-if="!$v.applicant.email.email">
-          Please input valid email address
-        </div>
+      <input
+        type="text"
+        name="email"
+        id="email"
+        class="form-control col-sm-10"
+        placeholder="請輸入電子郵件帳號"
+        v-validate="'required|email'"
+        v-model.trim="applicant.email">
+      <div class="col-sm-12 invalid-feedback">
+        {{ errors.first('email') }}
       </div>
     </div>
     <div
-      class="form-group row">
+      class="form-row">
       <div
         class="col-sm-2">
         Checkbox
@@ -182,7 +87,8 @@
           <input
             class="form-check-input"
             type="checkbox"
-            id="agreementCheck">
+            id="agreementCheck"
+            v-model="agreement">
           <label
             class="form-check-label"
             for="agreementCheck">
@@ -190,13 +96,8 @@
           </label>
         </div>
       </div>
-      <div>
-        <div
-          class="error col-sm-12">
-          Field is required
-        </div>
-      </div>
     </div>
+
     <input
       type="button"
       name="previous"
@@ -209,31 +110,29 @@
       class="next action-button"
       value="submit"
       @click="submit">
+    <Modal
+      v-if="showAgreementPopup"
+      @close="showAgreementPopup = false">
+      <h2 slot="body">
+        請同意個人資料使用
+      </h2>
+    </Modal>
+    <Modal
+      v-if="caseCompletePopup"
+      @close="caseCompletePopup = false">
+      <h2 slot="body">
+        案件已送出
+      </h2>
+    </Modal>
   </fieldset>
 </template>
 
 <script>
-import { required, numeric, email } from 'vuelidate/lib/validators'
+import Modal from './Modal.vue'
 export default {
   name: 'InputUserInfo',
-  validations: {
-    applicant: {
-      name: {
-        required
-      },
-      mobile: {
-        required,
-        numeric
-      },
-      phone: {
-        required,
-        numeric
-      },
-      email: {
-        required,
-        email
-      }
-    }
+  components: {
+    Modal
   },
   props: {
     next: {
@@ -250,8 +149,12 @@ export default {
     }
   },
   data: () => ({
+    showAgreementPopup: false,
+    caseCompletePopup: false,
+    agreement: false,
+    isResidentCheck: '',
     applicant: {
-      isResident: true,
+      location: '',
       district: '',
       name: '',
       mobile: '',
@@ -264,15 +167,20 @@ export default {
   }),
   methods: {
     submit () {
-      console.log('submit!')
-      this.$v.$touch()
-
-      this.next()
-      if (this.$v.$invalid) {
-        console.log('form error')
-      } else {
-        console.log('form pass')
-      }
+      this.$validator.validateAll().then((result) => {
+        if (result) {
+          console.log('Form Submitted!')
+          if (!this.agreement) {
+            console.log('please check agreement')
+            this.showAgreementPopup = true
+          } else {
+            console.log('form pass')
+            this.caseCompletePopup = true
+          }
+          return
+        }
+        console.log('Correct them errors!')
+      })
     }
   }
 }

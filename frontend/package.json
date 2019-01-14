@@ -22,7 +22,7 @@
     "vue-raven": "^1.0.0",
     "vue-router": "^3.0.1",
     "vue-upload-component": "^2.8.18",
-    "vuelidate": "^0.7.4",
+    "vee-validate": "^2.1.5",
     "vue-tables-2": "^1.4.70",
     "vuex": "^3.0.1"
   },

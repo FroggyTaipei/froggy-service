@@ -97,6 +97,7 @@ class Case(Model):
     """
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES)
     uuid = UUIDField(default=uuid.uuid4, verbose_name=_('UUID'))
+    number = CharField(max_length=6, default='-', null=True, blank=True, verbose_name=_('Case Number'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='cases', verbose_name=_('User Region'))
     title = CharField(max_length=255, verbose_name=_('Case Title'))
@@ -108,6 +109,7 @@ class Case(Model):
     address = CharField(max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
     close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
+    create_time = DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name=_('Created Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     disapprove_info = TextField(null=True, blank=True, verbose_name=_('Disapprove Info'))
@@ -124,34 +126,42 @@ class Case(Model):
         created = self.pk is None
         super(Case, self).save(*args, **kwargs)
         if created:
+            self.number = str(self.pk).zfill(6)
+            self.save()
             self.confirm(template_name='收件確認')
 
     def __str__(self):
-        return self.number()
+        return self.number
 
     def to_dict(self):
-        """回傳去除id、將Foreign key轉為實例的字典"""
-        model_dict = model_to_dict(self)
-        model_dict.pop('id')
-        model_dict.pop('disapprove_info')
-        model_dict.pop('close_info')
-        # Foreign keys need to be instances via objects.create()
-        model_dict['type'] = self.type
-        model_dict['region'] = self.region
-        return model_dict
+        """用於新增CaseHistory"""
+        return {
+            'state': self.state,
+            'title': self.title,
+            'type': self.type,
+            'region': self.region,
+            'content': self.content,
+            'location': self.location,
+            'username': self.username,
+            'mobile': self.mobile,
+            'email': self.email,
+            'address': self.address,
+        }
 
     @property
     def first_history(self):
         """回傳最早的案件歷史，用於存取原始資料"""
-        return self.case_histories.order_by('update_time').first()
+        return self.case_histories.order_by('create_time').first()
 
-    def number(self):
-        return str(self.id).zfill(6) if self.pk else '-'
-    number.short_description = _('Case Number')
+    @property
+    def state_title(self):
+        for state, title in State.CHOICES:
+            if self.state == state:
+                return title
+        return ''
 
-    def create_time(self, format_='SHORT_DATETIME_FORMAT'):
-        return formats.date_format(self.first_history.update_time, format_)
-    create_time.short_description = _('Case Create Time')
+    def format_create_time(self, format_='SHORT_DATETIME_FORMAT'):
+        return formats.date_format(self.create_time, format_)
 
     ########################################################
     # Transition Conditions
@@ -178,10 +188,10 @@ class Case(Model):
         """寄送確認信"""
         first = self.first_history or self
         data = {
-            'number': first.number(),
+            'number': self.number,
             'username': first.username,
             'title': first.title,
-            'datetime': self.create_time(),
+            'datetime': self.create_time,
             'content': first.content,
             'location': first.location,
         }
@@ -195,10 +205,10 @@ class Case(Model):
     def disapprove(self):
         first = self.first_history or self
         data = {
-            'number': first.number(),
+            'number': self.number,
             'username': first.username,
             'title': first.title,
-            'datetime': self.create_time(),
+            'datetime': self.create_time,
             'content': self.disapprove_info,
         }
         template = SendGridMailTemplate.objects.filter(name='不受理通知').first()
@@ -218,7 +228,7 @@ class Case(Model):
     def close(self):
         first = self.first_history or self
         data = {
-            'number': first.number(),
+            'number': self.number,
             'username': first.username,
             'case_title': first.title,
             'arranges': [
@@ -256,7 +266,6 @@ class CaseHistory(Model):
                         verbose_name=_('Editor'))
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case'))
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES, protected=True)
-    uuid = UUIDField(verbose_name=_('UUID'))
     title = CharField(max_length=255, verbose_name=_('Case Title'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='case_histories', verbose_name=_('User Region'))
@@ -266,17 +275,16 @@ class CaseHistory(Model):
     mobile = CharField(max_length=10, verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
     address = CharField(max_length=255, verbose_name=_('Address'))
-    open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
-    close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
-    update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
+    create_time = DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))
 
     class Meta:
         verbose_name = _('Case History')
         verbose_name_plural = _('Case Histories')
-        ordering = ('-update_time',)
+        ordering = ('-create_time',)
 
+    @property
     def number(self):
-        self.case.number()
+        self.case.number
 
     def __str__(self):
-        return self.case.number()
+        return self.case.number

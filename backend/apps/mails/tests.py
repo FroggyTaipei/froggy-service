@@ -24,10 +24,10 @@ class SendGridTestCase(TestCase):
     def test_send(self):
         instance = self.case
         data = {
-            'number': instance.number(),
+            'number': instance.number,
             'username': instance.username,
             'title': instance.title,
-            'datetime': instance.create_time(),
+            'datetime': instance.create_time,
             'content': instance.content,
             'location': instance.location,
         }
