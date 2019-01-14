@@ -1,5 +1,7 @@
 <template>
   <div class="container panel">
+
+    <button type="button" class="btn btn-light input-close" @click="close">X</button>
     <!-- MultiStep Form -->
     <div class="row">
       <div class="col-md-12 col-md-offset-6">
@@ -17,12 +19,6 @@
           <!-- fieldsets -->
           <!-- Page one -->
           <fieldset v-show="step == 0">
-            <h2 class="fs-title">
-              Personal Details
-            </h2>
-            <h3 class="fs-subtitle">
-              Tell us something more about you
-            </h3>
             <div class="container">
               <div class="row">
                 <div
@@ -41,41 +37,62 @@
           </fieldset>
           <!-- Page two -->
           <fieldset v-show="step == 1">
-            <h2 class="fs-title">
-              Social Profiles
-            </h2>
-            <h3 class="fs-subtitle">
-              Your presence on the social network
-            </h3>
-            <div class="form-inline row">
+            <div class="form-row">
               <label
                 for="caseSubject"
                 class="col-sm-2 col-form-label">
                 案件主旨
               </label>
-              <div class="col-sm-10">
-                <input
-                  type="text"
-                  name="caseSubject"
-                  id="caseSubject"
-                  placeholder="請輸入案件主旨">
-              </div>
+              <input
+                type="text"
+                name="caseSubject"
+                id="caseSubject"
+                class="col-sm-10"
+                placeholder="請輸入案件主旨">
             </div>
-            <div class="form-inline row">
+            <div class="form-row">
               <label
                 for="caseContent"
                 class="col-sm-2 col-form-label">
                 案件內容
               </label>
-              <div class="col-sm-10">
-                <textarea
-                  class="form-control"
-                  rows="5"
-                  id="caseContent"
-                  placeholder="請輸入案件內容" />
+              <textarea
+                rows="5"
+                id="caseContent"
+                class="form-control col-sm-10"
+                placeholder="請輸入案件內容" />
+            </div>
+            <div class="form-row">
+              <label
+                for="location"
+                class="col-sm-2 col-form-label">
+                地點
+              </label>
+              <div class="col-sm-4">
+                <select
+                  class="form-control col-sm-12">
+                  <option
+                    disabled
+                    value="">
+                    行政區
+                  </option>
+                  <option
+                    v-for="(item, index) in regions"
+                    :key="index">
+                    {{ item.name }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-sm-6">
+                <input
+                  type="text"
+                  name="location"
+                  id="location"
+                  class="col-sm-12"
+                  placeholder="e.g. 信義路三段">
               </div>
             </div>
-            <div class="form-group row">
+            <div class="form-row">
                 <label
                   for="fileUpload"
                   class="col-sm-2 col-form-label">
@@ -143,6 +160,14 @@ export default {
   name: 'InputDialog',
   components: {
     InputUserInfo
+  },
+  props: {
+    close: {
+      type: Function,
+      default: () => {
+        console.log('close it')
+      }
+    }
   },
   data: () => ({
     step: 0,
@@ -290,6 +315,13 @@ body {
 }
 
 /*buttons*/
+
+.container .input-close {
+    position: absolute;
+    z-index: 999;
+    right: 20px;
+}
+
 #msform .action-button {
     width: 100px;
     background: #ee0979;

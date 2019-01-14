@@ -18,7 +18,7 @@
         name="name"
         id="name"
         class="form-control col-sm-10"
-        placeholder="請輸入真實姓名"
+        placeholder="e.g. 邱威傑"
         v-validate="'required'"
         v-model.trim="applicant.name">
       <div class="col-sm-12 invalid-feedback">
@@ -36,7 +36,7 @@
         name="mobile"
         id="mobile"
         class="form-control col-sm-10"
-        placeholder="請輸入手機號碼"
+        placeholder="e.g. 0912345678"
         v-validate="{ required: true, regex: /^09\d{8}$/ }"
         v-model.trim="applicant.mobile">
       <div class="col-sm-12 invalid-feedback">
@@ -54,9 +54,23 @@
         name="phone"
         id="phone"
         class="form-control col-sm-10"
-        placeholder="請輸入市話號碼"
+        placeholder="e.g. 021234567(選填)"
         v-validate="'numeric'"
         v-model.trim="applicant.phone">
+    </div>
+    <div class="form-row">
+      <label
+        for="address"
+        class="col-sm-2 col-form-label">
+        市話
+      </label>
+      <input
+        type="text"
+        name="address"
+        id="address"
+        class="form-control col-sm-10"
+        placeholder="e.g. 臺北市中正區黎明里北平西路3號"
+        v-model.trim="applicant.address">
     </div>
     <div class="form-row">
       <label
@@ -69,7 +83,7 @@
         name="email"
         id="email"
         class="form-control col-sm-10"
-        placeholder="請輸入電子郵件帳號"
+        placeholder="e.g. froggy@froggy.com"
         v-validate="'required|email'"
         v-model.trim="applicant.email">
       <div class="col-sm-12 invalid-feedback">
@@ -159,11 +173,9 @@ export default {
       name: '',
       mobile: '',
       phone: '',
-      email: ''
-    },
-    districts: [
-      '松山區', '信義區', '士林區', '北投區', '內湖區', '文山區', '中山區', '大同區', '中正區', '萬華區', '南港區', '大安區'
-    ]
+      email: '',
+      address: ''
+    }
   }),
   methods: {
     submit () {
