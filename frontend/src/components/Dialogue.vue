@@ -4,6 +4,8 @@
   .row.justify-content-center.align-items-end
     div(:class="{'col-sm-8':!showInput,'col-sm-3':showInput, 'froggyImage': !showInput, 'froggyImage-input':showInput}")
       img.img-fluid(:src="froggyImageUrl")
+    button.btn.toggleInputBtn.btn-danger.btn-lg(v-show="showInput" @click="showInput = !showInput") Close Input
+    InputDialog(v-show="showInput")
     .col-sm-10.conversation(v-show="!showInput")
       .row
         .name 邱威傑：
@@ -16,12 +18,14 @@
             .text(:class="{selected: isFroggyDoing}" @click="clickOption('froggyDoing')") 呱吉做什麼
         .col-sm-2.align-self-end.buttonWrapper
           button.btn.btn-lg.btn-success.goButton(@click="dialogAction") GO
-  button.btn.toggleInputBtn.btn-danger.btn-lg(v-show="showInput" @click="showInput = !showInput") Close Input
+  
 </template>
 
 <script>
+import InputDialog from '@/components/InputDialog.vue'
 export default {
   name: 'Dialogue',
+  components: {InputDialog},
   data: function(){
     return{
       imageStorageUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/',
@@ -42,7 +46,7 @@ export default {
       ],
       isFindFroggy: false,
       isFroggyDoing: false,
-      showInput: false,
+      showInput: true,
     }
   },
   methods:{
@@ -82,7 +86,6 @@ export default {
       }
     },
     toggleInput: function(){
-      console.log('hey')
       this.showInput = !this.showInput
     }
   },
@@ -92,19 +95,15 @@ export default {
       let hour = now.getHours()
       switch(true){
         case (this.dialogue[0].showTime[0] <= hour && hour < this.dialogue[0].showTime[1]):
-          console.log('a')
           return 0
           break
         case (this.dialogue[1].showTime[0] <= hour && hour < this.dialogue[1].showTime[1]):
-          console.log('b')
           return 1
           break
         case (this.dialogue[2].showTime[0] <= hour || hour < this.dialogue[2].showTime[1]):
-          console.log('c')
           return 2
           break
         default:
-          console.log('d')
           break
       }
     },
@@ -117,14 +116,13 @@ export default {
 </script>
 
 <style lang="sass" scoped>
-
 .section
   position: relative
   height: 100vh
 .section:after
   content: ""
   display: block
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/background.jpg')
+  background-image: url('https://i.cdn.turner.com/adultswim/big/img/2018/12/04/whiteTiles.jpg')
   position: absolute
   top: 0
   left: 0
@@ -134,7 +132,11 @@ export default {
   z-index: -1
   filter: blur(3px)
 
+InputDialog
+  z-index: 0
+
 .froggyImage
+  z-index: 1
   position: relative
   height: 100%
   left: 0px
@@ -142,6 +144,7 @@ export default {
   transition:  2s
   pointer-events: none
 .froggyImage-input
+  z-index: 1
   position: absolute
   left: 0
   bottom: 0
@@ -151,6 +154,7 @@ export default {
   margin-top: 50px
 
 .conversation
+  z-index: 2
   width: 100%
   position: absolute
   top: 50vh
