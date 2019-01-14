@@ -14,7 +14,7 @@ from suit.widgets import (
 )
 
 
-from apps.cases.models import Type, Case, CaseHistory
+from apps.cases.models import Case, CaseHistory
 from apps.arranges.models import Arrange
 
 
@@ -142,23 +142,27 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         super().save_model(request, obj, form, change)
 
     def get_search_results(self, request, queryset, search_term):
-        """用CaseHistory搜尋"""
+        """加入CaseHistory搜尋"""
         queryset, use_distinct = super(CaseAdmin, self).get_search_results(request, queryset, search_term)
 
         if search_term:
             histories = CaseHistory.objects.filter(
-                Q(location=search_term)
-                | Q(content=search_term)
-                | Q(title=search_term)
-                | Q(username=search_term)
-                | Q(mobile=search_term)
-                | Q(email=search_term),
+                Q(location__icontains=search_term)
+                | Q(content__icontains=search_term)
+                | Q(title__icontains=search_term)
+                | Q(username__icontains=search_term)
+                | Q(mobile__icontains=search_term)
+                | Q(email__icontains=search_term),
             )
             histories_ids = histories.values_list('case__id', flat=True)
-            queryset = queryset.filter(id__in=[histories_ids])
+            queryset = queryset.filter(
+                Q(id__in=[histories_ids])
+                | Q(number__icontains=search_term)
+                | Q(disapprove_info__icontains=search_term)
+                | Q(close_info__icontains=search_term),
+            )
 
         return queryset, use_distinct
 
 
 admin.site.register(Case, CaseAdmin)
-admin.site.register(Type)
