@@ -131,24 +131,6 @@
             :next="next"
             :previous="previous" />
         </div>
-        <!-- Page four -->
-        <fieldset v-show="step == 3">
-          <h2 class="fs-title">
-            電話驗證
-          </h2>
-          <h3 class="fs-subtitle">
-            verification
-          </h3>
-          <div class="form-group row">
-            <Full/>
-          </div>
-          <input
-            type="button"
-            name="previous"
-            class="previous action-button-previous"
-            value="Previous"
-            @click="previous">
-        </fieldset>
       </div>
     </div>
     <!-- /.MultiStep Form -->
@@ -157,12 +139,10 @@
 
 <script>
 import InputUserInfo from './InputUserInfo.vue'
-import Full from './Full.vue'
 export default {
   name: 'InputDialog',
   components: {
-    InputUserInfo,
-    Full
+    InputUserInfo
   },
   data: () => ({
     step: 0,
@@ -171,8 +151,7 @@ export default {
     steps: [
       { step: 0, text: '選擇案件分類', active: true, complete: false },
       { step: 1, text: '輸入案件內容', active: false, complete: false },
-      { step: 2, text: '輸入個人資料', active: false, complete: false },
-      { step: 3, text: '案件送出', active: false, complete: false }
+      { step: 2, text: '輸入個人資料', active: false, complete: false }
     ],
     categories: [
       { index: 0, text: '交通運輸', color: '#FD8D95' },
@@ -377,7 +356,7 @@ body {
     color: black;
     text-transform: uppercase;
     font-size: 9px;
-    width: 25%;
+    width: 33%;
     float: left;
     position: relative;
     letter-spacing: 1px;
