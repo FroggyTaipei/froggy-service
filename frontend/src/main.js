@@ -6,12 +6,13 @@ import VueAxios from 'vue-axios'
 import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import App from '@/App.vue'
-import Vuelidate from 'vuelidate'
+import VeeValidate from 'vee-validate'
 import './registerServiceWorker'
 import 'bootstrap'
 import moment from 'moment'
 import {ServerTable, ClientTable, Event} from 'vue-tables-2'
-Vue.use(ServerTable, {}, false, 'bulma');
+
+Vue.use(ServerTable, {}, false, 'bulma')
 
 Vue.prototype.$moment = moment
 
@@ -19,7 +20,14 @@ axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 window.axios = require('axios');
 Vue.use(VueAxios, axios)
-Vue.use(Vuelidate)
+Vue.use(VeeValidate, {
+  locale: 'zh-TW',
+  classes: true,
+  classNames: {
+    valid: 'is-valid',
+    invalid: 'is-invalid'
+  }
+})
 
 Vue.config.productionTip = false
 
