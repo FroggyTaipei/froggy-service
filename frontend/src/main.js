@@ -10,7 +10,7 @@ import VeeValidate from 'vee-validate'
 import './registerServiceWorker'
 import 'bootstrap'
 import moment from 'moment'
-import {ServerTable, ClientTable, Event} from 'vue-tables-2'
+import { ServerTable, ClientTable, Event } from 'vue-tables-2'
 
 Vue.use(ServerTable, {}, false, 'bulma')
 
@@ -18,7 +18,7 @@ Vue.prototype.$moment = moment
 
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-window.axios = require('axios');
+window.axios = require('axios')
 Vue.use(VueAxios, axios)
 Vue.use(VeeValidate, {
   locale: 'zh-TW',
