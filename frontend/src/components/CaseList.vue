@@ -42,7 +42,6 @@
                   h5 處理內容(由團隊編輯)
                   span {{lorem}}
                   h5 結案日期(由團隊編輯)
-
                 .modal-footer
                   button.btn.btn-secondary(type='button', data-dismiss='modal') 關閉
                   //- button.btn.btn-primary(type='button') Save changes

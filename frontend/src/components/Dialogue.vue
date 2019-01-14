@@ -1,13 +1,13 @@
 <template lang="pug">
 .container.section
-  .row.vertical-center.justify-content-center
-    .col-sm-8
+  //- .row.vertical-center.justify-content-center
+  .row.justify-content-center.align-items-end
+    div(:class="{'col-sm-8':!showInput,'col-sm-3':showInput, 'froggyImage': !showInput, 'froggyImage-input':showInput}")
       img.img-fluid(:src="froggyImageUrl")
-    .col-sm-10.conversation
+    .col-sm-10.conversation(v-show="!showInput")
       .row
         .name 邱威傑：
-        span {{dialogue[0].textContent[0]}}
-        span {{dialogue[0].textContent[1]}}
+        span {{dialogue[sceneCount].textContent[0]}}
       .row.justify-content-center
         .options.col-sm-4
           .row.justify-content-center
@@ -15,7 +15,8 @@
           .row.justify-content-center
             .text(:class="{selected: isFroggyDoing}" @click="clickOption('froggyDoing')") 呱吉做什麼
         .col-sm-2.align-self-end.buttonWrapper
-          button.btn.btn-lg.btn-success.goButton GO
+          button.btn.btn-lg.btn-success.goButton(@click="dialogAction") GO
+  button.btn.toggleInputBtn.btn-danger.btn-lg(v-show="showInput" @click="showInput = !showInput") Close Input
 </template>
 
 <script>
@@ -40,7 +41,8 @@ export default {
         },
       ],
       isFindFroggy: false,
-      isFroggyDoing: false
+      isFroggyDoing: false,
+      showInput: false,
     }
   },
   methods:{
@@ -64,27 +66,50 @@ export default {
             this.isFroggyDoing = !this.isFroggyDoing
           }
       }
+    },
+    dialogAction: function(){
+      if(this.isFindFroggy){
+        this.isFindFroggy = false
+        this.showInput = true
+      }else if(this.isFroggyDoing){
+        this.isFroggyDoing = false
+        this.showInput = false
+        var element = document.getElementById("cases");
+        var top = element.offsetTop;
+        window.scrollTo(0, top-50);
+      }else{
+        console.log('no action')
+      }
+    },
+    toggleInput: function(){
+      console.log('hey')
+      this.showInput = !this.showInput
     }
   },
   computed:{
-    froggyImageUrl: function(){
+    sceneCount: function(){
       let now = new Date()
       let hour = now.getHours()
-      var froggyUrl = null
       switch(true){
         case (this.dialogue[0].showTime[0] <= hour && hour < this.dialogue[0].showTime[1]):
-          froggyUrl = this.imageStorageUrl + this.dialogue[0].froggyImage[0]
+          console.log('a')
+          return 0
           break
         case (this.dialogue[1].showTime[0] <= hour && hour < this.dialogue[1].showTime[1]):
-          froggyUrl = this.imageStorageUrl + this.dialogue[1].froggyImage[0]
+          console.log('b')
+          return 1
           break
         case (this.dialogue[2].showTime[0] <= hour || hour < this.dialogue[2].showTime[1]):
-          froggyUrl = this.imageStorageUrl + this.dialogue[2].froggyImage[0]
+          console.log('c')
+          return 2
           break
         default:
+          console.log('d')
           break
       }
-      return froggyUrl;
+    },
+    froggyImageUrl: function(){
+      return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
     }
   },
   props: ['lorem']
@@ -92,8 +117,10 @@ export default {
 </script>
 
 <style lang="sass" scoped>
+
 .section
   position: relative
+  height: 100vh
 .section:after
   content: ""
   display: block
@@ -107,9 +134,26 @@ export default {
   z-index: -1
   filter: blur(3px)
 
+.froggyImage
+  position: relative
+  height: 100%
+  left: 0px
+  bottom: 0
+  transition:  2s
+  pointer-events: none
+.froggyImage-input
+  position: absolute
+  left: 0
+  bottom: 0
+  transition: 2s
+  pointer-events: none
+.toggleInputBtn
+  margin-top: 50px
+
 .conversation
   width: 100%
-  margin-top: -40%
+  position: absolute
+  top: 50vh
   padding: 30px
   border-radius: 10px
   // color: black
