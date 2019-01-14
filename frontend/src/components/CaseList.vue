@@ -59,7 +59,7 @@
       li.page-item
         a.page-link(href='#') Next
   #people
-    v-server-table(url="/api/cases/vuetable/data", :columns="columns", :options='options')
+    //- v-server-table(url="/api/cases/vuetable/", :columns="columns", :options='options')
 </template>
 
 <script>
