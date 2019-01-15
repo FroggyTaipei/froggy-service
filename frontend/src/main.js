@@ -13,8 +13,11 @@ import 'bootstrap'
 import moment from 'moment'
 import { ServerTable, ClientTable, Event } from 'vue-tables-2'
 
+<<<<<<< Updated upstream
 Vue.use(UUID)
 
+=======
+>>>>>>> Stashed changes
 Vue.use(ServerTable, {}, false, 'bootstrap4')
 
 Vue.prototype.$moment = moment
