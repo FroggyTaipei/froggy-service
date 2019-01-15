@@ -57,24 +57,43 @@
         a.page-link(href='#') 3
       li.page-item
         a.page-link(href='#') Next
-  #people
+  #caseTable
+    //- v-server-table(url="http://localhost:3000/datas", :columns="columns", :options='options')
     v-server-table(url="/api/cases/vuetable/", :columns="columns", :options='options')
+      a(slot="create_time" slot-scope="props" @click="toggleModal(props.row)") {{props.row.date}}
+  
+  //- button#show-modal(@click='showModal = true') Show Modal
+  modal(v-if='showModal', @close='showModal = false' :caseInfo="selectedCaseInfo")
+    h3(slot='header') custom header
 </template>
 
 <script>
+import Modal from './Modal.vue'
+
 export default {
   name: 'CaseList',
+  components: {Modal},
   data(){
     return {
-      info: {
-        data: null
-      },
+      clickdata: null,
+      showModal: false,
+      selectedCaseInfo : null,
       sort: 'number',
       sortDir: 'asc',
-      dataLoaded: false,
-      columns: ['number', 'create_time', 'title', 'content', 'location', 'type', 'state'],
-      tableData: [],
+      columns: ['number', 'create_time','type', 'title', 'state'],
       options: {
+        onRowClick: function(row){
+          this.clickdata = row
+        },
+        headings: {
+          number: "案件編號",
+          create_time: "陳情日期",
+          title: "案件主旨",
+          content: "案件內容",
+          location: "地點",
+          type: "案件類別",
+          state: "處理進度"
+        },
         perPage:5,
         perPageValues:[5],
         responseAdapter({data}) {
@@ -83,56 +102,29 @@ export default {
             count: data.count,
           }
         },
-        filterable: true,
-        customFilters: [
-          {
-            name:'alphabet',
-            callback: function(row, query) {
-              return row.name[0] == query;
-              }
-          }
-        ]
-        // templates: {
-        //   created_at(h, row) {
-        //     return this.formatDate(row.created_at);
-        //   },
-        //   updated_at(h, row) {
-        //     return this.formatDate(row.updated_at);
-        //   },
-        //   pushed_at(h, row) {
-        //     return this.formatDate(row.pushed_at);
-        //   }
-        // }
+        filterable: false,
+        customFilters: [],
+        // columnsClasses:{'number':'bgy'},
+        pagination: { nav: 'fixed' },
+        templates:{
+          edit: (h, row) => {
+            return <button on-click={ () => this.showItem(row) } class="btn btn-primary btn-sm"><i class="glyphicon glyphicon-edit"></i></button>
+            }
+        },
       }
     }
   },
   mounted(){},
   methods:{
-    clickBtn(){},
-    clickRow(){},
-    sortCases: function(sortBy) {
-      if(sortBy === this.sort){
-        this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
-      }
-      this.sort = sortBy
+    clickCase: function(a){
+      console.log('case number: ' + a)
     },
-    formatDate: function(date) {
-      return moment(date).format('DD-MM-YYYY HH:mm:ss');
+    toggleModal: function(caseInfo){
+      this.showModal= true
+      this.selectedCaseInfo = caseInfo
     }
   },
-  computed:{
-    sortedCases: function(){
-      if(this.dataLoaded){
-        return this.info.data.sort((a,b)=>{
-          let modifier = 1
-          if(this.sortDir === 'desc') modifier = -1
-          if(a[this.sort] < b[this.sort]) return -1 * modifier
-          if(a[this.sort] > b[this.sort]) return 1 * modifier
-          return 0
-        })
-      }
-    }
-  },
+  computed:{},
   props:['lorem']
 }
 </script>
@@ -186,20 +178,67 @@ tbody>tr:hover
   background: #007bff
   transition: 0.4s linear
 
-.VueTables__child-row-toggler
-    width: 16px
-    height: 16px
-    line-height: 20px
-    display: block
-    margin: auto
-    text-align: center
-    background-color: yellow
+.modal-mask 
+  position: fixed
+  z-index: 9998
+  top: 0
+  left: 0
+  width: 100%
+  height: 100%
+  background-color: rgba(0, 0, 0, .5)
+  display: table
+  transition: opacity .3s ease
 
-.VueTables__child-row-toggler--closed::before
-    content: "+"
 
-.VueTables__child-row-toggler--open::before
-    content: "-"
+.modal-wrapper 
+  display: table-cell
+  vertical-align: middle
 
+
+.modal-container 
+  width: 300px
+  margin: 0px auto
+  padding: 20px 30px
+  background-color: #fff
+  border-radius: 2px
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .33)
+  transition: all .3s ease
+  font-family: Helvetica, Arial, sans-serif
+
+
+.modal-header h3 
+  margin-top: 0
+  color: #42b983
+
+
+.modal-body 
+  margin: 20px 0
+
+
+.modal-default-button 
+  float: right
+
+
+/*
+ * The following styles are auto-applied to elements with
+ * transition="modal" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the modal transition by editing
+ * these styles.
+ */
+
+.modal-enter 
+  opacity: 0
+
+
+.modal-leave-active 
+  opacity: 0
+
+
+.modal-enter .modal-container,
+.modal-leave-active .modal-container 
+  -webkit-transform: scale(1.1)
+  transform: scale(1.1)
 
 </style>

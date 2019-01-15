@@ -35,4 +35,16 @@ export default {
 *
   // border: solid 1px
 
+
+/* Add the below transitions to allow a smooth color change similar to lyft */
+.nav-menu
+  background-color: $white
+  -webkit-transition: all 0.6s ease-out
+  -moz-transition: all 0.6s ease-out
+  -o-transition: all 0.6s ease-out
+  -ms-transition: all 0.6s ease-out
+  transition: all 0.6s ease-out
+  opacity: 0
+  &.scrolled
+    opacity: 1
 </style>
