@@ -3,6 +3,7 @@ import store from '@/store'
 import router from '@/router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import UUID from 'vue-uuid'
 import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import App from '@/App.vue'
@@ -11,6 +12,8 @@ import './registerServiceWorker'
 import 'bootstrap'
 import moment from 'moment'
 import { ServerTable, ClientTable, Event } from 'vue-tables-2'
+
+Vue.use(UUID)
 
 Vue.use(ServerTable, {}, false, 'bulma')
 

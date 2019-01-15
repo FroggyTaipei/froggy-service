@@ -1,7 +1,7 @@
 <template>
   <div class="container panel">
 
-    <button type="button" class="btn btn-light input-close" @click="close">X</button>
+    <button type="button" class="btn btn-light input-close" @click="closeInput">X</button>
     <!-- MultiStep Form -->
     <div class="row">
       <div class="col-md-12 col-md-offset-6">
@@ -22,131 +22,30 @@
             <div class="container">
               <div class="row">
                 <div
-                  v-for="item in categories"
+                  v-for="item in $store.state.types"
                   :key="item.index"
                   class="col-md-3"
-                  @click="selectCaseType(item.text)">
+                  @click="selectCaseType(item.id)">
                   <div
                     class="col-md-12 categories-item"
-                    :style="{ 'background-color': item.color }">
-                    {{ item.text }}
+                    :style="{ 'background-color': categories[item.id-1].color }">
+                    {{ item.name }}
                   </div>
                 </div>
               </div>
             </div>
           </fieldset>
           <!-- Page two -->
-          <fieldset v-show="step == 1">
-            <div class="form-row">
-              <label
-                for="caseSubject"
-                class="col-sm-2 col-form-label">
-                案件主旨
-              </label>
-              <input
-                type="text"
-                name="caseSubject"
-                id="caseSubject"
-                class="col-sm-10"
-                placeholder="請輸入案件主旨">
-            </div>
-            <div class="form-row">
-              <label
-                for="caseContent"
-                class="col-sm-2 col-form-label">
-                案件內容
-              </label>
-              <textarea
-                rows="5"
-                id="caseContent"
-                class="form-control col-sm-10"
-                placeholder="請輸入案件內容" />
-            </div>
-            <div class="form-row">
-              <label
-                for="location"
-                class="col-sm-2 col-form-label">
-                地點
-              </label>
-              <div class="col-sm-4">
-                <select
-                  class="form-control col-sm-12">
-                  <option
-                    disabled
-                    value="">
-                    行政區
-                  </option>
-                  <option
-                    v-for="(item, index) in regions"
-                    :key="index">
-                    {{ item.name }}
-                  </option>
-                </select>
-              </div>
-              <div class="col-sm-6">
-                <input
-                  type="text"
-                  name="location"
-                  id="location"
-                  class="col-sm-12"
-                  placeholder="e.g. 信義路三段">
-              </div>
-            </div>
-            <div class="form-row">
-                <label
-                  for="fileUpload"
-                  class="col-sm-2 col-form-label">
-                  上傳附件
-                </label>
-                <div class="custom-file col-sm-10">
-                  <input
-                    ref="file"
-                    type="file"
-                    class="custom-file-input input-style"
-                    id="fileUpload">
-                  <label
-                    class="custom-file-label"
-                    for="fileUpload" />
-                </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-10  offset-md-2 file">
-                  <button type="button" class="btn btn-primary">
-                    Notifications <span class="badge">Ｘ</span>
-                  </button>
-              </div>
-              <div class="col-md-10  offset-md-2 file">
-                  <button type="button" class="btn btn-primary">
-                    Notifications <span class="badge">Ｘ</span>
-                  </button>
-              </div>
-
-              <div class="col-md-12">
-                <small
-                  id="fileUploadHelpBlock"
-                  class="form-text text-muted">
-                  1.上傳總容量限制為40MB，最多10個檔案，附檔檔名請使用半形中英數字命名。2.可上傳的檔案類型為 jpg, jpeg, gif, bmp, png, tif, tiff, doc, docx, xls, xlsx, txt, rtf, ppt, pptx, pdf, odf, odg, odp, ods, odt, mpg, mpeg, avi, wmv, rm, mov, mkv, dat, 3gp, mp3, mp4, m4v, wav, zip, rar, 7z。
-                </small>
-              </div>
-            </div>
-            <input
-              type="button"
-              name="previous"
-              class="previous action-button-previous"
-              value="Previous"
-              @click="previous">
-            <input
-              type="button"
-              name="next"
-              class="next action-button"
-              value="Next"
-              @click="next">
-          </fieldset>
+          <InputCase
+            v-show="step == 1"
+            @next="next"
+            @previous="previous"
+            :isClose="isClose"/>
           <!-- Page three -->
           <InputUserInfo
             v-show="step == 2"
-            :next="next"
-            :previous="previous" />
+            @previous="previous"
+            :isClose="isClose"/>
         </div>
       </div>
     </div>
@@ -156,23 +55,16 @@
 
 <script>
 import InputUserInfo from './InputUserInfo.vue'
+import InputCase from './InputCase.vue'
 export default {
   name: 'InputDialog',
   components: {
-    InputUserInfo
-  },
-  props: {
-    close: {
-      type: Function,
-      default: () => {
-        console.log('close it')
-      }
-    }
+    InputUserInfo,
+    InputCase
   },
   data: () => ({
     step: 0,
-    countryCode: '+886',
-    phoneNumber: '0938926812',
+    isClose: false,
     steps: [
       { step: 0, text: '選擇案件分類', active: true, complete: false },
       { step: 1, text: '輸入案件內容', active: false, complete: false },
@@ -187,27 +79,22 @@ export default {
       { index: 5, text: '警消政風', color: '#D5B272' },
       { index: 6, text: '市政議題', color: '#FEB28c' },
       { index: 7, text: '其他服務', color: '#949FCC' }
-    ],
-    header: { Authorization: 'Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' },
-    regions: []
+    ]
   }),
   created () {
     console.log('input dialog init')
-    this.getRegion()
+    this.$store.dispatch('getRegionsList')
+    this.$store.dispatch('getTypeList')
+    console.log(this.$data)
   },
   methods: {
-    getRegion () {
-      return this.axios.get('/api/regions')
-        .then(response => { this.regions = response.data })
-        .catch(e => { console.log(e) })
-    },
-    getType () {
-      return this.axios.get('/api/types')
-        .then(response => { this.types = response.data })
-        .catch(e => { console.log(e) })
+    closeInput () {
+      this.step = 0
+      this.isClose = true
+      this.$emit('closeInput')
     },
     selectCaseType (type) {
-      console.log(type)
+      this.$store.commit('setCase', { type: type })
       this.next()
     },
     next () {
@@ -246,6 +133,7 @@ export default {
   border: 5px solid red;
   border-radius: 10px;
   padding: 16px;
+  overflow-y: auto;
 }
 .row {
   justify-content: center;
