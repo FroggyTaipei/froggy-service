@@ -12,17 +12,21 @@ html,body
   border: solid 1px red
   overflow: hidden
 
-/* Add the below transitions to allow a smooth color change similar to lyft */
-nav
-  background-color: $white
-  -webkit-transition: all 0.6s ease-out
-  -moz-transition: all 0.6s ease-out
-  -o-transition: all 0.6s ease-out
-  -ms-transition: all 0.6s ease-out
-  transition: all 0.6s ease-out
-  opacity: 0
-  &.scrolled
-    opacity: 1
-
 hr
   background-color: black
+
+table,tbody,tr,td, th, .table-bordered th, .table-bordered td
+  // border-collapse: collapse
+  // border: none
+  // background-color: yellow 
+  border: white solid 5px
+
+td
+  cursor: pointer
+
+th
+  text-align: center
+
+// .table-striped > tbody > tr:nth-child(2n), .table-striped > tbody > tr:nth-child(2n)
+//   &:hover
+//     background-color: cyan

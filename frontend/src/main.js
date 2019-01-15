@@ -15,7 +15,7 @@ import { ServerTable, ClientTable, Event } from 'vue-tables-2'
 
 Vue.use(UUID)
 
-Vue.use(ServerTable, {}, false, 'bulma')
+Vue.use(ServerTable, {}, false, 'bootstrap4')
 
 Vue.prototype.$moment = moment
 

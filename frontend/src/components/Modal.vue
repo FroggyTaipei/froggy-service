@@ -12,7 +12,9 @@
 
             <div class="modal-body">
               <slot name="body">
-                default body
+                <!-- default body  -->
+                <h4>{{ caseInfo.number }}</h4>
+                <h4>{{ caseInfo.title }}</h4>
               </slot>
             </div>
 
@@ -35,7 +37,8 @@
 
 <script>
 export default {
-  name: 'Modal'
+  name: 'Modal',
+  props:['caseInfo']
 }
 </script>
 
@@ -58,7 +61,7 @@ export default {
 }
 
 .modal-container {
-  width: 300px;
+  width: 50%;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;

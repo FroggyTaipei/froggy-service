@@ -1,5 +1,5 @@
 <template lang="pug">
-nav.navbar.navbar-expand-lg.navbar-light.fixed-top.bg-custom.scroll(:class="{scrolled:scrolled}")
+nav.navbar.navbar-expand-lg.navbar-light.fixed-top.bg-custom.scroll.nav-menu(:class="{scrolled:scrolled}")
   .container
     a.navbar-brand(href='#') LOGO 在這邊
     button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
