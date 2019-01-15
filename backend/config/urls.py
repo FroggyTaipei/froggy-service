@@ -8,6 +8,7 @@ from rest_framework_swagger.views import get_swagger_view
 
 from config.api import api
 
+from .views import get_token
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [
@@ -16,6 +17,7 @@ urlpatterns = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('ckeditor/', include('ckeditor_uploader.urls')),
     path('api/docs/', schema_view),
+    path('api/csrftoken/', get_token),
 ]
 
 if settings.DEBUG:
