@@ -5,7 +5,7 @@
     div(:class="{'col-sm-8':!showInput,'col-sm-3':showInput, 'froggyImage': !showInput, 'froggyImage-input':showInput}")
       img.img-fluid(:src="froggyImageUrl")
     button.btn.toggleInputBtn.btn-danger.btn-lg(v-show="showInput" @click="showInput = !showInput") Close Input
-    InputDialog(v-show="showInput" :close="closeInputDialog")
+    InputDialog(v-show="showInput" @closeInput="closeInputDialog")
     .col-sm-10.conversation(v-show="!showInput")
       .row
         .name 邱威傑：

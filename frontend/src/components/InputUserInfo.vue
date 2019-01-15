@@ -20,7 +20,7 @@
         class="form-control col-sm-10"
         placeholder="e.g. 邱威傑"
         v-validate="'required'"
-        v-model.trim="applicant.name">
+        v-model.trim="applicant.username">
       <div class="col-sm-12 invalid-feedback">
         {{ errors.first('name') }}
       </div>
@@ -45,32 +45,46 @@
     </div>
     <div class="form-row">
       <label
-        for="phone"
-        class="col-sm-2 col-form-label">
-        市話
-      </label>
-      <input
-        type="text"
-        name="phone"
-        id="phone"
-        class="form-control col-sm-10"
-        placeholder="e.g. 021234567(選填)"
-        v-validate="'numeric'"
-        v-model.trim="applicant.phone">
-    </div>
-    <div class="form-row">
-      <label
         for="address"
         class="col-sm-2 col-form-label">
-        市話
+        住址
       </label>
+      <select
+        name="district"
+        id="district"
+        class="form-control col-sm-5 district-bottom"
+        @change="selectDistrict"
+        v-validate="'required'"
+        v-model="district">
+        <option
+          disabled
+          value="">
+          選擇行政區
+        </option>
+        <option
+          v-for="(item, index) in $store.state.regions"
+          :key="index"
+          :value="item">
+          {{ item.name }}
+        </option>
+      </select>
+      <div class="col-sm-12 invalid-feedback">
+        {{ errors.first('district') }}
+      </div>
+    </div>
+
+    <div class="form-row">
       <input
         type="text"
-        name="address"
-        id="address"
-        class="form-control col-sm-10"
-        placeholder="e.g. 臺北市中正區黎明里北平西路3號"
-        v-model.trim="applicant.address">
+        name="road"
+        id="road"
+        class="form-control col-sm-10 offset-sm-2"
+        placeholder="e.g. 信義路三段"
+        v-validate="'required|max:20'"
+        v-model.lazy.trim="road">
+      <div class="col-sm-12 invalid-feedback">
+        {{ errors.first('road') }}
+      </div>
     </div>
     <div class="form-row">
       <label
@@ -117,7 +131,7 @@
       name="previous"
       class="previous action-button-previous"
       value="Previous"
-      @click="previous">
+      @click="$emit('previous')">
     <input
       type="button"
       name="submit"
@@ -149,16 +163,10 @@ export default {
     Modal
   },
   props: {
-    next: {
-      type: Function,
+    isClose: {
+      type: Boolean,
       default: () => {
-        console.log('havent init')
-      }
-    },
-    previous: {
-      type: Function,
-      default: () => {
-        console.log('havent init')
+        return false
       }
     }
   },
@@ -166,18 +174,42 @@ export default {
     showAgreementPopup: false,
     caseCompletePopup: false,
     agreement: false,
-    isResidentCheck: '',
+    regions: [],
+    road: '',
+    district: '',
     applicant: {
-      location: '',
-      district: '',
-      name: '',
+      username: '',
       mobile: '',
-      phone: '',
       email: '',
-      address: ''
+      address: '',
+      region: 1
     }
   }),
+  mounted () {
+    this.regions = this.$store.state.region
+  },
+  watch: {
+    isClose: function (value) {
+      if (value) {
+        this.$validator.errors.clear()
+        this.applicant = {
+          username: '',
+          mobile: '',
+          email: '',
+          address: '',
+          region: 0
+        }
+      }
+    },
+    road: function (value) {
+      this.applicant.address = this.district.name + this.road
+    }
+  },
   methods: {
+    selectDistrict () {
+      this.applicant.region = this.district.id
+      this.applicant.address = this.district.name
+    },
     submit () {
       this.$validator.validateAll().then((result) => {
         if (result) {
@@ -187,16 +219,30 @@ export default {
             this.showAgreementPopup = true
           } else {
             console.log('form pass')
-            this.caseCompletePopup = true
+            this.$store.commit('setCase', this.applicant)
+            this.submitCase()
           }
           return
         }
         console.log('Correct them errors!')
       })
+    },
+    submitCase () {
+      let caseData = Object.assign({}, this.$store.state.case)
+      console.log(caseData)
+      this.axios.post('/api/cases', caseData, { headers: this.$store.state.header })
+        .then(response => {
+          console.log('submit success')
+          this.caseCompletePopup = true
+        })
+        .catch(e => { console.log(e) })
     }
   }
 }
 </script>
 
 <style lang="css" scoped>
+  .district-bottom {
+    margin-bottom: 10px;
+  }
 </style>
