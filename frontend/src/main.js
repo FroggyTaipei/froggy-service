@@ -13,6 +13,10 @@ import 'bootstrap'
 import moment from 'moment'
 import { ServerTable, ClientTable, Event } from 'vue-tables-2'
 
+import VueFullPage from 'vue-fullpage.js'
+
+Vue.use(VueFullPage);
+
 Vue.use(UUID)
 
 Vue.use(ServerTable, {}, false, 'bootstrap4')

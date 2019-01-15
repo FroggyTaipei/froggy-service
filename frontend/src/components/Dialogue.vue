@@ -4,7 +4,7 @@
     div(:class="{'col-sm-8':!showInput,'col-sm-3':showInput, 'froggyImage': !showInput, 'froggyImage-input':showInput}")
       img.img-fluid(:src="froggyImageUrl")
     //- button.btn.toggleInputBtn.btn-danger.btn-lg(v-show="showInput" @click="showInput = !showInput") Close Input
-    InputDialog(v-show="showInput")
+    InputDialog(v-show="showInput" v-on:closeInput="closeInputDialog")
     .col-sm-10.conversation(v-show="!showInput")
       .row
         .name 邱威傑：
@@ -45,7 +45,7 @@ export default {
       ],
       isFindFroggy: false,
       isFroggyDoing: false,
-      showInput: true
+      showInput: false
     }
   },
   methods: {
@@ -80,9 +80,10 @@ export default {
       } else if (this.isFroggyDoing) {
         this.isFroggyDoing = false
         this.showInput = false
-        var element = document.getElementById('cases')
-        var top = element.offsetTop
-        window.scrollTo(0, top - 50)
+        fullpage_api.moveTo('1',0)
+        // var element = document.getElementById('cases')
+        // var top = element.offsetTop
+        // window.scrollTo(0, top - 50)
       } else {
         console.log('no action')
       }
@@ -159,10 +160,11 @@ InputDialog
   z-index: 2
   width: 100%
   position: absolute
-  top: 50vh
+  bottom: 0
+  // top: 50vh
   padding: 30px
+  overflow-y: scroll
   border-radius: 10px
-  // color: black
   background-color: #fff
   border: 3px solid black
   .name
