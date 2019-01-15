@@ -58,8 +58,8 @@
       li.page-item
         a.page-link(href='#') Next
   #caseTable
-    //- v-server-table(url="/api/cases/vuetable/", :columns="columns", :options='options')
-    v-server-table(url="http://localhost:3000/datas", :columns="columns", :options='options')
+    //- v-server-table(url="http://localhost:3000/datas", :columns="columns", :options='options')
+    v-server-table(url="/api/cases/vuetable/", :columns="columns", :options='options')
       a(slot="create_time" slot-scope="props" @click="toggleModal(props.row)") {{props.row.date}}
   
   //- button#show-modal(@click='showModal = true') Show Modal
