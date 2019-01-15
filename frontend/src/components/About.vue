@@ -1,5 +1,5 @@
 <template lang="pug">
-.container.section
+.container-fluid.section
   .row
     .col.col-md-8.col-12
       h1 關於公開選服
@@ -10,12 +10,14 @@
     .col.col-md-4
       h1 Image
       image
-
+  Footer
 </template>
 
 <script>
+import Footer from './Footer.vue'
 export default {
   name: 'About',
+  components: {Footer},
   props: ['lorem']
 }
 </script>
