@@ -160,6 +160,10 @@ class Case(Model):
                 return title
         return ''
 
+    def tw_mobile(self):
+        return '0' + str(self.mobile.national_number)
+    tw_mobile.short_description = _('Mobile')
+
     def format_create_time(self, format_='SHORT_DATETIME_FORMAT'):
         return formats.date_format(self.create_time, format_)
 

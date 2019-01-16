@@ -46,5 +46,3 @@ class UserModelTestCase(TransactionTestCase):
         self.assertEqual(token, Token.objects.get(user=user))
 
         Token.objects.filter(user=user).delete()
-
-

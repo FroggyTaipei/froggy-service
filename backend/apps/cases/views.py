@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
+from apps.users.authentication import AccountKitUserAuthentication
 from .serializers import (
     CaseWriteSerializer,
     CaseSerializer,
@@ -30,7 +31,7 @@ class TypeViewSet(ReadOnlyModelViewSet):
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = []
-    http_method_names = ['get', 'delete']
+    http_method_names = ['get']
 
 
 class CaseViewSet(ModelViewSet):
@@ -45,6 +46,11 @@ class CaseViewSet(ModelViewSet):
         if self.action == 'retrieve':
             return CaseRetrieveSerializer
         return CaseSerializer
+
+    def get_authenticators(self):
+        if self.request.method == "POST":
+            self.authentication_classes = [AccountKitUserAuthentication]
+        return [auth() for auth in self.authentication_classes]
 
     @action(methods=['GET'], detail=False)
     def vuetable(self, request):

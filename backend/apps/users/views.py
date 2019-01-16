@@ -19,14 +19,15 @@ from django.core.signing import TimestampSigner, BadSignature
 
 from apps.users.models import User
 from apps.users.serializers import UserSerializer, UserWriteSerializer
+from apps.users.utils import jwt_payload_handler, jwt_encode_handler
 
 
 env = environ.Env()
 
 
-API_VERSION = env.str('ACCOUNTKIT_VERSION')
-ACCOUNTKIT_SECRET = env.str('ACCOUNTKIT_APP_SECRET')
-ACCOUNTKIT_APP_ID = env.str('ACCOUNTKIT_APP_ID')
+API_VERSION = env.str('ACCOUNTKIT_VERSION', default='')
+ACCOUNTKIT_SECRET = env.str('ACCOUNTKIT_APP_SECRET', default='')
+ACCOUNTKIT_APP_ID = env.str('ACCOUNTKIT_APP_ID', default='')
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -120,7 +121,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def accountkit_get_token(self, request):
         code = request.POST.get('code')
-        state = request.POST.get('state')
+        # state = request.POST.get('state')
         status_ = request.POST.get('status')
 
         if status_ != "PARTIALLY_AUTHENTICATED":
@@ -138,7 +139,7 @@ class UserViewSet(viewsets.ModelViewSet):
         params = {
             'grant_type': 'authorization_code',
             'code': code,
-            'access_token': f'AA|{ACCOUNTKIT_APP_ID}|{ACCOUNTKIT_SECRET}'
+            'access_token': f'AA|{ACCOUNTKIT_APP_ID}|{ACCOUNTKIT_SECRET}',
         }
 
         res = requests.get(token_url, params=params)
@@ -176,9 +177,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if not user:
             # Register a new account kit user
             user = User.objects.create_accountkit_user(email=email, mobile=mobile)
-        else:
-            Token.objects.filter(user=user).delete()
 
-        token = Token.objects.create(user=user)
+        payload = jwt_payload_handler(user)
+        jwt = jwt_encode_handler(payload)
 
-        return JsonResponse({'token': token.key})
+        return JsonResponse({
+            'jwt': jwt,
+        })
