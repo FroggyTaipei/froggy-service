@@ -1,7 +1,8 @@
 <template>
   <div class="container panel">
-
-    <button type="button" class="btn btn-light input-close" @click="closeInput">X</button>
+    <button type="button" class="close" aria-label="Close" @click="closeInput">
+      <span aria-hidden="true">×</span>
+    </button>
     <!-- MultiStep Form -->
     <div class="row">
       <div class="col-md-12 col-md-offset-6">
@@ -24,10 +25,10 @@
                 <div
                   v-for="item in $store.state.types"
                   :key="item.index"
-                  class="col-md-3"
+                  class="col-md-3 col-sm-6 col-xs-6"
                   @click="selectCaseType(item.id)">
                   <div
-                    class="col-md-12 categories-item"
+                    class="col-12 categories-item"
                     :style="{ 'background-color': categories[item.id-1].color }">
                     {{ item.name }}
                   </div>
@@ -85,7 +86,6 @@ export default {
     console.log('input dialog init')
     this.$store.dispatch('getRegionsList')
     this.$store.dispatch('getTypeList')
-    console.log(this.$data)
   },
   methods: {
     closeInput () {
