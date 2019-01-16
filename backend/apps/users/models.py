@@ -5,6 +5,7 @@ from django.db import models
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UserManager(BaseUserManager):
@@ -37,7 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     full_name = models.CharField(verbose_name=_('Full Name'), max_length=30, default=_('Unknown User'))
     avatar = models.ImageField(verbose_name=_('Avatar Setting'), blank=True)
     token = models.UUIDField(verbose_name='Token', default=uuid4, editable=False)
-
+    mobile = PhoneNumberField(verbose_name=_('Mobile'))
     is_active = models.BooleanField(verbose_name=_('Active'), default=True)
     is_staff = models.BooleanField(verbose_name=_('Staff'), default=False)
     registered_at = models.DateTimeField(verbose_name=_('Registered At'), auto_now_add=timezone.now)

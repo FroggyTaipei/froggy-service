@@ -1,12 +1,12 @@
 import uuid
 from django.utils.translation import ugettext_lazy as _
-from django.forms.models import model_to_dict
 from django.utils import timezone
 from django.conf import settings
 from django.utils import formats
 from django.db.models.signals import post_save
 from django_fsm import FSMField, transition
 from apps.mails.models import SendGridMail, SendGridMailTemplate
+from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import (
     Model,
     CASCADE,
@@ -104,7 +104,7 @@ class Case(Model):
     content = TextField(verbose_name=_('Content'))
     location = CharField(max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
-    mobile = CharField(max_length=10, verbose_name=_('Mobile'))
+    mobile = PhoneNumberField(verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
     address = CharField(max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
@@ -272,7 +272,7 @@ class CaseHistory(Model):
     content = TextField(verbose_name=_('Content'))
     location = CharField(max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
-    mobile = CharField(max_length=10, verbose_name=_('Mobile'))
+    mobile = PhoneNumberField(verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
     address = CharField(max_length=255, verbose_name=_('Address'))
     create_time = DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))

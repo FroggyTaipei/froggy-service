@@ -2,7 +2,11 @@
   <div class="container">
     <full-page ref="fullpage" :options="options" id="fullpage">
       <!-- <Navbar></Navbar> -->
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
+      <div class="container section" >
+        <AccountKit ref="accountKit">
+          <button @click="login">認證</button>
+        </AccountKit>
+      </div>
       <hr>
       <CaseList id="cases" :lorem="lorem"></CaseList>
       <hr>
@@ -14,6 +18,7 @@
 <script>
 import Navbar from '@/components/Navbar.vue'
 import Dialogue from '@/components/Dialogue.vue'
+import AccountKit from '@/components/AccountKit.vue'
 import CaseList from '@/components/CaseList.vue'
 import About from '@/components/About.vue'
 import Footer from '@/components/Footer.vue'
@@ -23,7 +28,7 @@ export default {
   data: function () {
     return {
       lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
-      options:{
+      options: {
         // menu: '#menu',
         anchors: ['0', '1', '2'],
         // sectionsColor: ['#41b883', '#ff5f45', '#0798ec'],
@@ -31,7 +36,20 @@ export default {
       }
     }
   },
-  components: { Navbar, Dialogue, CaseList, About, Footer }
+  components: { Navbar, Dialogue, CaseList, About, Footer, AccountKit },
+  methods: {
+    login () {
+      this.$refs.accountKit.login(
+        {
+          countryCode: '+886'
+        },
+        this.loginCallback
+      )
+    },
+    loginCallback (response) {
+      console.log(response)
+    }
+  }
 }
 </script>
 
@@ -40,7 +58,6 @@ export default {
 
 *
   // border: solid 1px
-
 
 /* Add the below transitions to allow a smooth color change similar to lyft */
 .nav-menu
