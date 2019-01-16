@@ -30,7 +30,7 @@ class TypeViewSet(ReadOnlyModelViewSet):
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = []
-    http_method_names = ['get']
+    http_method_names = ['get', 'delete']
 
 
 class CaseViewSet(ModelViewSet):
