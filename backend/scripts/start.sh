@@ -5,6 +5,7 @@ set -o pipefail
 set -o nounset
 set -o xtrace
 
+python manage.py makemigrations
 python manage.py migrate
 python manage.py compilemessages
 python manage.py loaddata region type

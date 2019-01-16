@@ -66,7 +66,6 @@ class CaseForm(ModelForm):
             'content': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'location': TextInput(attrs={'class': 'input-xlarge'}),
             'username': EnclosedInput(append='icon-user', attrs={'class': 'input-small'}),
-            'mobile': EnclosedInput(attrs={'class': 'input-small'}),
             'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-medium'}),
             'disapprove_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'close_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
@@ -78,7 +77,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     search_fields = ('id',)
     list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = ('type', 'region')
-    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
+    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time', 'tw_mobile')
     list_select_related = True
 
     inlines = (ArrangeInline,)
@@ -97,7 +96,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': '陳情人個人資訊',
-            'fields': ['username', 'mobile', 'email', 'address'],
+            'fields': ['username', 'tw_mobile', 'email', 'address'],
         }),
         (_('Case Close Information'), {
             'classes': ('suit-tab suit-tab-general',),
