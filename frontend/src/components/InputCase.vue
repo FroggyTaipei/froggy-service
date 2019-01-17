@@ -1,127 +1,46 @@
 <template>
-    <!-- Page two -->
-    <fieldset>
-    <div class="form-row">
-        <label
-        for="caseSubject"
-        class="col-sm-2 col-form-label">
-        案件主旨
-        </label>
-        <input
-        type="text"
-        name="主旨"
-        id="caseSubject"
-        class="form-control col-sm-10"
-        placeholder="請輸入案件主旨"
-        v-validate="'required|max:20'"
-        v-model.trim="cases.title">
-        <div class="col-sm-12 invalid-feedback">
-            {{ errors.first('主旨') }}
-        </div>
-    </div>
-    <div class="form-row">
-        <label
-        for="caseContent"
-        class="col-sm-2 col-form-label">
-        案件內容
-        </label>
-        <textarea
-        rows="5"
-        name="案件內容"
-        id="caseContent"
-        class="form-control col-sm-10"
-        placeholder="請輸入案件內容"
-        v-validate="'required|max:150'"
-        v-model.trim="cases.content" />
-        <div class="col-sm-12 invalid-feedback">
-            {{ errors.first('案件內容') }}
-        </div>
-    </div>
-    <div class="form-row">
-        <label
-        for="location"
-        class="col-sm-2 col-form-label">
-        地點
-        </label>
-        <input
-        type="text"
-        name="相關地點"
-        id="location"
-        class="form-control col-sm-10"
-        placeholder="e.g. 信義路三段"
-        v-validate="'required|max:20'"
-        v-model.trim="cases.location">
-        <div class="col-sm-12 invalid-feedback">
-            {{ errors.first('相關地點') }}
-        </div>
-    </div>
-    <div class="form-row">
-        <label
-            for="fileUpload"
-            class="col-sm-2 col-form-label">
-            上傳附件
-        </label>
-        <FileUpload
-            class="btn btn-primary col-sm-5"
-            post-action="/api/files/temp/"
-            :headers="$store.state.header"
-            :data="upload_data"
-            extensions="gif,jpg,jpeg,png,webp"
-            accept="image/png,image/gif,image/jpeg,image/webp"
-            :multiple="true"
-            :size="1024 * 1024 * 10"
-            v-model="files"
-            @input-filter="inputFilter"
-            @input-file="inputFile"
-            ref="upload">
-            <i class="fa fa-plus" />
-            Select files
-        </FileUpload>
-        <div
-            class="col-md-10  offset-md-2 file"
-            v-for="file in files"
-            :key="file.id">
-            <button
-            type="button"
-            class="btn btn-primary"
-            @click="remove(file)">
-            {{ file.name }} <span class="badge">
-                Ｘ
-            </span>
-            </button>
-        </div>
-      </div>
-    </div>
-    <div class="form-group row">
-        <div class="col-md-12">
-        <small
-            id="fileUploadHelpBlock"
-            class="form-text text-muted">
-            1.上傳總容量限制為40MB，最多10個檔案，附檔檔名請使用半形中英數字命名。2.可上傳的檔案類型為 jpg, jpeg, gif, bmp, png, tif, tiff, doc, docx, xls, xlsx, txt, rtf, ppt, pptx, pdf, odf, odg, odp, ods, odt, mpg, mpeg, avi, wmv, rm, mov, mkv, dat, 3gp, mp3, mp4, m4v, wav, zip, rar, 7z。
-        </small>
-        </div>
-    </div>
-    <input
-        type="button"
-        name="previous"
-        class="previous action-button-previous"
-        value="Previous"
-        @click="$emit('previous')">
-    <input
-        type="button"
-        name="next"
-        class="next action-button"
-        value="Next"
-        @click="completeCaseData">
+  <fieldset>
+    <el-form label-position="top" :model="cases" label-width="80px" :rules="rules" ref="form">
+      <el-form-item label="案件主旨" prop="tltle">
+        <el-input placeholder="請輸入案件主旨" v-model.trim="cases.title"></el-input>
+      </el-form-item>
+      <el-form-item label="案件內容" prop="content">
+        <el-input rows="5" type="textarea" placeholder="請輸入案件內容" v-model="cases.content"></el-input>
+      </el-form-item>
+      <el-form-item label="相關地點" prop="location">
+        <el-input placeholder="e.g. 信義路三段" v-model.trim="cases.location"></el-input>
+      </el-form-item>
+      <el-upload
+        class="upload-demo"
+        action="https://jsonplaceholder.typicode.com/posts/"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button size="small" type="primary">上傳附件</el-button>
+        <div slot="tip" class="el-upload__tip">1.上傳總容量限制為40MB，最多5個檔案。</div>
+        <div slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png, mpg, mpeg, avi, wmv, mp3, mp4, zip, rar, 7z。</div>
+      </el-upload>
+      <el-button @click="$emit('previous')">上一頁</el-button>
+        <el-button type="primary" @click="completeCaseData">送出！</el-button>
+    </el-form>
+    <Modal
+      v-if="caseCompletePopup"
+      @close="caseCompletePopup = false">
+      <h2 slot="body">
+        案件已送出
+      </h2>
+    </Modal>
     </fieldset>
 </template>
 
 <script>
-import FileUpload from 'vue-upload-component'
 export default {
   name: 'InputCase',
   components: {
-    FileUpload
   },
   created () {
     console.log('input case init')
@@ -130,7 +49,9 @@ export default {
     this.upload_data.case_uuid = this.cases.uuid
   },
   data: () => ({
+    fileList: [{ name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }, { name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100' }],
     files: [],
+    caseCompletePopup: false,
     upload_data: {
       case_uuid: ''
     },
@@ -139,6 +60,32 @@ export default {
       title: '',
       content: '',
       location: ''
+    },
+    rules: {
+      tltle: [{
+        required: true,
+        message: '請輸入案件主旨',
+        trigger: 'blur'
+      },
+      {
+        max: 30,
+        message: '字數上限為 30 字',
+        trigger: 'blur'
+      }],
+      content: [{
+        required: true,
+        message: '請輸入案件內容',
+        trigger: 'blur'
+      }, {
+        max: 800,
+        message: '字數上限為 800 字',
+        trigger: 'blur'
+      }],
+      location: [{
+        max: 30,
+        message: '字數上限為 30 字',
+        trigger: 'blur'
+      }]
     }
   }),
   props: {
@@ -176,6 +123,16 @@ export default {
       this.axios.delete('/api/files/temp/' + id, { headers: this.$store.state.header })
         .then(response => {
           console.log(response)
+        })
+        .catch(e => { console.log(e) })
+    },
+    submitCase () {
+      let caseData = Object.assign({}, this.$store.state.case)
+      console.log(caseData)
+      this.axios.post('/api/cases', caseData, { headers: this.$store.state.header })
+        .then(response => {
+          console.log('submit success')
+          this.caseCompletePopup = true
         })
         .catch(e => { console.log(e) })
     },
@@ -237,5 +194,5 @@ export default {
 }
 </script>
 
-<style lang="css" scoped>
+<style lang="css">
 </style>

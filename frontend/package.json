@@ -17,7 +17,6 @@
     "moment": "^2.23.0",
     "popper.js": "^1.14.6",
     "register-service-worker": "^1.5.2",
-    "vee-validate": "^2.1.5",
     "vue": "^2.5.17",
     "vue-analytics": "^5.16.0",
     "vue-axios": "^2.1.4",
@@ -25,7 +24,6 @@
     "vue-raven": "^1.0.0",
     "vue-router": "^3.0.1",
     "vue-tables-2": "^1.4.70",
-    "vue-upload-component": "^2.8.18",
     "vue-uuid": "^1.1.1",
     "vuex": "^3.0.1"
   },
