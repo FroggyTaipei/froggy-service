@@ -1,6 +1,6 @@
 <template lang="pug">
-.container-fluid
-  h1 Footer
+el-col(apan="18")
+  
 
 </template>
 
