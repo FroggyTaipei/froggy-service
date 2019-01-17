@@ -13,11 +13,11 @@ class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
     # These override the definitions on the base UserAdmin
     # that reference specific fields on auth.User.
-    list_display = ['full_name', 'email']
+    list_display = ['full_name', 'email', 'mobile', 'is_staff', 'is_superuser']
     fieldsets = [
         [_('Auth'), {'fields': ['avatar_tag', 'email', 'password']}],
         [_('Personal info'), {'fields': ['full_name', 'avatar']}],
-        [_('Settings'), {'fields': ['user_permissions', 'groups', 'is_active', 'is_staff', 'is_superuser']}],
+        [_('Settings'), {'fields': ['groups', 'is_active', 'is_staff', 'is_superuser']}],
         [_('Important dates'), {'fields': ['last_login', 'registered_at']}],
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
@@ -28,12 +28,13 @@ class UserAdmin(BaseUserAdmin):
     ]
     search_fields = ['email']
     ordering = ['email']
-    readonly_fields = ['last_login', 'registered_at', 'avatar_tag']
+    readonly_fields = ['is_superuser', 'last_login', 'registered_at', 'avatar_tag']
 
     def get_search_results(self, request, queryset, search_term):
-        """只顯示Staff"""
+        """只顯示內部使用者"""
         queryset, use_distinct = super(UserAdmin, self).get_search_results(request, queryset, search_term)
-        queryset = queryset.filter(is_staff=True)
+        if not request.user.is_superuser:
+            queryset = queryset.filter(is_staff=True)
         return queryset, use_distinct
 
 

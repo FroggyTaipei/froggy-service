@@ -1,3 +1,6 @@
+import datetime
+import calendar
+from django.utils import timezone
 from django.contrib import admin
 from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
@@ -6,7 +9,7 @@ from django.db.models import Q
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
 from fsm_admin.mixins import FSMTransitionMixin
-from suit.admin import SortableStackedInline
+from date_range_filter import DateRangeFilter
 from suit.widgets import (
     EnclosedInput,
     AutosizedTextarea,
@@ -46,16 +49,33 @@ class ArrangeInlineForm(ModelForm):
             raise ValidationError(f'您無法切換案件處理狀態為{new_state}')
 
         if transition:
-            transition.method(self.instance)
+            try:
+                transition.method(self.instance)
+            except Exception as e:
+                raise ValidationError(e)
 
 
-class ArrangeInline(FSMTransitionMixin, SortableStackedInline):
+class ArrangeInline(FSMTransitionMixin, admin.StackedInline):
     form = ArrangeInlineForm
     model = Arrange
     extra = 0
     verbose_name_plural = _('Arranges')
     suit_classes = 'suit-tab suit-tab-arranges'
+    fields = ('state', 'title', 'content', 'arrange_time', 'publish_time')
     readonly_fields = ('publish_time',)
+
+    def has_add_permission(self, request, obj=None):
+        return request.user.has_perm('arranges.add_arrange') and obj and obj.state == 'arranged'
+
+    def get_fields(self, request, obj=None):
+        if not request.user.has_perm('arranges.add_arrange'):
+            return 'state', 'title', 'html_content', 'arrange_time', 'publish_time'
+        return self.fields
+
+    def get_readonly_fields(self, request, obj=None):
+        if not request.user.has_perm('arranges.add_arrange'):
+            return self.readonly_fields + ('html_content',)
+        return self.readonly_fields
 
 
 class CaseForm(ModelForm):
@@ -76,9 +96,16 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     form = CaseForm
     search_fields = ('id',)
     list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
-    list_filter = ('type', 'region')
+    list_filter = (
+        'type',
+        'region',
+        ('open_time', DateRangeFilter),
+        ('close_time', DateRangeFilter),
+    )
     readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time', 'tw_mobile')
     list_select_related = True
+    date_hierarchy = 'create_time'
+    date_hierarchy_drilldown = False
 
     inlines = (ArrangeInline,)
 
@@ -111,9 +138,19 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('files_list.html', '', 'files'),
     )
 
+    class Media:
+        """Django suit的DateFilter需要引用的外部資源"""
+        js = ['/admin/jsi18n/']
+
     def get_form(self, request, obj=None, **kwargs):
         self._obj = obj
         return super(CaseAdmin, self).get_form(request, obj, **kwargs)
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
 
     @property
     def suit_form_tabs(self):
@@ -162,6 +199,38 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
             )
 
         return queryset, use_distinct
+
+    def get_date_hierarchy_drilldown(self, year_lookup, month_lookup):
+        """Drill-down only on past dates."""
+
+        today = timezone.now().date()
+
+        if year_lookup is None and month_lookup is None:
+            # Past 3 years.
+            return (
+                datetime.date(y, 1, 1)
+                for y in range(today.year - 2, today.year + 1)
+            )
+
+        elif year_lookup is not None and month_lookup is None:
+            # Past months of selected year.
+            this_month = today.replace(day=1)
+            return (
+                month for month in (
+                    datetime.date(int(year_lookup), month, 1)
+                    for month in range(1, 13)
+                ) if month <= this_month
+            )
+
+        elif year_lookup is not None and month_lookup is not None:
+            # Past days of selected month.
+            days_in_month = calendar.monthrange(year_lookup, month_lookup)[1]
+            return (
+                day for day in (
+                    datetime.date(year_lookup, month_lookup, i + 1)
+                    for i in range(days_in_month)
+                ) if day <= today
+            )
 
 
 admin.site.register(Case, CaseAdmin)
