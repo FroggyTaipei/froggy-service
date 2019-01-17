@@ -9,14 +9,14 @@
         </label>
         <input
         type="text"
-        name="caseSubject"
+        name="主旨"
         id="caseSubject"
         class="form-control col-sm-10"
         placeholder="請輸入案件主旨"
         v-validate="'required|max:20'"
         v-model.trim="cases.title">
         <div class="col-sm-12 invalid-feedback">
-            {{ errors.first('caseSubject') }}
+            {{ errors.first('主旨') }}
         </div>
     </div>
     <div class="form-row">
@@ -27,14 +27,14 @@
         </label>
         <textarea
         rows="5"
-        name="caseContent"
+        name="案件內容"
         id="caseContent"
         class="form-control col-sm-10"
         placeholder="請輸入案件內容"
         v-validate="'required|max:150'"
         v-model.trim="cases.content" />
         <div class="col-sm-12 invalid-feedback">
-            {{ errors.first('caseContent') }}
+            {{ errors.first('案件內容') }}
         </div>
     </div>
     <div class="form-row">
@@ -45,14 +45,14 @@
         </label>
         <input
         type="text"
-        name="location"
+        name="相關地點"
         id="location"
         class="form-control col-sm-10"
         placeholder="e.g. 信義路三段"
         v-validate="'required|max:20'"
         v-model.trim="cases.location">
         <div class="col-sm-12 invalid-feedback">
-            {{ errors.first('location') }}
+            {{ errors.first('相關地點') }}
         </div>
     </div>
     <div class="form-row">
@@ -61,29 +61,38 @@
             class="col-sm-2 col-form-label">
             上傳附件
         </label>
-        <div class="custom-file col-sm-10">
-            <input
-            ref="file"
-            type="file"
-            class="custom-file-input input-style"
-            id="fileUpload">
-            <label
-            class="custom-file-label"
-            for="fileUpload" />
+        <FileUpload
+            class="btn btn-primary col-sm-5"
+            post-action="/api/files/temp/"
+            :headers="$store.state.header"
+            :data="upload_data"
+            extensions="gif,jpg,jpeg,png,webp"
+            accept="image/png,image/gif,image/jpeg,image/webp"
+            :multiple="true"
+            :size="1024 * 1024 * 10"
+            v-model="files"
+            @input-filter="inputFilter"
+            @input-file="inputFile"
+            ref="upload">
+            <i class="fa fa-plus" />
+            Select files
+        </FileUpload>
+        <div
+            class="col-md-10  offset-md-2 file"
+            v-for="file in files"
+            :key="file.id">
+            <button
+            type="button"
+            class="btn btn-primary"
+            @click="remove(file)">
+            {{ file.name }} <span class="badge">
+                Ｘ
+            </span>
+            </button>
         </div>
+      </div>
     </div>
     <div class="form-group row">
-        <div class="col-md-10  offset-md-2 file">
-            <button type="button" class="btn btn-primary">
-            Notifications <span class="badge">Ｘ</span>
-            </button>
-        </div>
-        <div class="col-md-10  offset-md-2 file">
-            <button type="button" class="btn btn-primary">
-            Notifications <span class="badge">Ｘ</span>
-            </button>
-        </div>
-
         <div class="col-md-12">
         <small
             id="fileUploadHelpBlock"
@@ -108,12 +117,23 @@
 </template>
 
 <script>
+import FileUpload from 'vue-upload-component'
 export default {
   name: 'InputCase',
+  components: {
+    FileUpload
+  },
   created () {
+    console.log('input case init')
+
     this.cases.uuid = this.$uuid.v1()
+    this.upload_data.case_uuid = this.cases.uuid
   },
   data: () => ({
+    files: [],
+    upload_data: {
+      case_uuid: ''
+    },
     cases: {
       uuid: '',
       title: '',
@@ -144,6 +164,21 @@ export default {
     }
   },
   methods: {
+    updateCSRFToken () {
+      this.axios.get('api/csrftoken/')
+        .then(response => {
+          console.log('get new CSRF token', response.data['token'])
+          this.axios.defaults.headers.common['X-CSRFToken'] = response.data['token']
+        })
+        .catch(e => { console.log(e) })
+    },
+    removeFile (id) {
+      this.axios.delete('/api/files/temp/' + id, { headers: this.$store.state.header })
+        .then(response => {
+          console.log(response)
+        })
+        .catch(e => { console.log(e) })
+    },
     completeCaseData () {
       this.$validator.validateAll().then((result) => {
         if (result) {
@@ -151,8 +186,52 @@ export default {
           this.$emit('next')
           return
         }
-        console.log('Correct them errors!')
+        console.log('Correct the errors!')
       })
+    },
+    remove (file) {
+      this.removeFile(file.response.id)
+      this.$refs.upload.remove(file)
+    },
+    inputFilter (newFile, oldFile, prevent) {
+      if (newFile && !oldFile) {
+        // Before adding a file
+        // Filter system files or hide files
+        if (/(\/|^)(Thumbs\.db|desktop\.ini|\..+)$/.test(newFile.name)) {
+          return prevent()
+        }
+        // Filter php html js file
+        if (/\.(php5?|html?|jsx?)$/i.test(newFile.name)) {
+          return prevent()
+        }
+      }
+    },
+    inputFile (newFile, oldFile) {
+      if (newFile && !oldFile) {
+        // add
+        console.log('add', newFile)
+        newFile.active = true
+      }
+      if (newFile && oldFile) {
+        // 上传进度
+        if (newFile.progress !== oldFile.progress) {
+          console.log('progress', newFile.progress, newFile)
+        }
+
+        // 上传错误
+        if (newFile.error !== oldFile.error) {
+          console.log('error', newFile.error, newFile)
+        }
+
+        // 上传成功
+        if (newFile.success !== oldFile.success) {
+          console.log('success', newFile.success, newFile)
+        }
+      }
+      if (!newFile && oldFile) {
+        // remove
+        console.log('remove', oldFile)
+      }
     }
   }
 }

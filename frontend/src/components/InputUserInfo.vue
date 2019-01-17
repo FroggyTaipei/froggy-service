@@ -15,14 +15,14 @@
       </label>
       <input
         type="text"
-        name="name"
+        name="姓名"
         id="name"
         class="form-control col-sm-10"
         placeholder="e.g. 邱威傑"
         v-validate="'required'"
         v-model.trim="applicant.username">
       <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('name') }}
+        {{ errors.first('姓名') }}
       </div>
     </div>
     <div class="form-row">
@@ -33,14 +33,14 @@
       </label>
       <input
         type="text"
-        name="mobile"
+        name="手機"
         id="mobile"
         class="form-control col-sm-10"
         placeholder="e.g. 0912345678"
         v-validate="{ required: true, regex: /^09\d{8}$/ }"
         v-model.trim="applicant.mobile">
       <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('mobile') }}
+        {{ errors.first('手機') }}
       </div>
     </div>
     <div class="form-row">
@@ -50,7 +50,7 @@
         住址
       </label>
       <select
-        name="district"
+        name="行政區"
         id="district"
         class="form-control col-sm-5 district-bottom"
         @change="selectDistrict"
@@ -69,21 +69,20 @@
         </option>
       </select>
       <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('district') }}
+        {{ errors.first('行政區') }}
       </div>
     </div>
-
     <div class="form-row">
       <input
         type="text"
-        name="road"
+        name="地址"
         id="road"
         class="form-control col-sm-10 offset-sm-2"
         placeholder="e.g. 信義路三段"
         v-validate="'required|max:20'"
         v-model.lazy.trim="road">
       <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('road') }}
+        {{ errors.first('地址') }}
       </div>
     </div>
     <div class="form-row">
@@ -94,14 +93,14 @@
       </label>
       <input
         type="text"
-        name="email"
+        name="電子郵件"
         id="email"
         class="form-control col-sm-10"
         placeholder="e.g. froggy@froggy.com"
         v-validate="'required|email'"
         v-model.trim="applicant.email">
       <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('email') }}
+        {{ errors.first('電子郵件') }}
       </div>
     </div>
     <div

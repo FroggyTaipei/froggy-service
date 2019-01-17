@@ -30,5 +30,11 @@ class UserAdmin(BaseUserAdmin):
     ordering = ['email']
     readonly_fields = ['last_login', 'registered_at', 'avatar_tag']
 
+    def get_search_results(self, request, queryset, search_term):
+        """只顯示Staff"""
+        queryset, use_distinct = super(UserAdmin, self).get_search_results(request, queryset, search_term)
+        queryset = queryset.filter(is_staff=True)
+        return queryset, use_distinct
+
 
 admin.site.register(User, UserAdmin)

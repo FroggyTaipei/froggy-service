@@ -7,7 +7,8 @@ import UUID from 'vue-uuid'
 import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import App from '@/App.vue'
-import VeeValidate from 'vee-validate'
+import zh from 'vee-validate/dist/locale/zh_TW'
+import VeeValidate, { Validator } from 'vee-validate'
 import './registerServiceWorker'
 import moment from 'moment'
 
@@ -36,7 +37,7 @@ Vue.use(VeeValidate, {
   },
   fieldsBagName: 'vee-fields',
 })
-
+Validator.localize('zh-TW', zh)
 Vue.config.productionTip = false
 
 // window.$ = require('jquery')

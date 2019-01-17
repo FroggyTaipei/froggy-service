@@ -38,6 +38,7 @@ THIRD_PARTY_APPS = [
     'suit_ckeditor',
     'fsm_admin',
     'rest_framework_swagger',
+    'phonenumber_field',
 ]
 
 LOCAL_APPS = [
