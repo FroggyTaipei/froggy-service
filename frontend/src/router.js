@@ -3,9 +3,12 @@ import VueRouter from 'vue-router'
 
 // import ExampleComponent from '@/components/ExampleComponent.vue'
 import Home from '@/views/Home.vue'
+// import Demo from '@/components/Demo.vue'
+// import Demo1 from '@/components/SecondPage.vue'
 
 const routes = [
-  { path: '*', component: Home }
+  { path: '*', component: Home },
+  // { path: '/demo1', component: SecondPage}
 ]
 
 Vue.use(VueRouter)

@@ -1,23 +1,46 @@
 <template lang="pug">
-.container.section
-  .row.vertical-center 
-    div(:class="{'col-sm-8':!showInput,'col-sm-3':showInput, 'froggyImage': !showInput, 'froggyImage-input':showInput}")
-      img.img-fluid(:src="froggyImageUrl")
-    //- button.btn.toggleInputBtn.btn-danger.btn-lg(v-show="showInput" @click="showInput = !showInput") Close Input
-    InputDialog(v-show="showInput" v-on:closeInput="closeInputDialog")
-    .col-sm-10.conversation(v-show="!showInput")
-      .row
-        .name 邱威傑：
-        span {{dialogue[sceneCount].textContent[0]}}
-      .row.justify-content-center
-        .options.col-sm-4
-          .row.justify-content-center
-            .text(:class="{selected: isFindFroggy}" @click="clickOption('findFroggy')") 我要找呱吉
-          .row.justify-content-center
-            .text(:class="{selected: isFroggyDoing}" @click="clickOption('froggyDoing')") 呱吉做什麼
-        .col-sm-2.align-self-end.buttonWrapper
-          button.btn.btn-lg.btn-success.goButton(@click="dialogAction") GO
+el-container.page1
+  el-main
+    transition(name="fade")
+      el-row(type="flex" justify="center" align="middle" v-show="showIntro")
+        el-col
+          .center(v-show="showIntro")
+            img.introImg(:src="introUrl")
+            h1.intro(@click="makeInvisible" ) START
 
+        //- .main(v-show="showFroggy")
+        //-   img.froggyImage(:src="froggyUrl")
+    transition(name="fade")
+      el-row(type="flex" align="middle" justify="center" v-show="showFroggy" @click='come')
+        el-col(:span="18")
+          img.froggyImage(:src="froggyUrl", @load='getHeight', ref='froggy', :class="{'slide-up': slide}", :style="{bottom:froggyHeight+'px'}")
+          el-row(type="flex" align="middle" justify="center")
+            el-col
+              img.bottom(src='../assets/text.png')
+            el-col
+              .bottom.froggy-text
+                h1 台北市議員邱威傑：
+                span {{dialogue[sceneCount].textContent[0]}}
+              .bottom.bottom-btn
+                i.el-icon-caret-right(v-show='mouse1')
+                el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)') 我要找呱吉
+                i.el-icon-caret-right(v-show='mouse2')
+                el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
+        //- img.froggyImage.bottom(:src="froggyImageUrl", @load='getHeight', ref='froggy', :class="{'slide-up': slide}", :style="{bottom:froggyHeight+'px'}")
+        //- el-row
+            //- el-col(:span="6")
+            //- InputDialog(v-show="showInput" v-on:closeInput="closeInputDialog")
+      //- el-row(type="flex" align="top" justify="center")
+        el-col(:span="12")
+          .conversation(v-show="!showInput")
+            el-row(type="flex" align="top" justify="end")
+              el-col(:span="24")
+                h1 邱威傑：
+                span {{dialogue[sceneCount].textContent[0]}}
+            el-row(type="flex" align="middle" justify="center")
+              el-col.text(:span="12" style="align-self: flex-end" :class="{selected: isFindFroggy}" @click="clickOption('findFroggy')") 我要找呱吉
+              el-col.text(:span="12" :class="{selected: isFroggyDoing}" @click="clickOption('froggyDoing')") 呱吉做什麼
+              el-button.goButton(type="success" @click="dialogAction") GO
 </template>
 
 <script>
@@ -45,10 +68,25 @@ export default {
       ],
       isFindFroggy: false,
       isFroggyDoing: false,
-      showInput: false
+      showInput: false,
+      bkgUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png',
+      introUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
+      showIntro: true,
+      showFroggy: false,
+      froggyUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/morning_1.png',
+      slide: false,
+      mouse1: false,
+      mouse2: false,
+      froggyHeight: 0,
     }
   },
   methods: {
+    makeInvisible(){
+      this.showIntro = !this.showIntro
+      setTimeout(()=>{
+        this.showFroggy = true
+      },1000)
+    },
     closeInputDialog: function () {
       this.showInput = false
     },
@@ -80,16 +118,34 @@ export default {
       } else if (this.isFroggyDoing) {
         this.isFroggyDoing = false
         this.showInput = false
-        fullpage_api.moveTo('1',0)
-        // var element = document.getElementById('cases')
-        // var top = element.offsetTop
-        // window.scrollTo(0, top - 50)
+        fullpage_api.moveTo('secondPage',0)
       } else {
         console.log('no action')
       }
     },
     toggleInput: function () {
       this.showInput = !this.showInput
+    },
+    getHeight () {
+      this.froggyHeight = -this.$refs.froggy.clientHeight
+    },
+    come () {
+      console.log('come')
+      this.slide = true
+    },
+    hover (index) {
+      if (index) {
+        this.mouse1 = true
+      } else {
+        this.mouse2 = true
+      }
+    },
+    leave (index) {
+      if (index) {
+        this.mouse1 = false
+      } else {
+        this.mouse2 = false
+      }
     }
   },
   computed: {
@@ -114,97 +170,87 @@ export default {
       return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
     }
   },
+    mounted: function(){
+    // setTimeout(()=>{
+    //   this.showIntro = !this.showIntro
+    // },500)
+  },
   props: ['lorem']
 }
 </script>
 
 <style lang="sass" scoped>
-.section
-  position: relative
-  height: 100vh
-.section:after
-  content: ""
-  display: block
-  background-image: url('https://i.cdn.turner.com/adultswim/big/img/2018/12/04/whiteTiles.jpg')
-  position: absolute
-  top: 0
-  left: 0
-  width: 100%
-  height: 100%
-  opacity: 0.5
-  z-index: -1
-  filter: blur(3px)
+.page1
+  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png')
+  background-position: center
+  overflow: hidden
 
-InputDialog
-  z-index: 0
+.center, .el-main
+  display: flex
+  width: 100%
+  height: 100vh
+  align-items: center
+  justify-content: center
+
+.introImg
+  width: 100%
 
 .froggyImage
-  z-index: 1
-  position: relative
-  height: 100%
-  left: 0px
-  bottom: 0
-  transition:  2s
-  pointer-events: none
-.froggyImage-input
-  z-index: 1
-  position: absolute
-  left: 0
-  bottom: 0
-  transition: 2s
-  pointer-events: none
-.toggleInputBtn
-  margin-top: 50px
-
-.conversation
-  z-index: 2
+  width: 100%
+//
+.bottom
   width: 100%
   position: absolute
-  bottom: 0
-  // top: 50vh
-  padding: 30px
-  overflow-y: scroll
-  border-radius: 10px
-  background-color: #fff
-  border: 3px solid black
-  .name
-    font-size: 32px
-    font-weight: bold
-  span
-    margin-bottom: 5px
-    font-size: 20px
-    font-weight: bold
-  .options
-    font-size: 28px
-    font-weight: bold
-    padding: 10px
-    .text
-      box-sizing: border-box
-      border: solid 3px transparent
-      padding: 5px
-      width: fit-content
-      cursor: pointer
-      &:hover
-        border: 3px solid
-        // background-color: pink
-        border-radius: 10px
-    .arrow
-      box-sizing: border-box
-      border: solid 3px transparent
-      padding: 10px
-      width: fit-content
-    .selected
-      // border: 3px solid
-      border-radius: 10px
-      background-color: pink
-  .buttonWrapper
-    padding: 10px
-    .goButton
-      width: 100%
+  bottom: 0px
+  left: 0px
 
-.vertical-center
-  min-height: 100%
-  min-height: 100vh
-  display: flex
-  align-items: center
+.froggy 
+  bottom: -623px
+
+.bg 
+  background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png")
+  background-repeat: no-repeat
+  background-size: auto 100%
+  position: relative
+
+.slide-up 
+  transform: translateY(-100%)
+  transition: .4s ease-in-out
+
+.bottom-btn
+  width: 80%
+  text-align: right
+  padding: 16px 48px
+  color: white
+
+.text-button 
+  color: white
+  margin-right: 20px
+
+.froggy-text
+  color: white
+  width: 80%
+  padding: 48px
+  textalign: center
+
+//
+
+.intro
+  font-size: 80px
+  color: white
+  font-weight: bold
+  position: absolute
+  bottom: 15%
+  animation: blinker 2s linear infinite
+  &:hover
+    cursor: pointer
+  
+@keyframes blinker 
+  50%
+    opacity: 0
+
+.fade-enter-active, .fade-leave-active
+  transition: opacity .5s
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ 
+  opacity: 0
 </style>

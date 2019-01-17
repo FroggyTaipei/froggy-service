@@ -1,22 +1,17 @@
 <template>
   <div class="container">
     <full-page ref="fullpage" :options="options" id="fullpage">
-      <!-- <Navbar></Navbar> -->
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
-      <hr>
-      <CaseList id="cases" :lorem="lorem"></CaseList>
-      <hr>
-      <About id="about" :lorem="lorem"></About>
+      <Dialogue id="dialogue" class="section" :lorem="lorem"></Dialogue>
+      <CaseList id="cases" class="section" :lorem="lorem"></CaseList>
+      <About id="about" class="section" :lorem="lorem"></About>
     </full-page>
   </div>
 </template>
 
 <script>
-import Navbar from '@/components/Navbar.vue'
 import Dialogue from '@/components/Dialogue.vue'
 import CaseList from '@/components/CaseList.vue'
 import About from '@/components/About.vue'
-import Footer from '@/components/Footer.vue'
 
 export default {
   name: 'Home',
@@ -24,33 +19,52 @@ export default {
     return {
       lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
       options:{
-        // menu: '#menu',
-        anchors: ['0', '1', '2'],
+        menu: false,
+        lockAnchors: false,
+        anchors:['firstPage', 'secondPage','thirdPage'],
+        navigation: false,
+        // autoScrolling: false,
+        verticalCentered: true,
+        // navigationPosition: 'right',
+        navigationTooltips: ['firstSlide', 'secondSlide'],
+        showActiveTooltip: false,
+        // slidesNavigation: true,
+        // slidesNavPosition: 'right',
         // sectionsColor: ['#41b883', '#ff5f45', '#0798ec'],
+        scrollOverflow: true,
+        // scrollBar: false,
+        lazyLoading: true,
+        controlArrows: true,
+        normalScrollElements: '.modal-body, table .caseTable',
         licenseKey: 'A318C6D7-5E9F4CDF-B8952F52-A21EC44B'
       }
     }
   },
-  components: { Navbar, Dialogue, CaseList, About, Footer }
+  components: {Dialogue, CaseList, About}
 }
 </script>
 
 <style lang="sass">
-@import "@/assets/css/all.sass"
-
 *
   // border: solid 1px
+.fp-tableCell
+  display: flex
+  width: 100%
+html,body
+  margin: auto
+  width: 100%
+  height: 100%
+  // background-color: gray
 
+hr
+  background-color: black
 
-/* Add the below transitions to allow a smooth color change similar to lyft */
-.nav-menu
-  background-color: $white
-  -webkit-transition: all 0.6s ease-out
-  -moz-transition: all 0.6s ease-out
-  -o-transition: all 0.6s ease-out
-  -ms-transition: all 0.6s ease-out
-  transition: all 0.6s ease-out
-  opacity: 0
-  &.scrolled
-    opacity: 1
+.el-menu--horizontal
+  border: none
+.el-menu--horizontal>.el-menu-item.is-active
+  border-bottom-color: transparent
+  border-bottom: none
+.el-menu-item
+  a
+    text-decoration: none
 </style>

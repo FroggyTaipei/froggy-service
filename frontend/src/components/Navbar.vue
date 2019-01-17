@@ -1,43 +1,33 @@
 <template lang="pug">
-nav.navbar.navbar-expand-lg.navbar-light.fixed-top.bg-custom.scroll.nav-menu(:class="{scrolled:scrolled}")
-  .container
-    a.navbar-brand(href='#') LOGO 在這邊
-    button.navbar-toggler(type='button', data-toggle='collapse', data-target='#navbarSupportedContent', aria-controls='navbarSupportedContent', aria-expanded='false', aria-label='Toggle navigation')
-      span.navbar-toggler-icon
-    #navbarSupportedContent.collapse.navbar-collapse
-      ul.navbar-nav.ml-auto
-        li.nav-item
-          a.nav-link(href='#dialogue') 我要找呱吉
-        li.nav-item
-          a.nav-link(href='#cases') 呱吉做什麼
-        li.nav-item
-          a.nav-link(href='#about') 關於公開選服
+el-row(type="flex" align="middle" justify="center")
+  el-menu(theme='dark', default-active='0', mode='horizontal', :router='false')
+    el-menu-item(index='#firstPage')
+      a(href="#firstPage") 我要找呱吉
+    el-menu-item(index='#secondPage')
+      a(href="#secondPage") 呱吉做什麼
+    el-menu-item(index='#thirdPage')
+      a(href="#thirdPage") 關於魔鏡號
 </template>
 
 <script>
 export default {
   name: 'NavBar',
   data: function () {
-    return {
-      scrolled: false
-    }
+    return {}
   },
-  methods: {
-    checkScroll () {
-      var startY = window.innerHeight / 2
-      this.scrolled = window.scrollY > startY
-    }
-  },
-  mounted () {
-    window.addEventListener('scroll', this.checkScroll)
-  },
-  destroyed () {
-    window.removeEventListener('scroll', this.checkScroll)
-  }
+  methods: {},
+  mounted () {},
+  destroyed () {}
 }
 </script>
 
 <style lang="sass">
-nav
-  background-color: #fff
+// .el-menu--horizontal
+//   border: none
+// .el-menu--horizontal>.el-menu-item.is-active
+//   border-bottom-color: transparent
+//   border-bottom: none
+// .el-menu-item
+//   a
+//     text-decoration: none
 </style>
