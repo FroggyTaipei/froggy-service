@@ -39,6 +39,7 @@ THIRD_PARTY_APPS = [
     'fsm_admin',
     'rest_framework_swagger',
     'phonenumber_field',
+    'rest_framework_jwt',
     'django_admin_lightweight_date_hierarchy',
     'date_range_filter',
 ]

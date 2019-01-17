@@ -1,8 +1,8 @@
-from rest_framework_jwt.settings import api_settings
-from rest_framework_jwt.utils import jwt_get_secret_key
-
 import jwt
 import datetime
+
+from rest_framework_jwt.settings import api_settings
+from rest_framework_jwt.utils import jwt_get_secret_key
 
 
 def jwt_payload_handler(user):
