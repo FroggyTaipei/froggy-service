@@ -77,21 +77,21 @@ export default {
       slide: false,
       mouse1: false,
       mouse2: false,
-      froggyHeight: 0,
+      froggyHeight: 0
     }
   },
   methods: {
-    makeInvisible(){
+    makeInvisible () {
       this.showIntro = !this.showIntro
-      setTimeout(()=>{
+      setTimeout(() => {
         this.showFroggy = true
-      },1000)
+      }, 1000)
     },
     closeInputDialog: function () {
       this.showInput = false
     },
     clickOption: function (action) {
-      if (action == 'findFroggy') {
+      if (action === 'findFroggy') {
         if (this.isFindFroggy) {
           this.isFindFroggy = !this.isFindFroggy
         } else if (this.isFroggyDoing) {
@@ -100,7 +100,7 @@ export default {
         } else {
           this.isFindFroggy = !this.isFindFroggy
         }
-      } else if (action == 'froggyDoing') {
+      } else if (action === 'froggyDoing') {
         if (this.isFroggyDoing) {
           this.isFroggyDoing = !this.isFroggyDoing
         } else if (this.isFindFroggy) {
@@ -118,7 +118,7 @@ export default {
       } else if (this.isFroggyDoing) {
         this.isFroggyDoing = false
         this.showInput = false
-        fullpage_api.moveTo('secondPage',0)
+        fullpage_api.moveTo('secondPage', 0)
       } else {
         console.log('no action')
       }
@@ -170,7 +170,7 @@ export default {
       return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
     }
   },
-    mounted: function(){
+  mounted: function () {
     // setTimeout(()=>{
     //   this.showIntro = !this.showIntro
     // },500)
@@ -204,16 +204,16 @@ export default {
   bottom: 0px
   left: 0px
 
-.froggy 
+.froggy
   bottom: -623px
 
-.bg 
+.bg
   background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png")
   background-repeat: no-repeat
   background-size: auto 100%
   position: relative
 
-.slide-up 
+.slide-up
   transform: translateY(-100%)
   transition: .4s ease-in-out
 
@@ -223,7 +223,7 @@ export default {
   padding: 16px 48px
   color: white
 
-.text-button 
+.text-button
   color: white
   margin-right: 20px
 
@@ -244,13 +244,13 @@ export default {
   animation: blinker 2s linear infinite
   &:hover
     cursor: pointer
-  
-@keyframes blinker 
+
+@keyframes blinker
   50%
     opacity: 0
 
 .fade-enter-active, .fade-leave-active
   transition: opacity .5s
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ 
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
   opacity: 0
 </style>

@@ -1,165 +1,48 @@
 <template>
-  <!-- Page three -->
   <fieldset>
-    <h2 class="fs-title">
-      Create your account
-    </h2>
-    <h3 class="fs-subtitle">
-      Fill in your credentials
-    </h3>
-    <div class="form-row">
-      <label
-        for="name"
-        class="col-sm-2 col-form-label">
-        姓名
-      </label>
-      <input
-        type="text"
-        name="姓名"
-        id="name"
-        class="form-control col-sm-10"
-        placeholder="e.g. 邱威傑"
-        v-validate="'required'"
-        v-model.trim="applicant.username">
-      <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('姓名') }}
-      </div>
-    </div>
-    <div class="form-row">
-      <label
-        for="mobile"
-        class="col-sm-2 col-form-label">
-        手機
-      </label>
-      <input
-        type="text"
-        name="手機"
-        id="mobile"
-        class="form-control col-sm-10"
-        placeholder="e.g. 0912345678"
-        v-validate="{ required: true, regex: /^09\d{8}$/ }"
-        v-model.trim="applicant.mobile">
-      <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('手機') }}
-      </div>
-    </div>
-    <div class="form-row">
-      <label
-        for="address"
-        class="col-sm-2 col-form-label">
-        住址
-      </label>
-      <select
-        name="行政區"
-        id="district"
-        class="form-control col-sm-5 district-bottom"
-        @change="selectDistrict"
-        v-validate="'required'"
-        v-model="district">
-        <option
-          disabled
-          value="">
-          選擇行政區
-        </option>
-        <option
-          v-for="(item, index) in $store.state.regions"
-          :key="index"
-          :value="item">
-          {{ item.name }}
-        </option>
-      </select>
-      <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('行政區') }}
-      </div>
-    </div>
-    <div class="form-row">
-      <input
-        type="text"
-        name="地址"
-        id="road"
-        class="form-control col-sm-10 offset-sm-2"
-        placeholder="e.g. 信義路三段"
-        v-validate="'required|max:20'"
-        v-model.lazy.trim="road">
-      <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('地址') }}
-      </div>
-    </div>
-    <div class="form-row">
-      <label
-        for="email"
-        class="col-sm-2 col-form-label">
-        Email
-      </label>
-      <input
-        type="text"
-        name="電子郵件"
-        id="email"
-        class="form-control col-sm-10"
-        placeholder="e.g. froggy@froggy.com"
-        v-validate="'required|email'"
-        v-model.trim="applicant.email">
-      <div class="col-sm-12 invalid-feedback">
-        {{ errors.first('電子郵件') }}
-      </div>
-    </div>
-    <div
-      class="form-row">
-      <div
-        class="col-sm-2">
-        Checkbox
-      </div>
-      <div class="col-sm-10">
-        <div class="form-check">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="agreementCheck"
-            v-model="agreement">
-          <label
-            class="form-check-label"
-            for="agreementCheck">
-            我同意台北市議員邱威傑選民服務系統隱私權及個人資料使用說明
-          </label>
-        </div>
-      </div>
-    </div>
+      <AccountKit v-show="false" ref="accountKit">
+        <el-button type="primary" @click="login">認證</el-button>
+      </AccountKit>
+    <el-form label-position="top" :model="applicant" label-width="80px" :rules="rules" ref="form">
+      <el-form-item label="姓名" prop="username">
+        <el-input placeholder="e.g. 邱威傑" v-model="applicant.username"></el-input>
+      </el-form-item>
+      <el-form-item label="手機">
+        <el-input placeholder="e.g. 0912345678" v-model="applicant.mobile"></el-input>
+      </el-form-item>
+      <el-form-item label="身份別" prop="region">
+        <el-select v-model="applicant.region" placeholder="請選擇">
+          <el-option
+            v-for="(item, index) in $store.state.regions"
+            :key="index"
+            :value="item.id"
+            :label="item.name"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="住址">
+        <el-input placeholder="e.g. 信義路三段" v-model="road"></el-input>
+      </el-form-item>
+      <el-form-item label="Email" prop="email">
+        <el-input placeholder="e.g. froggy@froggy.com" v-model="applicant.email"></el-input>
+      </el-form-item>
+      <el-form-item prop="agreement">
+          <el-checkbox :label="agreementText" name="type" v-model="applicant.agreement"></el-checkbox>
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="$emit('previous')">上一頁</el-button>
+        <el-button type="primary" @click="nextPage">下一頁</el-button>
+      </el-form-item>
+    </el-form>
 
-    <input
-      type="button"
-      name="previous"
-      class="previous action-button-previous"
-      value="Previous"
-      @click="$emit('previous')">
-    <input
-      type="button"
-      name="submit"
-      class="next action-button"
-      value="submit"
-      @click="submit">
-    <Modal
-      v-if="showAgreementPopup"
-      @close="showAgreementPopup = false">
-      <h2 slot="body">
-        請同意個人資料使用
-      </h2>
-    </Modal>
-    <Modal
-      v-if="caseCompletePopup"
-      @close="caseCompletePopup = false">
-      <h2 slot="body">
-        案件已送出
-      </h2>
-    </Modal>
   </fieldset>
 </template>
 
 <script>
-import Modal from './Modal.vue'
+import AccountKit from '@/components/AccountKit.vue'
 export default {
   name: 'InputUserInfo',
   components: {
-    Modal
+    AccountKit
   },
   props: {
     isClose: {
@@ -171,8 +54,7 @@ export default {
   },
   data: () => ({
     showAgreementPopup: false,
-    caseCompletePopup: false,
-    agreement: false,
+    agreementText: '我已閱讀並同意台北市議員邱威傑選民服務系統隱私權及個人資料使用說明',
     regions: [],
     road: '',
     district: '',
@@ -181,7 +63,35 @@ export default {
       mobile: '',
       email: '',
       address: '',
-      region: 1
+      region: 1,
+      agreement: false
+    },
+    rules: {
+      username: [{
+        required: true,
+        message: '請輸入姓名',
+        trigger: 'blur'
+      }],
+      region: [{
+        required: true,
+        message: '請選擇身份別',
+        trigger: 'change'
+      }],
+      email: [{
+        required: true,
+        message: '請輸入電子郵件信箱',
+        trigger: 'blur'
+      },
+      {
+        type: 'email',
+        message: '電子郵件格式錯誤',
+        trigger: 'change'
+      }],
+      agreement: [{
+        required: true,
+        message: '請同意個資使用',
+        trigger: 'change'
+      }]
     }
   }),
   mounted () {
@@ -205,43 +115,63 @@ export default {
     }
   },
   methods: {
+    login () {
+      this.$refs.accountKit.login(
+        {
+          countryCode: '+886',
+          phoneNumber: '0938926812'
+        },
+        this.loginCallback
+      )
+    },
+    loginCallback (response) {
+      console.log(response)
+      let accountKitResp = {
+        code: response.code,
+        status: response.status,
+        state: response.state
+      }
+      this.getAccountKitToken(accountKitResp)
+    },
+    getAccountKitToken (accountKitResp) {
+      console.log(accountKitResp)
+
+      this.axios.post('/api/users/accountkit_get_token/', accountKitResp)
+        .then(response => {
+          console.log('jwt ', response)
+        })
+        .catch(e => { console.log(e) })
+    },
     selectDistrict () {
       this.applicant.region = this.district.id
       this.applicant.address = this.district.name
     },
-    submit () {
-      this.$validator.validateAll().then((result) => {
-        if (result) {
-          console.log('Form Submitted!')
-          if (!this.agreement) {
-            console.log('please check agreement')
-            this.showAgreementPopup = true
-          } else {
-            console.log('form pass')
-            this.$store.commit('setCase', this.applicant)
-            this.submitCase()
-          }
-          return
+    nextPage () {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          console.log('form pass')
+          this.$store.commit('setCase', this.applicant)
+          this.$emit('next')
+        } else {
+          console.log('error submit!!')
+          return false
         }
-        console.log('Correct them errors!')
       })
     },
-    submitCase () {
-      let caseData = Object.assign({}, this.$store.state.case)
-      console.log(caseData)
-      this.axios.post('/api/cases', caseData, { headers: this.$store.state.header })
-        .then(response => {
-          console.log('submit success')
-          this.caseCompletePopup = true
+    validate () {
+      return new Promise((resolve, reject) => {
+        this.$refs.form.validate((valid) => {
+          this.$emit('on-validate', valid, this.model)
+          resolve(valid)
         })
-        .catch(e => { console.log(e) })
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
     }
   }
 }
 </script>
 
 <style lang="css" scoped>
-  .district-bottom {
-    margin-bottom: 10px;
-  }
 </style>

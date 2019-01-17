@@ -1,57 +1,48 @@
 <template>
-  <div class="container panel">
-    <button type="button" class="close" aria-label="Close" @click="closeInput">
-      <span aria-hidden="true">×</span>
-    </button>
-    <!-- MultiStep Form -->
-    <div class="row">
-      <div class="col-md-12 col-md-offset-6">
-        <div id="msform">
-          <!-- progressbar -->
-          <ul id="progressbar">
-            <li
-              v-for="item in steps"
-              :key="item.step"
-              :class="{active: item.step <= step}"
-              @click="checkStep(item)">
-              {{ item.text }}
-            </li>
-          </ul>
-          <!-- fieldsets -->
+  <el-row class="container-fluid section panel" :gutter="10">
+    <el-col :span="12" class="col1 hidden-xs-only">
+      <el-container>
+        <div class="footer">
+          <img src="../assets/images/dialog/person.png" >
+          <img src="../assets/images/dialog/footer.png" >
+        </div>
+      </el-container>
+    </el-col>
+    <el-col :xs="24" :span="12" class="col2">
+      <el-container>
+        <div class="input-dialog">
           <!-- Page one -->
           <fieldset v-show="step == 0">
-            <div class="container">
-              <div class="row">
+            <el-row :gutter="20">
+              <el-col
+                :xs="12"
+                :sm="6"
+                v-for="item in $store.state.types"
+                :key="item.index">
                 <div
-                  v-for="item in $store.state.types"
-                  :key="item.index"
-                  class="col-md-3 col-sm-6 col-xs-6"
+                  class="grid-content"
+                  :style="{ 'background-color': categories[item.id-1].color }"
                   @click="selectCaseType(item.id)">
-                  <div
-                    class="col-12 categories-item"
-                    :style="{ 'background-color': categories[item.id-1].color }">
-                    {{ item.name }}
-                  </div>
+                  {{ item.name }}
                 </div>
-              </div>
-            </div>
+              </el-col>
+            </el-row>
           </fieldset>
           <!-- Page two -->
-          <InputCase
+          <InputUserInfo
             v-show="step == 1"
             @next="next"
             @previous="previous"
             :isClose="isClose"/>
           <!-- Page three -->
-          <InputUserInfo
+          <InputCase
             v-show="step == 2"
             @previous="previous"
             :isClose="isClose"/>
         </div>
-      </div>
-    </div>
-    <!-- /.MultiStep Form -->
-  </div>
+      </el-container>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
@@ -64,7 +55,7 @@ export default {
     InputCase
   },
   data: () => ({
-    step: 0,
+    step: 2,
     isClose: false,
     steps: [
       { step: 0, text: '選擇案件分類', active: true, complete: false },
@@ -118,206 +109,51 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 /*custom font*/
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
 /*basic reset*/
 
-* {
-  margin: 0;
-  padding: 0;
+.panel {
+    background-image: url("../assets/images/dialog/background.png");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    position: relative;
 }
 
-.panel {
-  border: 5px solid red;
+.panel .el-col {
+  height: 100%
+}
+.col1 .el-container {
+  height: 100%
+}
+.col1 .el-main {
+  padding: 0px
+}
+.footer {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+.footer img{
+  width: 100%;
+  position: absolute;
+  bottom: 0px
+}
+.col2 .el-container {
+  height: 100%;
+  align-items: center;
+}
+
+.input-dialog{
+  height: 95%;
+  border: 1px solid transparent;
   border-radius: 10px;
+  background-image: url("../assets/images/dialog/inputBackground.png");
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: 16px;
   overflow-y: auto;
 }
-.row {
-  justify-content: center;
-}
-body {
-    font-family: montserrat, arial, verdana;
-    background: transparent;
-}
-
-/*form styles*/
-#msform {
-    text-align: center;
-    position: relative;
-    margin-top: 30px;
-}
-
-#msform fieldset {
-    background: white;
-    border: 0 none;
-    border-radius: 0px;
-    padding: 20px 30px;
-    box-sizing: border-box;
-    width: 80%;
-    margin: 0 10%;
-
-    /*stacking fieldsets above each other*/
-    position: relative;
-}
-
-#msform input[type="text"], #msform textarea {
-    padding: 15px;
-    border-radius: 0px;
-    margin-bottom: 10px;
-    width: 100%;
-    box-sizing: border-box;
-    font-family: montserrat;
-    color: #2C3E50;
-    font-size: 13px;
-}
-
-#msform .custom-file-label {
-  border: 1px solid #ccc;
-  border-radius: 0px !important;
-  margin-left: 15px;
-  margin-right: 15px;
-}
-
-#msform .custom-file-label::after {
-  content: "＋"
-}
-
-#msform .categories-item {
-  margin-bottom: 30px;
-  height: 175px;
-}
-
-#msform .form-group--error input[type="text"], #msform .form-group--error textarea {
-  border-color: #dc3545;
-}
-
- #msform .form-group--error input:focus {
-  outline-color: #dc3545;
- }
-
-#msform .form-group--error .error {
-  color: #28a745;
-}
-
-/*buttons*/
-
-.container .input-close {
-    position: absolute;
-    z-index: 999;
-    right: 20px;
-}
-
-#msform .action-button {
-    width: 100px;
-    background: #ee0979;
-    font-weight: bold;
-    color: white;
-    border: 0 none;
-    border-radius: 25px;
-    cursor: pointer;
-    padding: 10px 5px;
-    margin: 10px 5px;
-}
-
-#msform .action-button:hover, #msform .action-button:focus {
-    box-shadow: 0 0 0 2px white, 0 0 0 3px #ee0979;
-}
-
-#msform .action-button-previous {
-    width: 100px;
-    background: #C5C5F1;
-    font-weight: bold;
-    color: black;
-    border: 0 none;
-    border-radius: 25px;
-    cursor: pointer;
-    padding: 10px 5px;
-    margin: 10px 5px;
-}
-
-#msform .action-button-previous:hover, #msform .action-button-previous:focus {
-    box-shadow: 0 0 0 2px white, 0 0 0 3px #C5C5F1;
-}
-
-.file button {
-  width: 100%;
-}
-
-/*headings*/
-.fs-title {
-    font-size: 18px;
-    text-transform: uppercase;
-    color: #2C3E50;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-    font-weight: bold;
-}
-
-.fs-subtitle {
-    font-weight: normal;
-    font-size: 13px;
-    color: #666;
-    margin-bottom: 20px;
-}
-
-/*progressbar*/
-#progressbar {
-    margin-bottom: 30px;
-    overflow: hidden;
-    /*CSS counters to number the steps*/
-    counter-reset: step;
-}
-
-#progressbar li {
-    list-style-type: none;
-    color: black;
-    text-transform: uppercase;
-    font-size: 9px;
-    width: 33%;
-    float: left;
-    position: relative;
-    letter-spacing: 1px;
-}
-
-#progressbar li:before {
-    content: counter(step);
-    counter-increment: step;
-    width: 24px;
-    height: 24px;
-    line-height: 26px;
-    display: block;
-    font-size: 12px;
-    color: #333;
-    background: #dfe3e4;
-    border-radius: 25px;
-    margin: 0 auto 10px auto;
-}
-
-/*progressbar connectors*/
-#progressbar li:after {
-    content: '';
-    width: 100%;
-    height: 2px;
-    background: #dfe3e4;
-    position: absolute;
-    left: -50%;
-    top: 9px;
-    z-index: -1; /*put it behind the numbers*/
-}
-
-#progressbar li:first-child:after {
-    /*connector not needed before the first step*/
-    content: none;
-}
-
-/*marking active/completed steps green*/
-/*The number of the step and the connector before it = green*/
-#progressbar li.active:before, #progressbar li.active:after {
-    background: #ee0979;
-    color: white;
-}
-
 </style>

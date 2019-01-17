@@ -18,10 +18,10 @@ export default {
   data: function () {
     return {
       lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
-      options:{
+      options: {
         menu: false,
         lockAnchors: false,
-        anchors:['firstPage', 'secondPage','thirdPage'],
+        anchors: ['firstPage', 'secondPage', 'thirdPage'],
         navigation: false,
         // autoScrolling: false,
         verticalCentered: true,
@@ -40,7 +40,7 @@ export default {
       }
     }
   },
-  components: {Dialogue, CaseList, About}
+  components: { Dialogue, CaseList, About }
 }
 </script>
 
@@ -67,4 +67,12 @@ hr
 .el-menu-item
   a
     text-decoration: none
+form
+  textarea,.el-input__inner
+    background-color: rgba(#fff, .3) !important
+    border-color: transparent !important
+  .el-form-item__label
+    padding: 0px !important
+    color: white
+    font-size: larger
 </style>
