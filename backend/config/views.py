@@ -1,7 +1,18 @@
+import environ
+
 from django.http import JsonResponse
-from django.middleware import csrf
+from django.core.signing import TimestampSigner
+
+
+env = environ.Env()
+
+
+ACCOUNTKIT_APP_ID = env.str('ACCOUNTKIT_APP_ID')
 
 
 def get_token(request):
-    token = csrf.get_token(request)
-    return JsonResponse({'token': token})
+    signer = TimestampSigner()
+    state = signer.sign(ACCOUNTKIT_APP_ID)
+    return JsonResponse({
+        'state': state,
+    })

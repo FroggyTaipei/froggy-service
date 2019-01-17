@@ -1,4 +1,5 @@
 import jwt
+
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext as _
 
