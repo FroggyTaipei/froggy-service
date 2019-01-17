@@ -128,7 +128,7 @@ class Case(Model):
         if created:
             self.number = str(self.pk).zfill(6)
             self.save()
-            self.confirm(template_name='收件確認')
+            self.confirm(template_name='收件通知')
 
     def __str__(self):
         return self.number
@@ -199,12 +199,13 @@ class Case(Model):
             'content': first.content,
             'location': first.location,
         }
-        template = SendGridMailTemplate.objects.filter(name=template_name).first()
+        template = SendGridMailTemplate.objects.get(name=template_name)
         SendGridMail.objects.create(case=self, template=template,
                                     from_email=settings.EMAIL_HOST_USER,
                                     to_email=first.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED, conditions=[can_disapprove],
+                permission=lambda instance, user: user.has_perm('cases.change_case'),
                 custom={'button_name': '設為不受理'})
     def disapprove(self):
         first = self.first_history or self
@@ -215,19 +216,21 @@ class Case(Model):
             'datetime': self.create_time,
             'content': self.disapprove_info,
         }
-        template = SendGridMailTemplate.objects.filter(name='不受理通知').first()
+        template = SendGridMailTemplate.objects.get(name='不受理通知')
         SendGridMail.objects.create(case=self, template=template,
                                     from_email=settings.EMAIL_HOST_USER,
                                     to_email=first.email, data=data)
         self.close_time = timezone.now()
 
     @transition(field=state, source=State.DRAFT, target=State.ARRANGED, conditions=[can_arrange],
+                permission=lambda instance, user: user.has_perm('cases.change_case'),
                 custom={'button_name': '設為處理中'})
     def arrange(self):
         self.confirm(template_name='成案通知')
         self.open_time = timezone.now()
 
     @transition(field=state, source=State.ARRANGED, target=State.CLOSED, conditions=[can_close],
+                permission=lambda instance, user: user.has_perm('cases.change_case'),
                 custom={'button_name': '設為已結案'})
     def close(self):
         first = self.first_history or self
@@ -244,11 +247,18 @@ class Case(Model):
                 for arrange in self.arranges.all()
             ],
         }
-        template = SendGridMailTemplate.objects.filter(name='結案通知').first()
+        template = SendGridMailTemplate.objects.get(name='結案通知')
         SendGridMail.objects.create(case=self, template=template,
                                     from_email=settings.EMAIL_HOST_USER,
                                     to_email=first.email, data=data)
         self.close_time = timezone.now()
+
+    @transition(field=state, source=[State.DISAPPROVED, State.CLOSED], target=State.ARRANGED, conditions=[can_arrange],
+                permission=lambda instance, user: user.has_perm('cases.change_case'),
+                custom={'button_name': '設回處理中'})
+    def rearrange(self):
+        self.confirm(template_name='成案通知')
+        self.open_time = timezone.now()
 
 
 def case_mode_save(sender, instance, *args, **kwargs):
@@ -292,3 +302,7 @@ class CaseHistory(Model):
 
     def __str__(self):
         return self.case.number
+
+    def tw_mobile(self):
+        return '0' + str(self.mobile.national_number)
+    tw_mobile.short_description = _('Mobile')
