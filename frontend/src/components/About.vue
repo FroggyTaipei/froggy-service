@@ -10,13 +10,15 @@ el-container.page3
         el-menu-item(index='#thirdPage')
           a(href="#thirdPage") 關於魔鏡號
     el-row(type="flex" align="middle" justify="center")
-      el-col(:span=18)
+      el-col(:span=24)
+        .about-title
+          h1 選服魔鏡號 市民看得到
+          h1 －台北市議員邱威傑市民服務系統
+    el-row(type="flex" align="middle" justify="center")
+      el-col(:span=24)
         el-row(type="flex" align="middle" justify="center")
           el-col(:span=14)
             article
-              .about-title
-                h1 選服魔鏡號 市民看得到
-                h1 －台北市議員邱威傑市民服務系統
               .about-content
                 span 公開透明。
                 br
@@ -73,24 +75,24 @@ export default {
 .el-menu-item
   a
     text-decoration: none
-article
-  .about-title
+.about-title
     margin-top: 20px
     margin-bottom: 20px
     h1
       font-size: 24px
+article
   .about-content
     max-height: 60vh
     overflow: scroll
     span
-      font-size: 18px
+      font-size: 0.8em
 
 .text-center
   text-align: center
 
 .footer-row
   margin: auto auto 0 auto
-  height: 20%
+  // height: 20%
   width: 100%
   background-color: gray
   .footer

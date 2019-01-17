@@ -45,6 +45,13 @@ export default {
 </script>
 
 <style lang="sass">
+
+.about-content
+  font-size: 16px
+.about-title
+  h1
+    @media screen and (min-width: 301px)
+      font-size: 16px
 *
   // border: solid 1px
 .fp-tableCell
@@ -59,11 +66,19 @@ html,body
 hr
   background-color: black
 
-.el-menu--horizontal
+table
+  background-color: transparent
+
+.el-menu--horizontal, .el-menu.el-menu--horizontal, .el-menu--horizontal>.el-menu-item.is-active
   border: none
-.el-menu--horizontal>.el-menu-item.is-active
-  border-bottom-color: transparent
+  background-color: transparent
+
+.el-menu.el-menu--horizontal
+  color: white
+
+.el-menu--horizontal>.el-menu-item, .el-menu--horizontal>.el-menu-item a, .el-menu--horizontal>.el-menu-item a:hover
   border-bottom: none
+  color: white
 .el-menu-item
   a
     text-decoration: none

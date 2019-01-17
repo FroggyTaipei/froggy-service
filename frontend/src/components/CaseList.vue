@@ -1,22 +1,9 @@
 <template lang="pug">
 el-container.page2
   el-main
-    //- Navbar
-    el-row(type="flex" align="middle" justify="center")
-      el-menu(theme='dark', default-active='0', mode='horizontal', :router='false')
-        el-menu-item(index='#firstPage')
-          a(href="#firstPage") 我要服務
-        el-menu-item(index='#secondPage')
-          a(href="#secondPage") 呱吉做什麼
-        el-menu-item(index='#thirdPage')
-          a(href="#thirdPage") 關於魔鏡號
-    el-row(type="flex" align="middle" justify="center")
-      el-col(:span=18)
-        h1 呱吉做什麼
-
-    el-row(type="flex" align="middle" justify="center")
-      el-col(:span=18)
-        el-table.caseTable(:data='tableData', style='width: 100%' max-height="800")
+    el-row.row-table(type="flex" align="middle" v-on:scroll="preventParentsScroll",justify="center")
+      el-col(:span=24)
+        el-table.caseTable(:data='tableData', ref="casetb" ,style='width: 100%' max-height="500")
           //- el-table-column(type='expand')
             template(slot-scope='props')
               el-form.demo-table-expand(label-position='left', inline='')
@@ -48,6 +35,16 @@ el-container.page2
           span.dialog-footer(slot='footer')
             el-button(@click='dialogVisible = false') 取 消
             el-button(type='primary', @click='dialogVisible = false') 确 定
+    el-row.row-dialog(type="flex" align="middle" justify="center")
+      .bottom-dialog-wrapper
+        .bottom-dialog-left
+          h1 呱吉做什麼.......
+        .bottom-dialog-right
+          span.bottom-dialog-options 我要服務
+          span.bottom-dialog-options 呱吉做什麼
+          span.bottom-dialog-options 關於魔鏡號
+          span.bottom-dialog-options -
+
 
 </template>
 
@@ -75,6 +72,9 @@ export default {
       .then(response => (this.tableData = response.data))
   },
   methods:{
+    preventParentsScroll: function(){
+      console.log('scrolling')
+    }
   },
   computed:{},
   props:['lorem']
@@ -95,5 +95,57 @@ export default {
   a
     text-decoration: none
 .el-main
+  display: flex
+  flex-shrink: 0
+  flex-grow: 1
+  flex-direction: column
   width: 100%
+  height: 100vh
+  align-items: center
+  justify-content: center
+
+.el-row
+  width: 100%
+
+.row-table
+  flex: 7
+.row-dialog
+  flex: 1
+
+.bottom-dialog-wrapper
+  position: absolute
+  display: flex
+  flex-direction: row
+  // bottom: 0
+  padding: 5px
+  background-color: rgba(0,0,0,1)
+  width: 100%
+  height: 100%
+  .bottom-dialog-left
+    background-color: white
+    border: solid 5px gray
+    border-radius: 20px
+    margin-right: 5px
+    flex: 3
+    h1
+      padding: 20px
+      font-size: 40px
+  .bottom-dialog-right
+    background-color: white
+    border: solid 5px gray
+    border-radius: 20px
+    flex: 2
+    display: flex
+    flex-direction: row
+    flex-wrap: wrap
+    align-items: center
+    justify-content: center
+    .bottom-dialog-options
+      flex-basis: calc(50%)
+      justify-content: center
+      flex-direction: column
+      text-align: center
+      font-size: 1.2em
+
+
 </style>
