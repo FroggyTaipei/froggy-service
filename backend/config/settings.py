@@ -39,6 +39,8 @@ THIRD_PARTY_APPS = [
     'fsm_admin',
     'rest_framework_swagger',
     'phonenumber_field',
+    'django_admin_lightweight_date_hierarchy',
+    'date_range_filter',
 ]
 
 LOCAL_APPS = [
@@ -330,6 +332,7 @@ FIXTURE_DIRS = (
     str(ROOT_DIR('fixtures/cases')),
     str(ROOT_DIR('fixtures/arranges')),
     str(ROOT_DIR('fixtures/mails')),
+    str(ROOT_DIR('fixtures/auth')),
 )
 
 # Cloud Storage
@@ -359,4 +362,5 @@ SUIT_CONFIG = {
     'HEADER_DATE_FORMAT': 'l, Y F j',
     'HEADER_TIME_FORMAT': 'H:i',
     'LIST_PER_PAGE': 30,
+    'CONFIRM_UNSAVED_CHANGES': True,
 }

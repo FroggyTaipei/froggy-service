@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
+from django.utils.safestring import mark_safe
 from django.utils import formats
 from django.db.models import (
     Model,
@@ -20,12 +21,10 @@ class State(object):
     """案件處理狀態"""
     DRAFT = 'draft'
     PUBLISHED = 'published'
-    REPUBLISHED = 'republished'
 
     CHOICES = (
         (DRAFT, '尚未發布'),
         (PUBLISHED, '已發布'),
-        (REPUBLISHED, '已重新發布'),
     )
 
 
@@ -52,7 +51,7 @@ class Arrange(Model):
     class Meta:
         verbose_name = _('Arrange')
         verbose_name_plural = _('Arrange')
-        ordering = ('order',)
+        ordering = ('-arrange_time',)
 
     def __str__(self):
         return f'{self.case.number}-{self.title}'
@@ -60,9 +59,14 @@ class Arrange(Model):
     def format_arrange_time(self, format_='SHORT_DATETIME_FORMAT'):
         return formats.date_format(self.arrange_time, format_)
 
+    def html_content(self):
+        return mark_safe(self.content)
+    html_content.short_description = _('Content')
+    html_content.allow_tags = True
+
     @property
     def published(self):
-        return self.state in ['published', 'republished']
+        return self.state in ['published']
 
     @property
     def email_content(self):
@@ -89,7 +93,7 @@ class Arrange(Model):
 
     def send(self):
         origin = self.case.first_history
-        template = SendGridMailTemplate.objects.filter(name='進度報告').first()
+        template = SendGridMailTemplate.objects.get(name='進度報告')
         data = {
             'number': self.case.number,
             'username': origin.username,
@@ -103,14 +107,8 @@ class Arrange(Model):
                                     to_email=origin.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.PUBLISHED, conditions=[can_publish],
+                permission=lambda instance, user: user.has_perm('cases.change_arrange'),
                 custom={'button_name': '發布'})
     def publish(self):
-        self.send()
-        self.publish_time = timezone.now()
-
-    @transition(field=state, source=State.PUBLISHED, target=State.REPUBLISHED,
-                custom={'button_name': '重新發布'})
-    def republish(self):
-        """"""
         self.send()
         self.publish_time = timezone.now()
