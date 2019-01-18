@@ -34,7 +34,9 @@ export default {
 *
   // border: solid 1px
   font-family: PingFangSC-Regular
-
+@mixin placeholder-color
+  &::-webkit-input-placeholder
+      color: #7b68eeba
 html,body
   margin: auto
   width: 100vw
@@ -62,11 +64,19 @@ table
   line-height: 30px !important
 
 form
-  textarea,.el-input__inner
+  .el-textarea__inner,.el-input__inner
     background-color: rgba(#fff, .3) !important
     border-color: transparent !important
+    +placeholder-color
   .el-form-item__label
     padding: 0px !important
     color: white
     font-size: larger
+.form-footer-btn
+  float: right
+  padding-top: 16px
+  button
+    background-color: rgba(#fff, .3)
+    border-color: transparent;
+    font-weight: bold
 </style>

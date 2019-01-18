@@ -17,7 +17,7 @@ export default {
     return {
       appId: '',
       version: '',
-      debug: true,
+      debug: false,
       state: 'somecrsf',
       fbAppEventsEnabled: true,
       loginType: 'PHONE',
@@ -48,16 +48,16 @@ export default {
 
   methods: {
     updateCSRFToken () {
-      this.axios.delete('/api/types/1', { headers: this.$store.state.header })
+      this.axios.delete('/api/types/1')
         .then(response => {
           console.log(response)
         })
         .catch(e => { console.log(e) })
     },
     getCSRFToken () {
-      return this.axios.get('api/csrftoken/', { headers: this.$store.state.header })
+      return this.axios.get('api/csrftoken/')
         .then(response => {
-          return response.data['token']
+          return response.data['state']
         })
         .catch(e => { console.log(e) })
     },

@@ -120,9 +120,9 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False, permission_classes=[])
     def accountkit_get_token(self, request):
-        code = request.POST.get('code')
-        state = request.POST.get('state')
-        status_ = request.POST.get('status')
+        code = request.data.get('code')
+        state = request.data.get('state')
+        status_ = request.data.get('status')
 
         if status_ != "PARTIALLY_AUTHENTICATED":
             raise AuthenticationFailed('AccountKit not authenticated.')
