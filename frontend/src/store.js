@@ -10,7 +10,8 @@ const store = new Vuex.Store({
     case: {},
     regions: [],
     types: [],
-    header: { Authorization: 'Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' }
+    header: { Authorization: 'Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' },
+    jwt: {}
   },
   getters: {},
   mutations: {
@@ -22,6 +23,9 @@ const store = new Vuex.Store({
     },
     setTypes (state, type) {
       state.types = type
+    },
+    setJWT (state, jwt) {
+      state.jwt = jwt
     }
   },
   actions: {

@@ -1,33 +1,58 @@
 <template>
-  <el-row class="container-fluid panel" :gutter="10">
-    <el-col :span="12" class="col1 hidden-xs-only">
-      <el-container>
-        <div class="footer">
-          <img src="https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/person.png" >
-          <img src="https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/form_footer.png" >
-        </div>
-      </el-container>
-    </el-col>
-    <el-col :xs="24" :span="12" class="col2">
-      <el-container>
-        <div class="input-dialog">
-          <!-- Page one -->
-          <fieldset v-show="step == 0">
-            <el-row :gutter="20">
-              <el-col
-                :xs="12"
-                :sm="6"
-                v-for="item in $store.state.types"
-                :key="item.index">
-                <div
-                  class="grid-content"
-                  :style="{ 'background-color': categories[item.id-1].color }"
-                  @click="selectCaseType(item.id)">
-                  {{ item.name }}
-                </div>
+  <el-container style="height:100%">
+    <!-- Page one -->
+    <el-row type="flex" class="panel category-page" v-show="step == 0">
+          <div class="category-content">
+            <el-row type="flex" class="category-content-row1">
+              <el-col :sm="24">
+                <img src="@/assets/images/dialog/category/namebar.png" height="68%">
               </el-col>
             </el-row>
-          </fieldset>
+            <el-row type="flex" justify="center" class="category-content-row2">
+                <el-col :sm="12" class="hidden-xs-only category-content-person">
+                  <img class="category-content-center" src="@/assets/images/dialog/category/person.png" width="80%">
+                </el-col>
+                <el-col :xs="24" :sm="12">
+                  <img class="category-content-center category-content-froggy" src="@/assets/images/dialog/category/froggy.png" width="75%">
+                  <img src="@/assets/images/dialog/category/progress.png" width="95%">
+                </el-col>
+            </el-row>
+          </div>
+          <div class="category-footer">
+            <img src="@/assets/images/dialog/category/footer.png" >
+            <el-row>
+                <el-col
+                  :xs="24"
+                  :sm="6"
+                  v-for="item in $store.state.types"
+                  :key="item.id">
+                  <div class="category-item">
+                    <div
+                      class="category-btn"
+                      @click="selectCaseType(item.id)">
+                      {{ item.name }}
+                    </div>
+                    <div class="category-icon">
+                      <i class="el-icon-caret-right"></i>
+                    </div>
+                  </div>
+                </el-col>
+              </el-row>
+          </div>
+    </el-row>
+    <el-row type="flex" class="panel form-page" :gutter="10" v-show="step > 0">
+      <div class="bg-logo">
+      </div>
+      <el-col :span="12" class="col1 hidden-xs-only">
+        <el-container>
+          <div class="footer">
+            <img style="width:90%" src="@/assets/images/dialog/input/froggy.png" >
+            <img src="@/assets/images/dialog/input/progress.png" >
+          </div>
+        </el-container>
+      </el-col>
+      <el-col :xs="24" :span="12" class="col2">
+        <div class="input-dialog">
           <!-- Page two -->
           <InputUserInfo
             v-show="step == 1"
@@ -40,9 +65,9 @@
             @previous="previous"
             :isClose="isClose"/>
         </div>
-      </el-container>
-    </el-col>
-  </el-row>
+      </el-col>
+    </el-row>
+  </el-container>
 </template>
 
 <script>
@@ -55,8 +80,12 @@ export default {
     InputCase
   },
   data: () => ({
-    step: 2,
+    step: 0,
     isClose: false,
+    backgrounds: [
+      '../assets/images/dialog/input/background.png',
+      '../assets/images/dialog/category/background.png'
+    ],
     steps: [
       { step: 0, text: '選擇案件分類', active: true, complete: false },
       { step: 1, text: '輸入案件內容', active: false, complete: false },
@@ -85,6 +114,8 @@ export default {
       this.$emit('closeInput')
     },
     selectCaseType (type) {
+      console.log(type)
+
       this.$store.commit('setCase', { type: type })
       this.next()
     },
@@ -113,17 +144,106 @@ export default {
 /*custom font*/
 @import url(https://fonts.googleapis.com/css?family=Montserrat);
 
-/*basic reset*/
-
 .panel {
-    /* background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png"); */
     background-repeat: no-repeat;
     background-size: 100% auto;
     position: relative;
+    width: -webkit-fill-available;
+}
+.form-page {
+    background-image: url("../assets/images/dialog/input/background.png");
+}
+.category-page {
+    background-image: url("../assets/images/dialog/category/background.png");
+    flex-direction: column;
+}
+.category-page > div {
+  display: flex;
+}
+.category-content {
+  flex: 1;
+  flex-direction: column;
+  width: 90%;
+  margin: auto;
+}
+.category-content > div.el-row {
+  flex: 1;
 }
 
-.panel .el-col {
-  height: 100%
+.category-content-row1 img {
+  padding: 16px;
+  margin-left: 15vh;
+}
+
+.category-content-row2 > div.el-col {
+  position: relative;
+}
+
+.category-content-row2 > div.el-col img {
+  position: absolute;
+  bottom: 0px
+
+}
+.category-content-center {
+  margin: auto;
+  left: 0;
+  right: 0;
+
+}
+.category-content-person > img {
+  bottom: -12vh !important;
+}
+.category-content-froggy {
+  bottom: 6vh !important;
+}
+.category-footer {
+    background-image: url("../assets/images/dialog/category/footer.png");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+    background-position: center;
+    position: relative;
+    flex-direction: column;
+    align-self: flex-end;
+}
+.category-footer > img {
+    vertical-align: top;
+    width: 100%;
+    opacity: 0;
+}
+.category-footer > .el-row {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  padding: 28px 30px;
+}
+.category-footer .el-col-sm-6 {
+  height: 50%
+}
+.category-item {
+  height: 100%;
+  display: flex;
+  flex-direction: row-reverse;
+}
+.category-item > div {
+  display: flex;
+}
+.category-icon {
+  flex: 1;
+  font-size: 12vh;
+  align-self: center;
+  color: transparent;
+}
+.category-btn {
+  flex: 4;
+  justify-content: center;
+  align-items: center;
+  font-size: 8vh;
+  font-weight: 600;
+  cursor: pointer;
+}
+div.category-btn:hover + div {
+  color: black;
 }
 .col1 .el-container {
   height: 100%
@@ -145,15 +265,36 @@ export default {
   height: 100%;
   align-items: center;
 }
-
-.input-dialog{
+.bg-logo {
+  position: absolute;
+  top: 0;
+  left: 0px;
+  right: 0px;
+  height: 100%;
+  opacity: 0.5;
+  text-align: -webkit-center;
+  background-image: url("../assets/images/dialog/input/logo.png");
+  background-repeat: no-repeat;
+  background-size: 100% auto;
+  background-position: center;
+}
+.input-dialog {
   height: 95%;
+  z-index: 999;
+  opacity: 0.9;
   border: 1px solid transparent;
   border-radius: 10px;
-  background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/form_inputBackground.png");
+  background-image: url("../assets/images/dialog/input/inputBackground.png");
   background-repeat: no-repeat;
   background-size: cover;
   padding: 16px;
   overflow-y: auto;
+  max-width: 80%;
+  margin: 0 auto;
+}
+.input-dialog > fieldset {
+  height: 90%;
+  border-color: transparent;
+  position: relative;
 }
 </style>

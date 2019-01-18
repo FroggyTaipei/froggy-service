@@ -55,7 +55,7 @@ class CaseViewSet(ModelViewSet):
     def perform_create(self, serializer):
         """Create時透過jwt user token，從user instance取得mobile"""
         user = self.request.user
-        serializer.validate_data['mobile'] = user.mobile
+        serializer.validated_data['mobile'] = user.mobile
         serializer.save()
 
     @action(methods=['GET'], detail=False)
