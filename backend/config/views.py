@@ -7,7 +7,7 @@ from django.core.signing import TimestampSigner
 env = environ.Env()
 
 
-ACCOUNTKIT_APP_ID = env.str('ACCOUNTKIT_APP_ID')
+ACCOUNTKIT_APP_ID = env.str('VUE_APP_ACCOUNTKIT_APP_ID')
 
 
 def get_token(request):
