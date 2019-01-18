@@ -5,42 +5,26 @@ el-container.page1
       el-row(type="flex" justify="center" align="middle" v-show="showIntro")
         el-col
           .center(v-show="showIntro")
-            img.introImg(:src="introUrl")
-            h1.intro(@click="makeInvisible" ) START
-
-        //- .main(v-show="showFroggy")
-        //-   img.froggyImage(:src="froggyUrl")
+            img.intro-img(:src="introUrl")
+            h1.intro-text(@click="makeInvisible" ) START
     transition(name="fade")
       el-row(type="flex" align="middle" justify="center" v-show="showFroggy" @click='come')
         el-col(:span="18")
-          img.froggyImage(:src="froggyUrl", @load='getHeight', ref='froggy', :class="{'slide-up': slide}", :style="{bottom:froggyHeight+'px'}")
-          el-row(type="flex" align="middle" justify="center")
+          img.froggyImage(:src="froggyUrl")
+          el-row(type="flex" align="end" justify="center")
             el-col
-              img.bottom(src='../assets/text.png')
-            el-col
-              .bottom.froggy-text
-                h1 台北市議員邱威傑：
-                span {{dialogue[sceneCount].textContent[0]}}
-              .bottom.bottom-btn
-                i.el-icon-caret-right(v-show='mouse1')
-                el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)') 我要找呱吉
-                i.el-icon-caret-right(v-show='mouse2')
-                el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
-        //- img.froggyImage.bottom(:src="froggyImageUrl", @load='getHeight', ref='froggy', :class="{'slide-up': slide}", :style="{bottom:froggyHeight+'px'}")
-        //- el-row
-            //- el-col(:span="6")
-            //- InputDialog(v-show="showInput" v-on:closeInput="closeInputDialog")
-      //- el-row(type="flex" align="top" justify="center")
-        el-col(:span="12")
-          .conversation(v-show="!showInput")
-            el-row(type="flex" align="top" justify="end")
-              el-col(:span="24")
-                h1 邱威傑：
-                span {{dialogue[sceneCount].textContent[0]}}
-            el-row(type="flex" align="middle" justify="center")
-              el-col.text(:span="12" style="align-self: flex-end" :class="{selected: isFindFroggy}" @click="clickOption('findFroggy')") 我要找呱吉
-              el-col.text(:span="12" :class="{selected: isFroggyDoing}" @click="clickOption('froggyDoing')") 呱吉做什麼
-              el-button.goButton(type="success" @click="dialogAction") GO
+              .text-block-back
+                .text-block-front
+                  h1 台北市議員邱威傑：
+                  span {{dialogue[sceneCount].textContent[0]}}
+                  .bottom.bottom-btn
+                    .space
+                    .btn-wrapper
+                      i.el-icon-caret-right(v-show='mouse1')
+                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)') 我要找呱吉
+                    .btn-wrapper
+                      i.el-icon-caret-right(v-show='mouse2')
+                      el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
 </template>
 
 <script>
@@ -134,16 +118,16 @@ export default {
       this.slide = true
     },
     hover (index) {
-      if (index) {
+      if (index===1) {
         this.mouse1 = true
-      } else {
+      } else if(index===2) {
         this.mouse2 = true
       }
     },
     leave (index) {
-      if (index) {
+      if (index===1) {
         this.mouse1 = false
-      } else {
+      } else if(index===2) {
         this.mouse2 = false
       }
     }
@@ -170,10 +154,13 @@ export default {
       return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
     }
   },
-  mounted: function () {
-    // setTimeout(()=>{
-    //   this.showIntro = !this.showIntro
-    // },500)
+    mounted: function(){
+    setTimeout(()=>{
+      this.showIntro = !this.showIntro
+      setTimeout(()=>{
+        this.showFroggy = true
+      },500)
+    },1500)
   },
   props: ['lorem']
 }
@@ -192,11 +179,16 @@ export default {
   align-items: center
   justify-content: center
 
-.introImg
+.el-row
+  width: 100%
+
+.intro-img
   width: 100%
 
 .froggyImage
   width: 100%
+  transform: translateY(1000px)
+  animation: flyin 2s forwards
 //
 .bottom
   width: 100%
@@ -204,38 +196,45 @@ export default {
   bottom: 0px
   left: 0px
 
-.froggy
-  bottom: -623px
-
-.bg
-  background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png")
-  background-repeat: no-repeat
-  background-size: auto 100%
-  position: relative
-
-.slide-up
-  transform: translateY(-100%)
-  transition: .4s ease-in-out
-
 .bottom-btn
   width: 80%
   text-align: right
   padding: 16px 48px
   color: white
+  display: flex
+  .space
+    flex: auto
+  .btn-wrapper
+    flex-basis: 120px
+    felx: 0 0 120px
 
 .text-button
   color: white
   margin-right: 20px
 
-.froggy-text
-  color: white
-  width: 80%
-  padding: 48px
-  textalign: center
+.text-block-back
+  display: flex
+  position: absolute
+  background-color: rgba(255,255,255,0.6)
+  width: 100%
+  height: 20vh
+  bottom: 0
+  border-radius: 10px
+  .text-block-front
+    display: flex
+    flex-direction: column
+    margin: auto
+    color: white
+    background-color: rgba(26,110,99,0.8)
+    width: 95%
+    height: 98%
+    border-radius: 10px
+    h1
+      padding: 20px
+    span
+      padding: 0px 20px 10px 20px
 
-//
-
-.intro
+.intro-text
   font-size: 80px
   color: white
   font-weight: bold
@@ -249,6 +248,10 @@ export default {
   50%
     opacity: 0
 
+@keyframes flyin 
+  100%
+    transform: translateY(0)
+// Vue animation
 .fade-enter-active, .fade-leave-active
   transition: opacity .5s
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */

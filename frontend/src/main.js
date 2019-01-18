@@ -12,9 +12,74 @@ import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
 import './registerServiceWorker'
 import moment from 'moment'
-
+import {ServerTable, ClientTable, Event} from 'vue-tables-2';
 import 'fullpage.js/vendors/scrolloverflow'
 import VueFullPage from 'vue-fullpage.js'
+import { DataTables, DataTablesServer } from 'vue-data-tables'
+
+Vue.use(ClientTable, {}, 'false', 'bootstrap4', 'default');
+Vue.use(DataTables)
+Vue.use(DataTablesServer)
+Vue.use(ElementUI)
+Vue.use(VueFullPage)
+Vue.use(UUID)
+
+Vue.prototype.$moment = moment
+
+// Vue.use(VeeValidate, {
+//   locale: 'zh-TW',
+//   classes: true,
+//   classNames: {
+//     valid: 'is-valid',
+//     invalid: 'is-invalid',
+//   },
+//   fieldsBagName: 'vee-fields',
+// })
+// Validator.localize('zh-TW', zh)
+Vue.config.productionTip = false
+
+axios.defaults.xsrfCookieName = 'csrftoken'
+axios.defaults.xsrfHeaderName = 'X-CSRFToken'
+window.axios = require('axios')
+Vue.use(VueAxios, axios)
+Vue.config.productionTip = false
+
+// window.$ = require('jquery')
+// window.JQuery = require('jquery')
+
+// Sentry for logging frontend errors
+if (process.env.NODE_ENV === 'production') {
+  Vue.use(VueRaven, { dsn: process.env.VUE_APP_SENTRY_PUBLIC_DSN })
+}
+
+Vue.use(Loading.directive)
+
+Vue.prototype.$loading = Loading.service
+Vue.prototype.$msgbox = MessageBox
+Vue.prototype.$alert = MessageBox.alert
+Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$prompt = MessageBox.prompt
+Vue.prototype.$notify = Notification
+Vue.prototype.$message = Message
+
+// more info: https://github.com/MatteoGabriele/vue-analytics
+// Vue.use(VueAnalytics, {
+//   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
+//   router
+// })
+
+Vue.filter('formatSize', function (size) {
+  if (size > 1024 * 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB'
+  } else if (size > 1024 * 1024 * 1024) {
+    return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
+  } else if (size > 1024 * 1024) {
+    return (size / 1024 / 1024).toFixed(2) + ' MB'
+  } else if (size > 1024) {
+    return (size / 1024).toFixed(2) + ' KB'
+  }
+  return size.toString() + ' B'
+})
 
 import {
   Pagination,
@@ -85,55 +150,6 @@ import {
   Message,
   Notification
 } from 'element-ui'
-Vue.use(ElementUI)
-Vue.use(VueFullPage)
-
-Vue.use(UUID)
-
-Vue.prototype.$moment = moment
-
-axios.defaults.xsrfCookieName = 'csrftoken'
-axios.defaults.xsrfHeaderName = 'X-CSRFToken'
-window.axios = require('axios')
-Vue.use(VueAxios, axios)
-Vue.config.productionTip = false
-
-// window.$ = require('jquery')
-// window.JQuery = require('jquery')
-
-// Sentry for logging frontend errors
-if (process.env.NODE_ENV === 'production') {
-  Vue.use(VueRaven, { dsn: process.env.VUE_APP_SENTRY_PUBLIC_DSN })
-}
-
-Vue.use(Loading.directive)
-
-Vue.prototype.$loading = Loading.service
-Vue.prototype.$msgbox = MessageBox
-Vue.prototype.$alert = MessageBox.alert
-Vue.prototype.$confirm = MessageBox.confirm
-Vue.prototype.$prompt = MessageBox.prompt
-Vue.prototype.$notify = Notification
-Vue.prototype.$message = Message
-
-// more info: https://github.com/MatteoGabriele/vue-analytics
-// Vue.use(VueAnalytics, {
-//   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
-//   router
-// })
-
-Vue.filter('formatSize', function (size) {
-  if (size > 1024 * 1024 * 1024 * 1024) {
-    return (size / 1024 / 1024 / 1024 / 1024).toFixed(2) + ' TB'
-  } else if (size > 1024 * 1024 * 1024) {
-    return (size / 1024 / 1024 / 1024).toFixed(2) + ' GB'
-  } else if (size > 1024 * 1024) {
-    return (size / 1024 / 1024).toFixed(2) + ' MB'
-  } else if (size > 1024) {
-    return (size / 1024).toFixed(2) + ' KB'
-  }
-  return size.toString() + ' B'
-})
 
 Vue.use(Pagination)
 Vue.use(Dialog)
