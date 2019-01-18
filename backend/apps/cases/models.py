@@ -143,7 +143,6 @@ class Case(Model):
             'content': self.content,
             'location': self.location,
             'username': self.username,
-            'mobile': self.mobile,
             'email': self.email,
             'address': self.address,
         }
@@ -286,7 +285,6 @@ class CaseHistory(Model):
     content = TextField(verbose_name=_('Content'))
     location = CharField(max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
-    mobile = PhoneNumberField(verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
     address = CharField(max_length=255, verbose_name=_('Address'))
     create_time = DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))

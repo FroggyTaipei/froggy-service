@@ -54,7 +54,7 @@ class CaseCrudTestCase(TestCase):
         with self.assertRaises(TransitionNotAllowed):
             self.case.arrange()
 
-        self.case.mobile = '+886910201940'
+        self.case.username = 'John Doe'
         self.case.save()
         self.assertEqual(qs.count(), 2)
         self.case.arrange()
