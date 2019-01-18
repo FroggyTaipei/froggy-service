@@ -52,6 +52,13 @@ class CaseViewSet(ModelViewSet):
             self.authentication_classes = [AccountKitUserAuthentication]
         return [auth() for auth in self.authentication_classes]
 
+    def perform_create(self, serializer):
+        """Create時透過jwt user token，從user instance取得mobile"""
+        case = serializer.save()
+        user = self.request.user
+        case.mobile = user.mobile
+        case.save()
+
     @action(methods=['GET'], detail=False)
     def vuetable(self, request):
         queryset = self.queryset
