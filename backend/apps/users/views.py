@@ -25,9 +25,9 @@ from apps.users.utils import jwt_payload_handler, jwt_encode_handler
 env = environ.Env()
 
 
-API_VERSION = env.str('ACCOUNTKIT_VERSION')
-ACCOUNTKIT_SECRET = env.str('ACCOUNTKIT_APP_SECRET')
-ACCOUNTKIT_APP_ID = env.str('ACCOUNTKIT_APP_ID')
+API_VERSION = env.str('VUE_APP_ACCOUNTKIT_VERSION')
+ACCOUNTKIT_SECRET = env.str('VUE_APP_ACCOUNTKIT_APP_SECRET')
+ACCOUNTKIT_APP_ID = env.str('VUE_APP_ACCOUNTKIT_APP_ID')
 
 
 class UserViewSet(viewsets.ModelViewSet):
