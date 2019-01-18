@@ -1,10 +1,8 @@
 <template>
   <div class="container">
-    <!-- <full-page ref="fullpage" :options="options" id="fullpage"> -->
       <Dialogue id="dialogue" class="" :lorem="lorem"></Dialogue>
       <!-- <CaseList id="cases" class="section" :lorem="lorem"></CaseList>
       <About id="about" class="section" :lorem="lorem"></About> -->
-    <!-- </full-page> -->
   </div>
 </template>
 
@@ -17,22 +15,7 @@ export default {
   name: 'Home',
   data: function () {
     return {
-      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
-      options: {
-        menu: false,
-        lockAnchors: false,
-        anchors: ['firstPage', 'secondPage', 'thirdPage'],
-        navigation: false,
-        // autoScrolling: false,
-        verticalCentered: true,
-        navigationTooltips: ['firstSlide', 'secondSlide'],
-        showActiveTooltip: false,
-        scrollOverflow: true,
-        lazyLoading: true,
-        controlArrows: true,
-        normalScrollElements: '.modal-body, table .caseTable',
-        licenseKey: 'A318C6D7-5E9F4CDF-B8952F52-A21EC44B'
-      }
+      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?'
     }
   },
   components: { Dialogue, CaseList, About }
@@ -46,10 +29,15 @@ export default {
 
 html,body
   margin: auto
+  width: 100vw
   width: 100%
+  height: 100vh
   height: 100%
   // background-color: gray
 
+.container
+  height: 100%
+  width: 100%
 hr
   background-color: black
 
