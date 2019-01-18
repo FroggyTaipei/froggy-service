@@ -38,7 +38,7 @@ class CaseViewSet(ModelViewSet):
     queryset = Case.objects.all()
     serializer_class = CaseSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
-    http_method_names = ['get', 'post']
+    http_method_names = ['get', 'post', 'retrieve']
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:

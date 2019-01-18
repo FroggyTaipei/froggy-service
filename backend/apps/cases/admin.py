@@ -67,6 +67,9 @@ class ArrangeInline(FSMTransitionMixin, admin.StackedInline):
     def has_add_permission(self, request, obj=None):
         return request.user.has_perm('arranges.add_arrange') and obj and obj.state == 'arranged'
 
+    def has_view_permission(self, request, obj=None):
+        return request.user.has_perm('arranges.view_arrange') and obj and obj.state in ['arranged', 'closed']
+
     def get_fields(self, request, obj=None):
         if not request.user.has_perm('arranges.add_arrange'):
             return 'state', 'title', 'html_content', 'arrange_time', 'publish_time'
@@ -145,12 +148,6 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     def get_form(self, request, obj=None, **kwargs):
         self._obj = obj
         return super(CaseAdmin, self).get_form(request, obj, **kwargs)
-
-    def has_add_permission(self, request):
-        return False
-
-    def has_delete_permission(self, request, obj=None):
-        return False
 
     @property
     def suit_form_tabs(self):

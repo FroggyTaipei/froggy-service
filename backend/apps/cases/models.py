@@ -106,7 +106,7 @@ class Case(Model):
     location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = PhoneNumberField(verbose_name=_('Mobile'))
-    email = EmailField(verbose_name=_('Email'))
+    email = EmailField(null=True, blank=True, verbose_name=_('Email'))
     address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
     close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
@@ -296,7 +296,7 @@ class CaseHistory(Model):
     location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = PhoneNumberField(verbose_name=_('Mobile'))
-    email = EmailField(verbose_name=_('Email'))
+    email = EmailField(null=True, blank=True, verbose_name=_('Email'))
     address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     create_time = DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))
 

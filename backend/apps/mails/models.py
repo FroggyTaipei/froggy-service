@@ -75,12 +75,13 @@ class SendGridMail(Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.from_email = self.from_email or settings.EMAIL_HOST_USER
-        try:
-            response = SendGridMail.send_template(self.from_email, self.to_email, self.data, self.template.tid)
-            self.success = bool(response and response.status_code == 202)
-            super(SendGridMail, self).save(*args, **kwargs)
-        except SendGridMailTemplate.DoesNotExist:
-            pass
+        if self.to_email:
+            try:
+                response = SendGridMail.send_template(self.from_email, self.to_email, self.data, self.template.tid)
+                self.success = bool(response and response.status_code == 202)
+                super(SendGridMail, self).save(*args, **kwargs)
+            except SendGridMailTemplate.DoesNotExist:
+                pass
 
     def send(self):
         self.save()
