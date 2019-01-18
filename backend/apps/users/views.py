@@ -118,7 +118,7 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST'], detail=False, permission_classes=[])
     def accountkit_get_token(self, request):
         code = request.POST.get('code')
         state = request.POST.get('state')
@@ -177,15 +177,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if not user:
             # Register a new account kit user
             user = User.objects.create_accountkit_user(email=email, mobile=mobile)
-        else:
-            Token.objects.filter(user=user).delete()
-
-        token = Token.objects.create(user=user)
 
         payload = jwt_payload_handler(user)
         jwt = jwt_encode_handler(payload)
 
         return JsonResponse({
-            'token': token.key,
             'jwt': jwt,
         })
