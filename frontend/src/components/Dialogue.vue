@@ -21,7 +21,7 @@ el-container.page1
                     .space
                     .btn-wrapper
                       i.el-icon-caret-right(v-show='mouse1')
-                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)' @click.native="toggleInput()") 我要找呱吉
+                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)' @click.native="toggleInput") 我要找呱吉
                     .btn-wrapper
                       i.el-icon-caret-right(v-show='mouse2')
                       el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
@@ -236,13 +236,14 @@ export default {
       margin-bottom: 0px
     span
       padding: 0px 20px 10px 20px
+      font-size: 1em
 
 .intro-text
   font-size: 80px
   color: white
   font-weight: bold
   position: absolute
-  bottom: 15%
+  bottom: 0
   animation: blinker 2s linear infinite
   &:hover
     cursor: pointer
