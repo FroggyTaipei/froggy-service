@@ -54,10 +54,9 @@ class CaseViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         """Create時透過jwt user token，從user instance取得mobile"""
-        case = serializer.save()
         user = self.request.user
-        case.mobile = user.mobile
-        case.save()
+        serializer.validate_data['mobile'] = user.mobile
+        serializer.save()
 
     @action(methods=['GET'], detail=False)
     def vuetable(self, request):

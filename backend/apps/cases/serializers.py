@@ -25,7 +25,7 @@ class CaseWriteSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Case
-        fields = ['uuid', 'title', 'content', 'location', 'username', 'mobile', 'email', 'address', 'type', 'region']
+        fields = ['uuid', 'title', 'content', 'location', 'username', 'email', 'address', 'type', 'region']
 
 
 class CaseSerializer(serializers.ModelSerializer):
