@@ -25,14 +25,9 @@ export default {
         navigation: false,
         // autoScrolling: false,
         verticalCentered: true,
-        // navigationPosition: 'right',
         navigationTooltips: ['firstSlide', 'secondSlide'],
         showActiveTooltip: false,
-        // slidesNavigation: true,
-        // slidesNavPosition: 'right',
-        // sectionsColor: ['#41b883', '#ff5f45', '#0798ec'],
         scrollOverflow: true,
-        // scrollBar: false,
         lazyLoading: true,
         controlArrows: true,
         normalScrollElements: '.modal-body, table .caseTable',
@@ -51,7 +46,7 @@ export default {
 
 .fp-tableCell
   // display: flex
-  width: 100%
+  // width: 100%
 html,body
   margin: auto
   width: 100%
@@ -75,19 +70,6 @@ table
   font-size: 24px
   line-height: 30px !important
 
-.el-menu--horizontal, .el-menu.el-menu--horizontal, .el-menu--horizontal>.el-menu-item.is-active
-  border: none
-  background-color: transparent
-
-.el-menu.el-menu--horizontal
-  color: white
-
-.el-menu--horizontal>.el-menu-item, .el-menu--horizontal>.el-menu-item a, .el-menu--horizontal>.el-menu-item a:hover
-  border-bottom: none
-  color: white
-.el-menu-item
-  a
-    text-decoration: none
 form
   textarea,.el-input__inner
     background-color: rgba(#fff, .3) !important
