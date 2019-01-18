@@ -86,7 +86,7 @@ class Case(Model):
     * type: 案件類別
     * region: 使用者所在選區
     * title: 標題
-    * content: 陳情內容
+    * content: 案件內容
     * location: 相關地址
     * username: 使用者名字
     * mobile: 手機

@@ -25,7 +25,7 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.postgres',
     'suit',
-    'django.contrib.admin',
+    'django.contrib.admin.apps.SimpleAdminConfig',
 ]
 
 THIRD_PARTY_APPS = [
@@ -42,6 +42,7 @@ THIRD_PARTY_APPS = [
     'rest_framework_jwt',
     'django_admin_lightweight_date_hierarchy',
     'date_range_filter',
+    'suit_dashboard',
 ]
 
 LOCAL_APPS = [
@@ -189,7 +190,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': STATICFILES_DIRS,
+        'DIRS': STATICFILES_DIRS + [
+            str(ROOT_DIR('templates')),
+        ],
         'OPTIONS': {
             'debug': DEBUG,
             'loaders': [

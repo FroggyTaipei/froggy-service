@@ -1,0 +1,20 @@
+{% load static %}
+<div class="box-widget {{ widget.classes }}">
+  {% if widget.name %}<h2 class="box-widget-name">{{ widget.name }}</h2>{% endif %}
+  <div class="box-widget-content" id="{{ widget.html_id }}"></div>
+  <script>
+    $(function() {
+      let dataset = {{ widget.content|safe }};
+      {% for js_code in widget.js_code %}
+        try {
+            if (dataset.{{ js_code }}) {
+                dataset.{{ js_code }} = new Function(dataset.{{ js_code }});
+          }
+        } catch (err) {
+            console.log(err);
+        }
+      {% endfor %}
+      $('#{{ widget.html_id }}').highcharts(dataset);
+    });
+  </script>
+</div>

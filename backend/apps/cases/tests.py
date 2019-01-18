@@ -1,8 +1,10 @@
 from django.test import TestCase, tag
 from django.utils import timezone
-from django_fsm import TransitionNotAllowed
 from django.core.management import call_command
 from django.core.exceptions import ValidationError
+
+from django_fsm import TransitionNotAllowed
+
 from apps.cases.models import Case, CaseHistory
 from apps.arranges.models import Arrange
 
