@@ -10,10 +10,10 @@
 - model: cases.case
   pk: 2
   fields: {state: arranged, uuid: 157f5b58-6249-403d-8437-a219daf132e1, number: '000002',
-    type: 5, region: 1, title: "\u74B0\u5883\u516C\u5BB3\u6C61\u67D3", content: "\u5C0F\u5F1F\u6211\u662F\u53F0\u5317\u5E02\u6C11\uFF0C\u5E38\u5E38\u770B\u5230\u5F88\u591A\u74B0\u5883\u516C\u5BB3\u6C61\u67D3\uFF0C\u8ACB\u554F\u5927\u5BB6\u6703\u4E0D\u6703\u89BA\u5F97\u53F0\u5317\u5E02\u7684\u74B0\u5883\u516C\u5BB3\u6C61\u67D3\u592A\u591A\u4E86\u5440\uFF1F",
+    type: 1, region: 1, title: "\u74B0\u5883\u516C\u5BB3\u6C61\u67D3", content: "\u5C0F\u5F1F\u6211\u662F\u53F0\u5317\u5E02\u6C11\uFF0C\u5E38\u5E38\u770B\u5230\u5F88\u591A\u74B0\u5883\u516C\u5BB3\u6C61\u67D3\uFF0C\u8ACB\u554F\u5927\u5BB6\u6703\u4E0D\u6703\u89BA\u5F97\u53F0\u5317\u5E02\u7684\u74B0\u5883\u516C\u5BB3\u6C61\u67D3\u592A\u591A\u4E86\u5440\uFF1F",
     location: "\u53F0\u5317\u5E02\u5FE0\u5B5D\u6A4B\u9644\u8FD1", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", email: travishen.tw@gmail.com, address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
-    open_time: ! '2019-06-16 05:56:30.784417+00:00', close_time: null, create_time: ! '2019-06-13 05:56:30.784417+00:00',
+    open_time: ! '2019-01-16 05:56:30.784417+00:00', close_time: null, create_time: ! '2019-01-13 05:56:30.784417+00:00',
     update_time: null, disapprove_info: '', close_info: ''}
 - model: cases.case
   pk: 3

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-14 00:42+0800\n"
+"POT-Creation-Date: 2019-01-18 15:35+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,151 +18,153 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#: apps/arranges/models.py:42
+#: apps/arranges/models.py:41
 msgid "Arrange State"
 msgstr "處理狀態"
 
-#: apps/arranges/models.py:43 apps/cases/admin.py:87 apps/cases/models.py:121
-#: apps/cases/models.py:267 apps/mails/models.py:58
+#: apps/arranges/models.py:42 apps/cases/admin.py:113 apps/cases/models.py:122
+#: apps/cases/models.py:287 apps/mails/models.py:58
 msgid "Case"
 msgstr "案件"
 
-#: apps/arranges/models.py:44
+#: apps/arranges/models.py:43
 msgid "Arrange Title"
 msgstr "處理進度"
 
-#: apps/arranges/models.py:45 apps/cases/models.py:104 apps/cases/models.py:272
+#: apps/arranges/models.py:44 apps/arranges/models.py:64
+#: apps/cases/models.py:105 apps/cases/models.py:292
 msgid "Content"
 msgstr "內容"
 
-#: apps/arranges/models.py:46
+#: apps/arranges/models.py:45
 msgid "Arrange Time"
 msgstr "處理時間"
 
-#: apps/arranges/models.py:47
+#: apps/arranges/models.py:46
 msgid "Arrange Publish Time"
 msgstr "發布時間"
 
-#: apps/arranges/models.py:48 apps/cases/models.py:27 apps/cases/models.py:41
-#: apps/cases/models.py:113 apps/mails/models.py:29
+#: apps/arranges/models.py:47 apps/cases/models.py:28 apps/cases/models.py:42
+#: apps/cases/models.py:114 apps/mails/models.py:29
 msgid "Updated Time"
 msgstr "上次更新"
 
-#: apps/arranges/models.py:53 apps/arranges/models.py:54
+#: apps/arranges/models.py:52 apps/arranges/models.py:53
 msgid "Arrange"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:56 apps/cases/admin.py:132
+#: apps/cases/admin.py:62 apps/cases/admin.py:168
 msgid "Arranges"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:92
+#: apps/cases/admin.py:118
 msgid "Information"
 msgstr "資訊"
 
-#: apps/cases/admin.py:97
+#: apps/cases/admin.py:123
 msgid "Proposer"
-msgstr "陳情人"
+msgstr "案件人"
 
-#: apps/cases/admin.py:102
+#: apps/cases/admin.py:128
 msgid "Case Close Information"
 msgstr "結案說明"
 
-#: apps/cases/admin.py:123
+#: apps/cases/admin.py:159
 msgid "General"
 msgstr "一般"
 
-#: apps/cases/admin.py:127
+#: apps/cases/admin.py:163
 msgid "Files"
 msgstr "案件檔案"
 
-#: apps/cases/admin.py:129 apps/cases/models.py:282
+#: apps/cases/admin.py:165 apps/cases/models.py:302
 msgid "Case Histories"
 msgstr "案件編輯歷史"
 
-#: apps/cases/admin.py:135
+#: apps/cases/admin.py:171
 msgid "Mails"
 msgstr "信件"
 
-#: apps/cases/models.py:26 apps/cases/models.py:40 apps/mails/models.py:28
+#: apps/cases/models.py:27 apps/cases/models.py:41 apps/mails/models.py:28
 msgid "Name"
 msgstr "名稱"
 
-#: apps/cases/models.py:30 apps/cases/models.py:31 apps/cases/models.py:101
-#: apps/cases/models.py:270
+#: apps/cases/models.py:31 apps/cases/models.py:32 apps/cases/models.py:102
+#: apps/cases/models.py:290
 msgid "Case Type"
 msgstr "案件類型"
 
-#: apps/cases/models.py:44 apps/cases/models.py:45 apps/cases/models.py:102
-#: apps/cases/models.py:271
+#: apps/cases/models.py:45 apps/cases/models.py:46 apps/cases/models.py:103
+#: apps/cases/models.py:291
 msgid "User Region"
 msgstr "地區"
 
-#: apps/cases/models.py:98 apps/cases/models.py:268
+#: apps/cases/models.py:99 apps/cases/models.py:288
 msgid "Case State"
 msgstr "案件狀態"
 
-#: apps/cases/models.py:99 apps/files/models.py:32
+#: apps/cases/models.py:100 apps/files/models.py:32
 msgid "UUID"
 msgstr "UUID"
 
-#: apps/cases/models.py:100
+#: apps/cases/models.py:101
 msgid "Case Number"
 msgstr "案件編號"
 
-#: apps/cases/models.py:103 apps/cases/models.py:269
+#: apps/cases/models.py:104 apps/cases/models.py:289
 msgid "Case Title"
 msgstr "案件主旨"
 
-#: apps/cases/models.py:105 apps/cases/models.py:273
+#: apps/cases/models.py:106 apps/cases/models.py:293
 msgid "Location"
 msgstr "有關地點"
 
-#: apps/cases/models.py:106 apps/cases/models.py:274
+#: apps/cases/models.py:107 apps/cases/models.py:294
 msgid "Username"
 msgstr "姓名"
 
-#: apps/cases/models.py:107 apps/cases/models.py:275
+#: apps/cases/models.py:108 apps/cases/models.py:171 apps/cases/models.py:295
+#: apps/cases/models.py:314 apps/users/models.py:60
 msgid "Mobile"
 msgstr "手機"
 
-#: apps/cases/models.py:108 apps/cases/models.py:276 apps/users/models.py:36
+#: apps/cases/models.py:109 apps/cases/models.py:296 apps/users/models.py:59
 msgid "Email"
 msgstr "電子信箱"
 
-#: apps/cases/models.py:109 apps/cases/models.py:277
+#: apps/cases/models.py:110 apps/cases/models.py:297
 msgid "Address"
 msgstr "地址"
 
-#: apps/cases/models.py:110
+#: apps/cases/models.py:111
 msgid "Opened Time"
 msgstr "成案時間"
 
-#: apps/cases/models.py:111
+#: apps/cases/models.py:112
 msgid "Closed Time"
 msgstr "結案時間"
 
-#: apps/cases/models.py:112 apps/cases/models.py:278
+#: apps/cases/models.py:113 apps/cases/models.py:298
 msgid "Created Time"
 msgstr "新增時間"
 
-#: apps/cases/models.py:115
+#: apps/cases/models.py:116
 msgid "Disapprove Info"
 msgstr "結案（不受理）原因"
 
-#: apps/cases/models.py:116
+#: apps/cases/models.py:117
 msgid "Close Info"
 msgstr "結案（受理）原因"
 
-#: apps/cases/models.py:122
+#: apps/cases/models.py:123
 msgid "Cases"
 msgstr "案件"
 
-#: apps/cases/models.py:266
+#: apps/cases/models.py:286
 msgid "Editor"
 msgstr "編輯者"
 
-#: apps/cases/models.py:281
+#: apps/cases/models.py:301
 msgid "Case History"
 msgstr "案件編輯歷史"
 
@@ -242,42 +244,62 @@ msgstr "設定"
 msgid "Important dates"
 msgstr "日期資訊"
 
-#: apps/users/models.py:37
+#: apps/users/authentication.py:30
+msgid "Signature has expired."
+msgstr ""
+
+#: apps/users/authentication.py:33
+msgid "Error decoding signature."
+msgstr ""
+
+#: apps/users/authentication.py:49
+msgid "Invalid payload."
+msgstr ""
+
+#: apps/users/authentication.py:55
+msgid "Invalid signature."
+msgstr ""
+
+#: apps/users/models.py:62
 msgid "Full Name"
 msgstr "名稱"
 
-#: apps/users/models.py:37
+#: apps/users/models.py:62
 msgid "Unknown User"
 msgstr "未知的使用者"
 
-#: apps/users/models.py:38
+#: apps/users/models.py:63
 msgid "Avatar Setting"
 msgstr "照片設定"
 
-#: apps/users/models.py:41
+#: apps/users/models.py:65
 msgid "Active"
 msgstr "帳號已啟用"
 
-#: apps/users/models.py:42
+#: apps/users/models.py:66
 msgid "Staff"
 msgstr "內部工作人員身份"
 
-#: apps/users/models.py:43
+#: apps/users/models.py:67
 msgid "Registered At"
 msgstr "註冊時間"
 
-#: apps/users/models.py:52
+#: apps/users/models.py:76
 msgid "User"
 msgstr "使用者"
 
-#: apps/users/models.py:53
+#: apps/users/models.py:77
 msgid "Users"
 msgstr "使用者"
 
-#: apps/users/models.py:59
+#: apps/users/models.py:90
 msgid "Avatar"
 msgstr "照片"
 
-#: config/settings.py:357
+#: config/settings.py:365
 msgid "Froggy's Service"
 msgstr "邱威傑（呱吉）選民服務系統"
+
+#: config/views.py:19
+msgid "Dashboard"
+msgstr "主控版"

@@ -9,6 +9,12 @@ from rest_framework_swagger.views import get_swagger_view
 from config.api import api
 
 from .views import get_token
+from .site import DashboardSite
+
+admin.site = DashboardSite()
+admin.sites.site = admin.site
+admin.autodiscover()
+
 schema_view = get_swagger_view(title='Pastebin API')
 
 urlpatterns = [

@@ -122,7 +122,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         }),
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
-            'description': '陳情人個人資訊',
+            'description': '案件人個人資訊',
             'fields': ['username', 'tw_mobile', 'email', 'address'],
         }),
         (_('Case Close Information'), {
