@@ -363,6 +363,7 @@ CKEDITOR_RESTRICT_BY_DATE = False
 # ------------------------------------------------------------------------------
 SUIT_CONFIG = {
     'ADMIN_NAME': _("Froggy's Service"),
+    'SEARCH_URL': '/admin/cases/case/',
     'HEADER_DATE_FORMAT': 'l, Y F j',
     'HEADER_TIME_FORMAT': 'H:i',
     'LIST_PER_PAGE': 30,

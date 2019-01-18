@@ -94,7 +94,7 @@ class CaseForm(ModelForm):
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     form = CaseForm
-    search_fields = ('id',)
+    search_fields = ('id', 'number', 'title')
     list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = (
         'type',
