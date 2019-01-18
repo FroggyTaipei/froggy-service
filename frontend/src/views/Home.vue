@@ -45,17 +45,12 @@ export default {
 </script>
 
 <style lang="sass">
-
-.about-content
-  font-size: 16px
-.about-title
-  h1
-    @media screen and (min-width: 301px)
-      font-size: 16px
 *
   // border: solid 1px
+  font-family: PingFangSC-Regular
+
 .fp-tableCell
-  display: flex
+  // display: flex
   width: 100%
 html,body
   margin: auto
@@ -68,6 +63,17 @@ hr
 
 table
   background-color: transparent
+
+.el-table th, .el-table tr, .el-table, .el-table__expanded-cell
+  background-color: transparent !important
+  color: white
+
+.el-table--enable-row-hover .el-table__body tr:hover>td
+  color: black !important
+
+.el-table .cell
+  font-size: 24px
+  line-height: 30px !important
 
 .el-menu--horizontal, .el-menu.el-menu--horizontal, .el-menu--horizontal>.el-menu-item.is-active
   border: none

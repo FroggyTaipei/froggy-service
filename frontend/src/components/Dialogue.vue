@@ -8,7 +8,7 @@ el-container.page1
             img.intro-img(:src="introUrl")
             h1.intro-text(@click="makeInvisible" ) START
     transition(name="fade")
-      el-row(type="flex" align="middle" justify="center" v-show="showFroggy" @click='come')
+      el-row(type="flex" align="middle" justify="center" v-show="showFroggy")
         el-col(:span="18")
           img.froggyImage(:src="froggyUrl")
           el-row(type="flex" align="end" justify="center")
@@ -21,10 +21,13 @@ el-container.page1
                     .space
                     .btn-wrapper
                       i.el-icon-caret-right(v-show='mouse1')
-                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)') 我要找呱吉
+                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)' @click.native="toggleInput()") 我要找呱吉
                     .btn-wrapper
                       i.el-icon-caret-right(v-show='mouse2')
                       el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
+    transition(name="fade")
+      InputDialog(v-show="openInput")
+
 </template>
 
 <script>
@@ -52,7 +55,7 @@ export default {
       ],
       isFindFroggy: false,
       isFroggyDoing: false,
-      showInput: false,
+      openInput: false,
       bkgUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png',
       introUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
       showIntro: true,
@@ -71,8 +74,10 @@ export default {
         this.showFroggy = true
       }, 1000)
     },
-    closeInputDialog: function () {
-      this.showInput = false
+    toggleInput () {
+      console.log('clicked')
+      this.showFroggy = !this.showFroggy
+      this.openInput= !this.openInput
     },
     clickOption: function (action) {
       if (action === 'findFroggy') {
@@ -112,10 +117,6 @@ export default {
     },
     getHeight () {
       this.froggyHeight = -this.$refs.froggy.clientHeight
-    },
-    come () {
-      console.log('come')
-      this.slide = true
     },
     hover (index) {
       if (index===1) {
@@ -175,7 +176,8 @@ export default {
 .center, .el-main
   display: flex
   width: 100%
-  height: 100vh
+  height: 100%
+  flex-shrink: 0
   align-items: center
   justify-content: center
 
@@ -230,7 +232,8 @@ export default {
     height: 98%
     border-radius: 10px
     h1
-      padding: 20px
+      padding: 20px 20px 0px 20px
+      margin-bottom: 0px
     span
       padding: 0px 20px 10px 20px
 

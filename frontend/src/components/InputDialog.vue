@@ -3,8 +3,8 @@
     <el-col :span="12" class="col1 hidden-xs-only">
       <el-container>
         <div class="footer">
-          <!-- <img src="../assets/images/dialog/person.png" > -->
-          <!-- <img src="../assets/images/dialog/footer.png" > -->
+          <img src="https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/person.png" >
+          <img src="https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/form_footer.png" >
         </div>
       </el-container>
     </el-col>
@@ -116,7 +116,7 @@ export default {
 /*basic reset*/
 
 .panel {
-    /* background-image: url("../assets/images/dialog/background.png"); */
+    /* background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png"); */
     background-repeat: no-repeat;
     background-size: 100% auto;
     position: relative;
@@ -150,7 +150,7 @@ export default {
   height: 95%;
   border: 1px solid transparent;
   border-radius: 10px;
-  /* background-image: url("../assets/images/dialog/inputBackground.png"); */
+  background-image: url("https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/form_inputBackground.png");
   background-repeat: no-repeat;
   background-size: cover;
   padding: 16px;

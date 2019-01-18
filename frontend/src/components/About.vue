@@ -1,28 +1,15 @@
 <template lang="pug">
 el-container.page3
   el-main
-    el-row(type="flex" align="middle" justify="center")
-      el-menu(theme='dark', default-active='0', mode='horizontal', :router='false')
-        el-menu-item(index='#firstPage')
-          a(href="#firstPage") 我要服務
-        el-menu-item(index='#secondPage')
-          a(href="#secondPage") 呱吉做什麼
-        el-menu-item(index='#thirdPage')
-          a(href="#thirdPage") 關於魔鏡號
-    el-row(type="flex" align="middle" justify="center")
+    el-row.about-main(type="flex" align="middle" justify="center")
       el-col(:span=24)
         .about-title
-          h1 選服魔鏡號 市民看得到
-          h1 －台北市議員邱威傑市民服務系統
-    el-row(type="flex" align="middle" justify="center")
+          h1 公開透明。
       el-col(:span=24)
         el-row(type="flex" align="middle" justify="center")
           el-col(:span=14)
             article
               .about-content
-                span 公開透明。
-                br
-                br
                 span 我們都知道，這是一個已經喊了十幾年的口號，但時間過去了，政治，仍然是一件跟人心一樣複雜的事。
                 br
                 br
@@ -40,62 +27,81 @@ el-container.page3
                 br
                 h2 邱威傑
           el-col(:span=10)
-            h1.text-center Image
-            image
+            img.froggyServantImg(:src="froggyservantUrl")
+    BottomGameDialog(:title="title")
     el-row.footer-row(type="flex" align="middle" justify="center")
       el-col.footer
-        h1 Footer
+        span
+          |「選服魔鏡號」台北市議員邱威傑市民服務系統
+          | 110 台北市信義區仁愛路四段507號 台北市議會 752研究室
+          | 02-27297708 分機 7152、7252
+          | 02-87862707
+          | servant@65535studio.com
 </template>
 
 <script>
-// import Footer from './Footer.vue'
+import BottomGameDialog from './BottomGameDialog.vue'
 export default {
   name: 'About',
-  // components: {Footer},
+  components: {BottomGameDialog},
+  data: function(){
+    return{
+      title: ['選服魔鏡號 市民看得到', '－台北市議員邱威傑市民服務系統...'],
+      froggyservantUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/froggy_servant.png'
+    }
+  },
   props: ['lorem']
 }
 </script>
 
 <style lang="sass" scoped>
 .page3
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png')
-  background-position: center
+  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/dark_gradient_background.png')
+  // background-position: center
   overflow: hidden
 
 .el-main
-  min-height: 100vh
   display: flex
+  flex-shrink: 0
+  flex-grow: 1
   flex-direction: column
+  width: 100%
+  height: 100vh
+  align-items: center
+  justify-content: center
 
-.el-menu--horizontal
-  border: none
-.el-menu--horizontal>.el-menu-item.is-active
-  border-bottom-color: transparent
-  border-bottom: none
-.el-menu-item
-  a
-    text-decoration: none
+.el-row
+  width: 100%
+.about-main
+  flex: 7
+  flex-direction: column
+.row-dialog
+  flex: 1
 .about-title
     margin-top: 20px
     margin-bottom: 20px
+    color: white
     h1
       font-size: 24px
 article
   .about-content
     max-height: 60vh
     overflow: scroll
+    color: white
     span
       font-size: 0.8em
+
+.froggyServantImg
+  width: 100%
 
 .text-center
   text-align: center
 
 .footer-row
   margin: auto auto 0 auto
-  // height: 20%
-  width: 100%
-  background-color: gray
+  height: 50px
   .footer
-  bottom: 0
-  text-align: center
+    bottom: 0
+    text-align: center
+    color: white
 </style>
