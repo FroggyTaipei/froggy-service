@@ -73,10 +73,10 @@ export default {
 .el-row
   width: 100%
 .about-main
-  flex: 7
+  flex: 6
   flex-direction: column
 .row-dialog
-  flex: 1
+  flex: 2
 .about-title
     margin-top: 20px
     margin-bottom: 20px

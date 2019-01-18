@@ -1,5 +1,5 @@
 <template>
-  <el-row class="container-fluid section panel" :gutter="10">
+  <el-row class="container-fluid panel" :gutter="10">
     <el-col :span="12" class="col1 hidden-xs-only">
       <el-container>
         <div class="footer">
