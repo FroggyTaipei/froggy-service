@@ -46,7 +46,7 @@ class Arrange(Model):
     publish_time = DateTimeField(null=True, blank=True, verbose_name=_('Arrange Publish Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
-    order = PositiveIntegerField()
+    order = PositiveIntegerField(null=True, blank=True)
 
     class Meta:
         verbose_name = _('Arrange')

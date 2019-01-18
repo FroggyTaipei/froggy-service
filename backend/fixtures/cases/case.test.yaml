@@ -12,5 +12,6 @@
     mobile: "+886912345678",
     email: "travishen.tw@gmail.com",
     address: "\u53f0\u5317\u5e02\u677e\u5c71\u5340\u5357\u8def3\u6bb538\u865f7\u6a13",
-    update_time: ! '2019-01-03 07:07:13.357191+00:00'
+    create_time: ! '2019-01-03 07:07:13.357191+00:00',
+    update_time: ! '2019-01-03 07:07:13.357191+00:00',
   }

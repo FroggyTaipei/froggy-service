@@ -201,7 +201,7 @@ class Case(Model):
             'number': self.number,
             'username': first.username,
             'title': first.title,
-            'datetime': self.create_time,
+            'datetime': self.format_create_time(),
             'content': first.content,
             'location': first.location,
         }
@@ -219,7 +219,7 @@ class Case(Model):
             'number': self.number,
             'username': first.username,
             'title': first.title,
-            'datetime': self.create_time,
+            'datetime': self.format_create_time(),
             'content': self.disapprove_info,
         }
         template = SendGridMailTemplate.objects.get(name='不受理通知')
@@ -264,6 +264,9 @@ class Case(Model):
                 custom={'button_name': '設回處理中'})
     def rearrange(self):
         self.confirm(template_name='成案通知')
+        now = formats.date_format(timezone.now(), 'SHORT_DATETIME_FORMAT')
+        if self.state == 'disapproved':
+            self.disapprove_info += f'(已於{now}設回處理中)'
         self.open_time = timezone.now()
 
 

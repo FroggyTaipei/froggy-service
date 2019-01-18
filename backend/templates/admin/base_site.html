@@ -1,0 +1,28 @@
+{% extends "admin/base.html" %}
+{% load admin_static %}
+{% load i18n %}
+
+{% block extrahead %}
+<link rel="shortcut icon" href="https://froggychiu.com/img/froggyFavicon2.png" type="image/x-icon">
+{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" media="screen" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock %}
+
+{% block footer_links %}
+<a href="https://www.youtube.com/channel/UC_XRq7JriAORvDe1lI1RAsA" target="_blank" class="icon"><i class="fa fa-youtube"></i>Youtube</a>
+<a href="https://www.facebook.com/froggychiu/" target="_blank" class="icon"><i class="fa fa-facebook"></i>Facebook</a>
+<a href="https://www.instagram.com/froggychiu/?hl=zh-tw" target="_blank" class="icon"><i class="fa fa-instagram"></i>Instgram</a>
+{% endblock %}
+
+{% block header_content %}
+    {{ block.super }}
+{% endblock %}
+
+{% block footer_branding %}
+{% endblock %}
+
+{% block copyright %}
+Copyright &copy; 2019-{% now "Y" %}<br><a href="http://service.froggychiu.com" target="_blank">{% trans "Froggy's Service" %}</a>
+{% endblock %}
