@@ -1,10 +1,10 @@
 <template>
   <div class="container">
-    <full-page ref="fullpage" :options="options" id="fullpage">
-      <Dialogue id="dialogue" class="section" :lorem="lorem"></Dialogue>
-      <CaseList id="cases" class="section" :lorem="lorem"></CaseList>
-      <About id="about" class="section" :lorem="lorem"></About>
-    </full-page>
+    <!-- <full-page ref="fullpage" :options="options" id="fullpage"> -->
+      <Dialogue id="dialogue" class="" :lorem="lorem"></Dialogue>
+      <!-- <CaseList id="cases" class="section" :lorem="lorem"></CaseList>
+      <About id="about" class="section" :lorem="lorem"></About> -->
+    <!-- </full-page> -->
   </div>
 </template>
 
@@ -44,9 +44,6 @@ export default {
   // border: solid 1px
   font-family: PingFangSC-Regular
 
-.fp-tableCell
-  // display: flex
-  // width: 100%
 html,body
   margin: auto
   width: 100%

@@ -21,7 +21,7 @@ el-container.page1
                     .space
                     .btn-wrapper
                       i.el-icon-caret-right(v-show='mouse1')
-                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)' @click.native="toggleInput") 我要找呱吉
+                      el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)' @click="toggleInput") 我要找呱吉
                     .btn-wrapper
                       i.el-icon-caret-right(v-show='mouse2')
                       el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
@@ -112,9 +112,6 @@ export default {
         console.log('no action')
       }
     },
-    toggleInput: function () {
-      this.showInput = !this.showInput
-    },
     getHeight () {
       this.froggyHeight = -this.$refs.froggy.clientHeight
     },
@@ -169,8 +166,11 @@ export default {
 
 <style lang="sass" scoped>
 .page1
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png')
-  background-position: center
+  // background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png')
+  background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1)), linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
+  background-position: center, center
+  background-size: contain
+  background-repeat: no-repeat,no-repeat
   overflow: hidden
 
 .center, .el-main
