@@ -1,7 +1,8 @@
-from django.test import TestCase
+from django.test import TestCase, tag
 from django.utils import timezone
 from django_fsm import TransitionNotAllowed
 from django.core.management import call_command
+from django.core.exceptions import ValidationError
 from apps.cases.models import Case, CaseHistory
 from apps.arranges.models import Arrange
 
@@ -54,7 +55,7 @@ class CaseCrudTestCase(TestCase):
         with self.assertRaises(TransitionNotAllowed):
             self.case.arrange()
 
-        self.case.mobile = '+886910201940'
+        self.case.username = 'John Doe'
         self.case.save()
         self.assertEqual(qs.count(), 2)
         self.case.arrange()
@@ -103,3 +104,31 @@ class CaseCrudTestCase(TestCase):
         self.case.delete()
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 0)
+
+    @tag('api')
+    def test_serializer(self):
+        from apps.cases.serializers import CaseWriteSerializer
+        data = {
+            'uuid': '54eaa9c1-d4de-4717-8738-40991a6cef06',
+            'title': '上班時段計程車過多',
+            'content': 'test',
+            'username': '王大明',
+            'email': 'travishen.tw@gmail.com',
+            'type': 1,
+            'region': 1,
+        }
+
+        serializer = CaseWriteSerializer(data=data)
+        self.assertTrue(serializer.is_valid())
+
+        with self.assertRaises(ValidationError):
+            Case.objects.create(**serializer.validated_data)
+
+        with self.assertRaises(ValidationError):
+            serializer.save()
+
+        mobile = '+886912120227'
+        serializer.validated_data['mobile'] = mobile
+        case = serializer.save()
+
+        self.assertEqual(case.mobile, mobile)

@@ -47,4 +47,4 @@ class SendGridTestCase(TestCase):
 
     @tag('private')
     def test_send_case_confirm(self):
-        self.case.confirm()
+        self.case.confirm(template_name='收件通知')

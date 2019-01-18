@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils import formats
 from django.db.models.signals import post_save
 from django_fsm import FSMField, transition
+from django.core.exceptions import ValidationError
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from phonenumber_field.modelfields import PhoneNumberField
 from django.db.models import (
@@ -102,11 +103,11 @@ class Case(Model):
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='cases', verbose_name=_('User Region'))
     title = CharField(max_length=255, verbose_name=_('Case Title'))
     content = TextField(verbose_name=_('Content'))
-    location = CharField(max_length=255, verbose_name=_('Location'))
+    location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = PhoneNumberField(verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
-    address = CharField(max_length=255, verbose_name=_('Address'))
+    address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
     close_time = DateTimeField(null=True, blank=True, verbose_name=_('Closed Time'))
     create_time = DateTimeField(auto_now_add=True, null=True, blank=True, verbose_name=_('Created Time'))
@@ -123,12 +124,17 @@ class Case(Model):
         ordering = ('id',)
 
     def save(self, *args, **kwargs):
+        self.full_clean()
         created = self.pk is None
         super(Case, self).save(*args, **kwargs)
         if created:
             self.number = str(self.pk).zfill(6)
             self.save()
             self.confirm(template_name='收件通知')
+
+    def clean(self):
+        if not self.mobile:
+            raise ValidationError('Must provide mobile.')
 
     def __str__(self):
         return self.number
@@ -284,11 +290,11 @@ class CaseHistory(Model):
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='case_histories', verbose_name=_('User Region'))
     content = TextField(verbose_name=_('Content'))
-    location = CharField(max_length=255, verbose_name=_('Location'))
+    location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
     mobile = PhoneNumberField(verbose_name=_('Mobile'))
     email = EmailField(verbose_name=_('Email'))
-    address = CharField(max_length=255, verbose_name=_('Address'))
+    address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     create_time = DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))
 
     class Meta:
