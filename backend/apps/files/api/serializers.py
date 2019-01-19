@@ -10,4 +10,4 @@ class TempFileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = models.TempFile
-        fields = '__all__'
+        exclude = ('size',)

@@ -20,6 +20,16 @@ from django.db.models import (
     SET_NULL,
     UUIDField,
 )
+from django.core.files.storage import FileSystemStorage
+from apps.files.storages import PrivateStorage
+from apps.files.models import TempFile, CaseFile
+
+
+if settings.USE_AWS_S3:
+    TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-temp'
+    TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
+else:
+    TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/tempfile', base_url=f'{settings.MEDIA_URL}tempfile/')
 
 
 class Type(Model):
@@ -97,7 +107,7 @@ class Case(Model):
     * update_time: 上次更新時間
     """
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES)
-    uuid = UUIDField(default=uuid.uuid4, verbose_name=_('UUID'))
+    uuid = UUIDField(default=uuid.uuid4, verbose_name=_('UUID'), unique=True)
     number = CharField(max_length=6, default='-', null=True, blank=True, verbose_name=_('Case Number'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='cases', verbose_name=_('User Region'))
@@ -131,6 +141,7 @@ class Case(Model):
             self.number = str(self.pk).zfill(6)
             self.save()
             self.confirm(template_name='收件通知')
+            self.move_file()
 
     def clean(self):
         if not self.mobile:
@@ -153,6 +164,16 @@ class Case(Model):
             'email': self.email,
             'address': self.address,
         }
+
+    def move_file(self):
+        case = Case.objects.get(uuid=self.uuid)
+        objs = TempFile.objects.filter(case_uuid=self.uuid)
+        for i in objs:
+            file = TEMP_STORAGE.open(i.file.name)
+            case_file = CaseFile()
+            case_file.case = case
+            case_file.file = file
+            case_file.save()
 
     @property
     def first_history(self):

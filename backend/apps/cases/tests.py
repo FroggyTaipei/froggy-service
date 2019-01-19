@@ -25,11 +25,11 @@ class CaseModelTestCase(TestCase):
         Case.objects.create(**self.case.to_dict())
 
         self.assertEqual(Case.objects.count(), 3)
-        new_uuid = 'ad693ae3-3d1c-4b56-a669-1def019ad370'
+        new_title = '\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5FA9\u8208\u5317\u8DEF'
         new_username = 'John Doe'
-        Case.objects.all().update(uuid=new_uuid, username=new_username)
+        Case.objects.all().update(title=new_title, username=new_username)
 
-        self.assertEqual(Case.objects.filter(uuid=new_uuid).count(), 3)
+        self.assertEqual(Case.objects.filter(title=new_title).count(), 3)
         self.assertEqual(Case.objects.filter(username=new_username).count(), 3)
 
 

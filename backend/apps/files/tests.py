@@ -1,3 +1,7 @@
+import time
+import datetime
+import os
+
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
@@ -9,10 +13,6 @@ from apps.files.storages import PrivateStorage
 from apps.files import models
 
 from .storages import CleanStorage
-
-import time
-import datetime
-import os
 
 
 ROOT_DIR = settings.ROOT_DIR
@@ -148,6 +148,39 @@ class TempFileTestCase(TestCase):
             self.assertEqual(True, False)
         except Exception as e:
             self.assertEqual(str(e), "[ErrorDetail(string='{}', code='invalid')]".format(_('Duplicate file')))
+
+
+class TempFileExpireTestCase(TestCase):
+    """
+    測試TempFile移除超過時間未送出案件的檔案
+    """
+    def setUp(self):
+        """Clean Storage by Traversal"""
+        CleanStorage(storage=TEMP_STORAGE)
+        CleanStorage(storage=CASE_STORAGE)
+
+        """Set Up Default File"""
+        """Upload File to Temp Storage"""
+        file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
+        temp = models.TempFile()
+        temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
+        temp.file = file
+        temp.file.storage = TEMP_STORAGE
+        temp.save()
+
+        self.obj = models.TempFile.objects.first()
+        self.obj.file.storage = TEMP_STORAGE
+        self.objs = models.TempFile.objects.all()
+
+    def test_unexpired(self):
+        today = datetime.date.today()
+        self.objs.filter(upload_time__date__lt=today).delete()
+        self.assertEqual(self.objs.count(), 1)
+
+    def test_expired(self):
+        day_after_tomorrow = datetime.date.today() + datetime.timedelta(2)
+        self.objs.filter(upload_time__date__lt=day_after_tomorrow).delete()
+        self.assertEqual(self.objs.count(), 0)
 
 
 class CaseFileTestCase(TestCase):
