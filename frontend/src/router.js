@@ -6,10 +6,13 @@ import Home from '@/views/Home.vue'
 import CaseListPage from '@/views/CaseListPage.vue'
 import AboutPage from '@/views/AboutPage.vue'
 
+import Table from '@/components/Table.vue'
+
 const routes = [
   { path: '*', component: Home },
   { path: '/cases', component: CaseListPage },
-  { path: '/about', component: AboutPage }
+  { path: '/about', component: AboutPage },
+  { path: '/table', component: Table }
 ]
 
 Vue.use(VueRouter)
