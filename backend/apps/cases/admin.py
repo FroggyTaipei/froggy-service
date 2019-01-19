@@ -1,10 +1,11 @@
 import datetime
+import re
 import calendar
 from django.utils import timezone
 from django.contrib import admin
 from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
-from django.forms import TextInput, ModelForm
+from django.forms import TextInput, ModelForm, CharField
 from django.db.models import Q
 from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
@@ -82,6 +83,8 @@ class ArrangeInline(FSMTransitionMixin, admin.StackedInline):
 
 
 class CaseForm(ModelForm):
+    mobile = CharField(max_length=10, required=True, label=_('Mobile'))
+
     class Meta:
         widgets = {
             'number': TextInput(attrs={'class': 'input-mini'}),
@@ -89,10 +92,21 @@ class CaseForm(ModelForm):
             'content': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'location': TextInput(attrs={'class': 'input-xlarge'}),
             'username': EnclosedInput(append='icon-user', attrs={'class': 'input-small'}),
+            'mobile': TextInput(attrs={'class': 'input-mini'}),
             'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-medium'}),
             'disapprove_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'close_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
         }
+
+    def clean(self):
+        pattern = re.compile('^09\d{8}$')
+        if self.is_valid():
+            mobile = self.cleaned_data['mobile']
+            if not re.match(pattern, mobile):
+                raise ValidationError('手機格式不正確')
+            self.cleaned_data['mobile'] = f'+886{mobile[1:]}'
+            self.instance.mobile = f'+886{mobile[1:]}'
+            return self.cleaned_data
 
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
@@ -105,7 +119,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('open_time', DateRangeFilter),
         ('close_time', DateRangeFilter),
     )
-    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time', 'tw_mobile')
+    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
     list_select_related = True
     date_hierarchy = 'create_time'
     date_hierarchy_drilldown = False
@@ -126,7 +140,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': '案件人個人資訊',
-            'fields': ['username', 'tw_mobile', 'email', 'address'],
+            'fields': ['username', 'mobile', 'email', 'address'],
         }),
         (_('Case Close Information'), {
             'classes': ('suit-tab suit-tab-general',),
@@ -173,6 +187,24 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         """於post_save時取得編輯者"""
         obj.user = request.user
         super().save_model(request, obj, form, change)
+
+    def get_fieldsets(self, request, obj=None):
+        """若是已新增過的物件，以tw_mobile取代mobile input"""
+        if obj:
+            self.fieldsets[2][1]['fields'] = ['username', 'tw_mobile', 'email', 'address']
+        return self.fieldsets
+
+    def get_readonly_fields(self, request, obj=None):
+        """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly"""
+        if obj:
+            return self.readonly_fields + ('tw_mobile',)
+        return self.readonly_fields
+
+    def get_fields(self, request, obj=None):
+        """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly，加到fields當中"""
+        if obj:
+            self.fields += ('tw_mobile',)
+        return self.fields
 
     def get_search_results(self, request, queryset, search_term):
         """加入CaseHistory搜尋"""
