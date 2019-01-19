@@ -59,6 +59,7 @@ table
       padding: 0
       text-align: center
       line-height: 2em
+
 .VuePagination ,.VuePagination__pagination, .VuePagination__count, ul
   display: flex !important
   align-items: center
@@ -75,4 +76,94 @@ table
 nav
   width: 100%
   color: white
+
+.el-dialog
+  width: 80% !important
+  max-height: 50%
+  dispaly: flex !important
+  margin-top: 5vh !important
+  felx-direction: row
+  align-items: center
+  justify-content: center
+  // height: 100%
+
+.upper-block-bkg
+  height: 100px
+  width: 100%
+  background: linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
+  overflow: hidden
+.case-logo
+  position: absolute !important
+  height: 100%
+  top: 45px
+  right: 0px
+  height: 100px
+
+.el-dialog
+  // position: absolute !important
+
+.el-dialog__header
+  background: linear-gradient(#0155E4, #ffffff 0.2, #0155E4)
+  padding-top: 30px !important
+  .el-dialog__headerbtn
+    top: 10px
+    right: 10px
+  .el-icon-close
+    border: white 1px solid
+    background-color: orange
+    color: white !important
+
+.el-dialog__body
+  box-sizing: border-box !important
+  border-width: 5px 5px 0px 5px
+  padding: 0 !important
+  border-style: solid
+  border-color: #0155E4
+  background-color: #dcdcdc
+  .case-content
+    padding: 10px !important
+    max-height: 40vh !important
+    overflow: scroll
+    .content-title
+      font-size: 1.2em
+      font-weight: 700
+
+.el-dialog__footer
+  height: 150px
+  align-items: center
+  display: flex !important
+  box-sizing: border-box !important
+  border-width: 0px 5px 7px 5px
+  border-style: solid
+  border-radius: 0px 0px 15px 15px
+  border-color: #0155E4
+  background-color: #dcdcdc
+  .dialog-footer
+    width: 100%
+    height: 100%
+    display: flex !important
+    align-items: center
+    justify-content: flex-end
+    .footer-block
+      display: flex !important
+      align-items: center
+      justify-content: center
+      height: 90%
+      width: 80%
+      border: solid 10px black !important
+      right: 20px!important
+      box-sizing: border-box
+      border-radius: 40px 10px
+      background-color: white !important
+      font-size: 1.5em
+      font-weight: 700
+      .content-id
+        flex: 1
+        padding: 0px 20px 0px 20px
+        text-align: center
+      .content-status
+        flex: 1
+        padding: 0px 20px 0px 20px
+        text-align: left
+
 </style>

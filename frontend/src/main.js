@@ -1,10 +1,10 @@
 import Vue from 'vue'
-// import store from '@/store'
+import store from '@/store'
 import router from '@/router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import UUID from 'vue-uuid'
-// import VueAnalytics from 'vue-analytics'
+import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
@@ -226,6 +226,6 @@ document.eraseCookie = function (name) {
 
 new Vue({
   router,
-  // store,
+  store,
   render: h => h(App)
 }).$mount('#app')

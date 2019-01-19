@@ -15,7 +15,7 @@
             a 關於魔鏡號
         span.bottom-dialog-options
             a -
-    el-col.footer
+    //- el-col.footer
       span
         |「選服魔鏡號」台北市議員邱威傑市民服務系統
         | 110 台北市信義區仁愛路四段507號 台北市議會 752研究室
