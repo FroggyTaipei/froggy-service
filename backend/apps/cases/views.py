@@ -61,7 +61,6 @@ class CaseViewSet(ModelViewSet):
     @action(methods=['GET'], detail=False)
     def vuetable(self, request):
         queryset = self.queryset
-        count = self.queryset.count()
         kwargs = self.request.query_params
 
         limit = int(kwargs.get('limit', None) or 5)
@@ -80,6 +79,7 @@ class CaseViewSet(ModelViewSet):
                                        | Q(content__icontains=query)
                                        | Q(location__icontains=query))
 
+        count = queryset.count()
         start = limit * page
         queryset = queryset.order_by(order_by)[start:start+limit]
 

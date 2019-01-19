@@ -86,7 +86,7 @@ class ArrangeInline(FSMTransitionMixin, admin.StackedInline):
 
 
 class CaseForm(ModelForm):
-    mobile = CharField(max_length=10, required=True, label=_('Mobile'))
+    mobile = CharField(max_length=10, required=False, label=_('Mobile'))
 
     class Meta:
         widgets = {
@@ -103,7 +103,7 @@ class CaseForm(ModelForm):
 
     def clean(self):
         pattern = re.compile('^09\d{8}$')
-        if self.is_valid():
+        if 'mobile' in self.changed_data:
             mobile = self.cleaned_data['mobile']
             if not re.match(pattern, mobile):
                 raise ValidationError('手機格式不正確')
