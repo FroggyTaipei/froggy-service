@@ -33,6 +33,9 @@ class ArrangeInlineForm(ModelForm):
         new_state = self.cleaned_data['state']
         arrange_time = self.cleaned_data['arrange_time']
 
+        if any(field in self.changed_data for field in ['title', 'content']) and new_state == 'published':
+            raise ValidationError('請先儲存變動後再設為發布')
+
         if new_state != 'draft':
             if self.instance.case.state == 'draft':
                 raise ValidationError(f'請先將案件由「尚未成案」設為「處理中」')
