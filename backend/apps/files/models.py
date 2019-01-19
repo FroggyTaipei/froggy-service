@@ -1,6 +1,6 @@
 import uuid
 from django.db import models
-from django.db.models.signals import pre_delete
+from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -8,7 +8,7 @@ from django.core.files.storage import FileSystemStorage
 
 from rest_framework.exceptions import ValidationError
 
-from .storages import PrivateStorage
+from apps.files.storages import PrivateStorage
 
 
 if settings.USE_AWS_S3:
@@ -29,7 +29,8 @@ class TempFile(models.Model):
     * file_name: 案件檔案名稱，不可編輯，save()時自動產生
     * upload_time: 檔案上傳時間
     """
-    case_uuid = models.UUIDField(default=uuid.uuid4, verbose_name=_('UUID'))
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    case_uuid = models.UUIDField(verbose_name=_('UUID'))
     file = models.FileField(storage=TEMP_STORAGE, verbose_name=_('Temp file'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     size = models.PositiveIntegerField(editable=False, verbose_name=_('Size'))
@@ -58,7 +59,7 @@ class TempFile(models.Model):
         objs = TempFile.objects.filter(case_uuid=self.case_uuid)
         size = [i.size for i in objs]
 
-        if self.size + sum(size) > 31457280:
+        if self.size + sum(size) > 41943040:
             return True
         else:
             return False
@@ -107,6 +108,9 @@ class CaseFile(models.Model):
         CaseFile save()時觸發
         給予file_name欄位檔案名稱
         """
+        start = self.file.name.find(f'{self.case.uuid}')
+        if start > -1:
+            self.file.name = self.file.name[start:]
         self.file_name = self.file.name.replace(f'{self.case.uuid}/', '')
         self.file.name = f'{self.case.uuid}/{self.file_name}'
         super(CaseFile, self).save(*args, **kwargs)
