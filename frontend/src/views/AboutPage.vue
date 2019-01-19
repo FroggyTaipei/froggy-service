@@ -1,32 +1,20 @@
 <template>
   <div class="container">
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
+      <About id="about" :lorem="lorem"></About>
   </div>
 </template>
 
 <script>
-import Dialogue from '@/components/Dialogue.vue'
+import About from '@/components/About.vue'
 
 export default {
   name: 'Home',
   data: function () {
     return {
-      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
-      showIntro: true
+      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?'
     }
   },
-  created: function () {
-    // this.visited = document.getCookie('visited')
-    // console.log(this.visited)
-    // if (this.visited) {
-    //   this.showIntro = false
-    // } else {
-    //   setCookie('visited', true)
-    // }
-  },
-  mounted: function () {
-  },
-  components: { Dialogue }
+  components: { About }
 }
 </script>
 

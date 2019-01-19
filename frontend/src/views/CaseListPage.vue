@@ -1,32 +1,22 @@
 <template>
   <div class="container">
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
+      <!-- <Dialogue id="dialogue" class="" :lorem="lorem"></Dialogue> -->
+      <CaseList id="cases" :lorem="lorem"></CaseList>
+      <!-- <About id="about" :lorem="lorem"></About> -->
   </div>
 </template>
 
 <script>
-import Dialogue from '@/components/Dialogue.vue'
+import CaseList from '@/components/CaseList.vue'
 
 export default {
   name: 'Home',
   data: function () {
     return {
-      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
-      showIntro: true
+      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?'
     }
   },
-  created: function () {
-    // this.visited = document.getCookie('visited')
-    // console.log(this.visited)
-    // if (this.visited) {
-    //   this.showIntro = false
-    // } else {
-    //   setCookie('visited', true)
-    // }
-  },
-  mounted: function () {
-  },
-  components: { Dialogue }
+  components: { CaseList }
 }
 </script>
 
@@ -60,6 +50,11 @@ table
 .el-table .cell
   font-size: 24px
   line-height: 30px !important
+
+// .el-table .ascending .sort-caret.ascending
+//   border-bottom-color: black !important
+// .el-table .descending .sort-caret.descending
+//   border-bottom-color: black !important
 
 form
   textarea,.el-input__inner

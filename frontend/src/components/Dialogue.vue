@@ -1,16 +1,16 @@
 <template lang="pug">
 el-container.page1
-  //- transition(name="fade")
-    el-row(type="flex" justify="center" align="middle" v-show="showIntro")
-      el-col
-        .center(v-show="showIntro")
-          img.intro-img(:src="introUrl")
-          h1.intro-text(@click="makeInvisible" ) START
   transition(name="fade")
-    el-row(type="flex" align="middle" justify="center" v-show="showFroggy")
-      el-col(:span="18")
-        img.froggyImage(:src="froggyUrl")
-        el-row(type="flex" align="end" justify="center")
+    el-row(type="flex" justify="center" align="middle" v-show="showIntro")
+      img.intro-img(:src="introUrl")
+      h1.intro-text START
+  transition(name="fade")
+    el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="showFroggy")
+      img.froggyImage(:src="froggyImageUrl")
+  //佔空間用
+  el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="!showFroggy")
+  BottomGameDialog(v-show="!showIntro" :title="welcomeText")
+        //- el-row(type="flex" align="end" justify="center")
           el-col
             .text-block-back
               .text-block-front
@@ -24,18 +24,21 @@ el-container.page1
                   .btn-wrapper
                     i.el-icon-caret-right(v-show='mouse2')
                     el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
-  transition(name="fade")
-    InputDialog(v-show="openInput")
+  //- transition(name="fade")
+  //-   InputDialog(v-show="openInput")
 
 </template>
 
 <script>
-import InputDialog from '@/components/InputDialog.vue'
+// import InputDialog from '@/components/InputDialog.vue'
+import BottomGameDialog from '@/components/BottomGameDialog.vue'
+
 export default {
   name: 'Dialogue',
-  components: { InputDialog },
+  components: { BottomGameDialog },
   data: function () {
     return {
+      showIntro: true,
       imageStorageUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/',
       dialogue: [
         {
@@ -52,18 +55,10 @@ export default {
           froggyImage: ['night_1.png', 'night_2.png', 'night_3.png']
         }
       ],
-      isFindFroggy: false,
-      isFroggyDoing: false,
       openInput: false,
       bkgUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png',
       introUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
-      showIntro: true,
-      showFroggy: false,
-      froggyUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/morning_1.png',
-      slide: false,
-      mouse1: false,
-      mouse2: false,
-      froggyHeight: 0
+      showFroggy: false
     }
   },
   methods: {
@@ -74,30 +69,8 @@ export default {
       }, 1000)
     },
     toggleInput () {
-      console.log('clicked')
       this.showFroggy = !this.showFroggy
       this.openInput = !this.openInput
-    },
-    clickOption: function (action) {
-      if (action === 'findFroggy') {
-        if (this.isFindFroggy) {
-          this.isFindFroggy = !this.isFindFroggy
-        } else if (this.isFroggyDoing) {
-          this.isFindFroggy = !this.isFindFroggy
-          this.isFroggyDoing = !this.isFroggyDoing
-        } else {
-          this.isFindFroggy = !this.isFindFroggy
-        }
-      } else if (action === 'froggyDoing') {
-        if (this.isFroggyDoing) {
-          this.isFroggyDoing = !this.isFroggyDoing
-        } else if (this.isFindFroggy) {
-          this.isFindFroggy = !this.isFindFroggy
-          this.isFroggyDoing = !this.isFroggyDoing
-        } else {
-          this.isFroggyDoing = !this.isFroggyDoing
-        }
-      }
     },
     hover (index) {
       if (index === 1) {
@@ -112,6 +85,12 @@ export default {
       } else if (index === 2) {
         this.mouse2 = false
       }
+    },
+    beforePageDestroyed: function (event) {
+      console.log('beforePageDestroyed')
+    },
+    setCookie (name, value) {
+      document.cookie = name + '=' + (value || '') + '; path=/'
     }
   },
   computed: {
@@ -121,28 +100,46 @@ export default {
       switch (true) {
         case (this.dialogue[0].showTime[0] <= hour && hour < this.dialogue[0].showTime[1]):
           return 0
-          break
         case (this.dialogue[1].showTime[0] <= hour && hour < this.dialogue[1].showTime[1]):
           return 1
-          break
         case (this.dialogue[2].showTime[0] <= hour || hour < this.dialogue[2].showTime[1]):
           return 2
-          break
         default:
           break
       }
     },
     froggyImageUrl: function () {
       return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
+    },
+    welcomeText: function () {
+      return [this.dialogue[this.sceneCount].textContent[0]]
     }
   },
+  created: function () {
+    this.visited = document.getCookie('visited')
+    console.log('visited ' + this.visited)
+    if (this.visited) {
+      this.showIntro = false
+    } else {
+      this.setCookie('visited', true)
+    }
+    window.addEventListener('beforeunload', function (e) {
+      document.eraseCookie('visited')
+    })
+  },
   mounted: function () {
+    let introTime = 1500
+    let showFroggyTime = 500
+    if (this.visited) {
+      introTime = 0
+      showFroggyTime = 0
+    }
     setTimeout(() => {
-      this.showIntro = !this.showIntro
+      this.showIntro = false
       setTimeout(() => {
         this.showFroggy = true
-      }, 500)
-    }, 1500)
+      }, showFroggyTime)
+    }, introTime)
   },
   props: ['lorem']
 }
@@ -150,34 +147,30 @@ export default {
 
 <style lang="sass" scoped>
 .page1
-  // background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png')
-  background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1)), linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
-  background-position: center, center
+  background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
+  background-position: center
   background-size: contain
-  background-repeat: no-repeat,no-repeat
+  background-repeat: no-repeat
   overflow: hidden
   height: 100%
   width: 100%
-
-.center, .el-main
-  // display: flex
-  width: 100%
-  height: 100%
-  flex-shrink: 0
-  align-items: center
-  justify-content: center
+  flex-direction: column
 
 .el-row
   width: 100%
+  height: 100%
 
 .intro-img
   width: 100%
 
-.froggyImage
-  width: 100%
-  transform: translateY(1000px)
-  animation: flyin 2s forwards
-//
+.forggyImage-wrapper
+  flex: 3
+  .froggyImage
+    width: 100%
+    max-width: 500px
+    transform: translateY(1000px)
+    animation: flyin 1.5s forwards
+
 .bottom
   width: 100%
   position: absolute
@@ -224,12 +217,15 @@ export default {
       padding: 0px 20px 10px 20px
       font-size: 1em
 
+.row-dialog
+  flex: 1
+
 .intro-text
   font-size: 80px
   color: white
   font-weight: bold
   position: absolute
-  bottom: 0
+  bottom: 10vh
   animation: blinker 2s linear infinite
   &:hover
     cursor: pointer
@@ -240,10 +236,11 @@ export default {
 
 @keyframes flyin
   100%
-    transform: translateY(0)
+    transform: translateY(20px)
+
 // Vue animation
 .fade-enter-active, .fade-leave-active
   transition: opacity .5s
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-  opacity: 0
+  opacity: 0s
 </style>

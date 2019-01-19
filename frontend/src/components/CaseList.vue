@@ -1,40 +1,39 @@
 <template lang="pug">
 el-container.page2
-  el-main
-    el-row.row-table(type="flex" align="middle",justify="center")
-      el-col(:span=24)
-        el-table.caseTable(:data='tableData', ref="casetb" ,style='width: 100%' max-height="500")
-          //- el-table-column(type='expand')
-            template(slot-scope='props')
-              el-form.demo-table-expand(label-position='left', inline='')
-                el-form-item(label='內容')
-                  span {{ props.row.content }}
-                el-form-item(label='地點')
-                  span {{ props.row.location }}
-                el-form-item(label='案件類型')
-                  span {{ props.row.type }}
-                el-form-item(label='處理進度')
-                  span {{ props.row.state }}
-          el-table-column(prop='number', label='案件編號', width='140', sortable)
-            //- template(slot-scope='props')
-              span {{ props.row.location }}
-              el-popover(trigger='hover', placement='top')
-                p 姓名:  {{ props.row.number }}
-                p 住址:
-                .name-wrapper(slot='reference')
-                  el-tag(size='medium')
-          el-table-column(prop='create_time', label='陳情日期')
-          el-table-column(prop='type', label='案件類別', width='120')
-          el-table-column(prop='title', label='案件主旨', width='180')
-          el-table-column(prop='state', label='處理進度')
-        //- el-col(:span=18)
-          el-pagination(layout='prev, pager, next', :total='50')
-      el-dialog(title='提示', :visible.sync='dialogVisible', width='30%', :before-close='handleClose')
-        span 这是一段信息
-        span.dialog-footer(slot='footer')
-          el-button(@click='dialogVisible = false') 取 消
-          el-button(type='primary', @click='dialogVisible = false') 确 定
-    BottomGameDialog(:title="title")
+  el-row.row-table(type="flex" align="middle",justify="center")
+    el-col(:span=20)
+      el-table.caseTable(:data='tableData', ref="casetb" ,style='width: 100%' max-height="500")
+        //- el-table-column(type='expand')
+          template(slot-scope='props')
+            el-form.demo-table-expand(label-position='left', inline='')
+              el-form-item(label='內容')
+                span {{ props.row.content }}
+              el-form-item(label='地點')
+                span {{ props.row.location }}
+              el-form-item(label='案件類型')
+                span {{ props.row.type }}
+              el-form-item(label='處理進度')
+                span {{ props.row.state }}
+        el-table-column(prop='id', label='案件編號', width='100', sortable)
+          //- template(slot-scope='props')
+            span {{ props.row.location }}
+            el-popover(trigger='hover', placement='top')
+              p 姓名:  {{ props.row.number }}
+              p 住址:
+              .name-wrapper(slot='reference')
+                el-tag(size='medium')
+        el-table-column(prop='type', label='案件類型', width='120')
+        el-table-column(prop='create_time', label='日期')
+        el-table-column(prop='title', label='案件主旨', width='180')
+        el-table-column(prop='state', label='處理進度')
+      //- el-col(:span=18)
+        el-pagination(layout='prev, pager, next', :total='50')
+    //- el-dialog(title='提示', :visible.sync='dialogVisible', width='30%', :before-close='handleClose')
+      span 这是一段信息
+      span.dialog-footer(slot='footer')
+        el-button(@click='dialogVisible = false') 取 消
+        el-button(type='primary', @click='dialogVisible = false') 确 定
+  BottomGameDialog(:title="title")
 </template>
 
 <script>
@@ -113,6 +112,8 @@ export default {
         'state': '已結案'
       }
     ]
+    var first = document.getCookie('test')
+    console.log(first)
   },
   methods: {
     preventParentsScroll: function () {
@@ -126,27 +127,23 @@ export default {
 
 <style lang="sass" scoped>
 .page2
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png')
+  background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
   background-position: center
+  background-size: contain
+  background-repeat: no-repeat
   overflow: hidden
-
-.el-main
-  display: flex
-  // flex-shrink: 0
-  flex-grow: 1
-  flex-direction: column
+  height: 100%
   width: 100%
-  height: 100vh
-  align-items: center
-  justify-content: center
+  flex-direction: column
 
 .el-row
   width: 100%
+  height: 100%
 
 .row-table
-  flex: 6
+  flex: 3
   flex-direction: column
 .row-dialog
-  flex: 2
+  flex: 1
 
 </style>
