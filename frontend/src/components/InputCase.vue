@@ -24,7 +24,7 @@
         :accept="acceptFileType"
         :limit="5">
         <el-button slot="trigger" type="primary">上傳檔案</el-button>
-        <div slot="tip" class="el-upload__tip">1.上傳總容量限制為40MB，最多5個檔案。</div>
+        <div slot="tip" class="el-upload__tip">1.上傳單檔限制為10MB，最多5個檔案。</div>
         <div slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png, mpg, mpeg, avi, wmv, mp3, mp4, zip, rar, 7z。</div>
       </el-upload>
     </el-form>
@@ -44,9 +44,9 @@ export default {
   },
   data: () => ({
     caseCompletePopup: false,
-    filesSize: 0,
     acceptFileType: '.jpg,.jpeg,.png,.mpg,.mpeg,.avi,.wmv,.mp3,.mp4,.zip,.rar,.7z',
     wrongFileType: false,
+    fileOverSize: false,
     uploadFail: false,
     upload_data: {
       case_uuid: ''
@@ -127,10 +127,12 @@ export default {
       this.axios.post('/api/cases', this.cases, { headers: this.$store.state.jwt })
         .then(response => {
           console.log('submit success')
-          this.$alert('案件已送出', '很抱歉', {
+          this.$alert('案件已送出', '恭喜你', {
             type: 'success'
           }).then(
-            // close page
+            window.history.length > 1
+              ? this.$router.go(-1)
+              : this.$router.push('/')
           )
         })
         .catch(e => {
@@ -168,17 +170,16 @@ export default {
       })
     },
     beforeUpload (file) {
-      console.log('before uplo')
-      const fileLimit = 41943040
+      console.log('before upload')
+      const fileLimit = 10485760
 
       if (!/\.(jpg?|jpeg?|png?|mpg?|mpeg?|avi?|wmv?|mp3?|mp4?|zip?|rar?|7z?)$/i.test(file.name)) {
         this.$refs.upload.abort()
         this.wrongFileType = true
         return false
       }
-      if (this.filesSize < fileLimit) {
-        this.filesSize += file.size
-      } else {
+      if (file.size > fileLimit) {
+        this.fileOverSize = true
         return false
       }
     },
@@ -186,13 +187,15 @@ export default {
       if (this.wrongFileType) {
         this.$alert('請上傳符合格式的檔案')
         this.wrongFileType = false
+      } else if (this.fileOverSize) {
+        this.$alert('請勿上傳超過 10MB 的檔案')
+        this.fileOverSize = false
       } else {
         return this.$confirm(`確定要移除 ${file.name}？`, '提示', {
           confirmButtonText: '確定',
           cancelButtonText: '取消',
           type: 'warning'
         }).then(
-          this.filesSize -= file.size
         )
       }
     },
@@ -202,7 +205,6 @@ export default {
         this.$alert('上傳發生錯誤，請稍後再試', '很抱歉', {
           type: 'error'
         }).then(
-          this.filesSize -= file.size
         )
       }
     }

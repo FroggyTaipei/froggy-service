@@ -10,13 +10,10 @@ el-container.page1
   //佔空間用
   el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="!showFroggy")
   BottomGameDialog(v-show="!showIntro" :title="welcomeText")
-  //- transition(name="fade")
-  //-   InputDialog(v-show="openInput")
 
 </template>
 
 <script>
-// import InputDialog from '@/components/InputDialog.vue'
 import BottomGameDialog from '@/components/BottomGameDialog.vue'
 
 export default {
