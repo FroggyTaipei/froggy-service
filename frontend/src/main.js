@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import store from '@/store'
+// import store from '@/store'
 import router from '@/router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
@@ -12,10 +12,7 @@ import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
 import './registerServiceWorker'
 import moment from 'moment'
-import { ServerTable, ClientTable, Event } from 'vue-tables-2'
-import 'fullpage.js/vendors/scrolloverflow'
-import VueFullPage from 'vue-fullpage.js'
-import { DataTables, DataTablesServer } from 'vue-data-tables'
+import { ServerTable } from 'vue-tables-2'
 
 import {
   Pagination,
@@ -87,11 +84,8 @@ import {
   Notification
 } from 'element-ui'
 
-Vue.use(ClientTable, {}, 'false', 'bootstrap4', 'default')
-Vue.use(DataTables)
-Vue.use(DataTablesServer)
+Vue.use(ServerTable)
 Vue.use(ElementUI)
-Vue.use(VueFullPage)
 Vue.use(UUID)
 
 Vue.prototype.$moment = moment
@@ -232,6 +226,6 @@ document.eraseCookie = function (name) {
 
 new Vue({
   router,
-  store,
+  // store,
   render: h => h(App)
 }).$mount('#app')
