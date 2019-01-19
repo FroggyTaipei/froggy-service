@@ -1,13 +1,12 @@
 <template lang="pug">
 el-container.page3
-  el-main
+  transition(name="fade")
     el-row.about-main(type="flex" align="middle" justify="center")
-      el-col(:span=24)
-        .about-title
-          h1 公開透明。
-      el-col(:span=24)
+      el-col(:span=22 :offset=2)
+        h1 公開透明。
+      el-col(:span=22 :offset=2)
         el-row(type="flex" align="middle" justify="center")
-          el-col(:span=14)
+          el-col(:span=16)
             article
               .about-content
                 span 我們都知道，這是一個已經喊了十幾年的口號，但時間過去了，政治，仍然是一件跟人心一樣複雜的事。
@@ -26,26 +25,18 @@ el-container.page3
                 br
                 br
                 h2 邱威傑
-          el-col(:span=10)
+          el-col(:span=8)
             img.froggyServantImg(:src="froggyservantUrl")
-    BottomGameDialog(:title="title")
-    el-row.footer-row(type="flex" align="middle" justify="center")
-      el-col.footer
-        span
-          |「選服魔鏡號」台北市議員邱威傑市民服務系統
-          | 110 台北市信義區仁愛路四段507號 台北市議會 752研究室
-          | 02-27297708 分機 7152、7252
-          | 02-87862707
-          | servant@65535studio.com
+  BottomGameDialog(:title="title")
 </template>
 
 <script>
 import BottomGameDialog from './BottomGameDialog.vue'
 export default {
   name: 'About',
-  components: {BottomGameDialog},
-  data: function(){
-    return{
+  components: { BottomGameDialog },
+  data: function () {
+    return {
       title: ['選服魔鏡號 市民看得到', '－台北市議員邱威傑市民服務系統...'],
       froggyservantUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/froggy_servant.png'
     }
@@ -56,44 +47,37 @@ export default {
 
 <style lang="sass" scoped>
 .page3
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/dark_gradient_background.png')
-  // background-position: center
+  background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1)), linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
+  background-position: center, center
+  background-size: contain
+  background-repeat: no-repeat,no-repeat
   overflow: hidden
-
-.el-main
-  display: flex
-  flex-shrink: 0
-  flex-grow: 1
-  flex-direction: column
+  height: 100%
   width: 100%
-  height: 100vh
-  align-items: center
-  justify-content: center
+  flex-direction: column
 
 .el-row
   width: 100%
 .about-main
-  flex: 6
+  flex: 3
   flex-direction: column
 .row-dialog
-  flex: 2
-.about-title
-    margin-top: 20px
-    margin-bottom: 20px
-    color: white
-    h1
-      font-size: 24px
+  flex: 1
+h1
+  color: white
+  font-size: 3em
 article
+  overflow: scroll
   .about-content
-    max-height: 60vh
+    // max-height: 60vh
     overflow: scroll
     color: white
     span
-      font-size: 0.8em
+      font-size: 1em
 
 .froggyServantImg
   width: 100%
-
+  transform: scale(1.5) translate3d(-5px ,50px,0)
 .text-center
   text-align: center
 
@@ -104,4 +88,8 @@ article
     bottom: 0
     text-align: center
     color: white
+.fade-enter-active, .fade-leave-active
+  transition: opacity .5s
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
+  opacity: 0
 </style>
