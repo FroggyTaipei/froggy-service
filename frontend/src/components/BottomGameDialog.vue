@@ -5,7 +5,7 @@
         h3(v-for="t in title") {{ t }}
       .bottom-dialog-right
         span.bottom-dialog-options
-          router-link(to="/")
+          router-link(to="/create")
             a 我要服務
         span.bottom-dialog-options
           router-link(to="/cases")

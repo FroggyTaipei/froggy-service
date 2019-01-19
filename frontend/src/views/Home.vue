@@ -1,13 +1,11 @@
 <template>
   <div class="container">
-      <!-- <Dialogue id="dialogue" :lorem="lorem"></Dialogue> -->
-      <InputDialog></InputDialog>
+      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
   </div>
 </template>
 
 <script>
 import Dialogue from '@/components/Dialogue.vue'
-import InputDialog from '@/components/InputDialog.vue'
 
 export default {
   name: 'Home',
@@ -21,7 +19,7 @@ export default {
   },
   mounted: function () {
   },
-  components: { Dialogue, InputDialog }
+  components: { Dialogue }
 }
 </script>
 

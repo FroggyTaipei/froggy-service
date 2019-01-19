@@ -133,14 +133,11 @@ export default {
       this.axios.post('/api/users/accountkit_get_token/', accountKitResp)
         .then(response => {
           let jwt = { Authorization: 'JWT ' + response.data.jwt }
-          console.log(response)
-          console.log('jwt ', response.data.jwt)
           this.authentication = true
           this.$store.commit('setJWT', jwt)
         })
         .catch(e => {
           console.log(e)
-          console.log(e.response)
         })
     },
     nextPage () {
