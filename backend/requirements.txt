@@ -62,3 +62,4 @@ django-admin-lightweight-date-hierarchy==0.3.0
 django-suit-daterange-filter==0.0.6
 django-suit-dashboard==2.0.6
 jieba==0.39
+django-tagulous==0.13.2

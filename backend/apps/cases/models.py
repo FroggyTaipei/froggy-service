@@ -4,10 +4,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils import formats
 from django.db.models.signals import post_save
-from django_fsm import FSMField, transition
 from django.core.exceptions import ValidationError
-from apps.mails.models import SendGridMail, SendGridMailTemplate
-from phonenumber_field.modelfields import PhoneNumberField
+from django.core.files.storage import FileSystemStorage
 from django.db.models import (
     Model,
     CASCADE,
@@ -20,7 +18,12 @@ from django.db.models import (
     SET_NULL,
     UUIDField,
 )
-from django.core.files.storage import FileSystemStorage
+
+from phonenumber_field.modelfields import PhoneNumberField
+from django_fsm import FSMField, transition
+from tagulous.models import TagField
+
+from apps.mails.models import SendGridMail, SendGridMailTemplate
 from apps.files.storages import PrivateStorage
 from apps.files.models import TempFile, CaseFile
 
@@ -125,6 +128,8 @@ class Case(Model):
 
     disapprove_info = TextField(null=True, blank=True, verbose_name=_('Disapprove Info'))
     close_info = TextField(null=True, blank=True, verbose_name=_('Close Info'))
+
+    tags = TagField(verbose_name=_('Tags'))
 
     objects = CaseQuerySet.as_manager()
 
