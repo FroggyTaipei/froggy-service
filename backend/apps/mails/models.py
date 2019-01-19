@@ -15,8 +15,9 @@ from django.db.models import (
     EmailField,
     BooleanField,
     CharField,
-    IntegerField,
 )
+
+from .utils import sendgrid_system_mail
 
 env = environ.Env()
 sg = sendgrid.SendGridAPIClient(apikey=env.str('SENDGRID_API_KEY', default=''))
@@ -41,7 +42,7 @@ class SendGridMailTemplate(Model):
         super(SendGridMailTemplate, self).save(*args, **kwargs)
 
     def retrieve_template(self):
-        sg.client.templates._(self.tid).get()
+        return sg.client.templates._(self.tid).get()
 
 
 class SendGridMail(Model):
@@ -80,8 +81,8 @@ class SendGridMail(Model):
                 response = SendGridMail.send_template(self.from_email, self.to_email, self.data, self.template.tid)
                 self.success = bool(response and response.status_code == 202)
                 super(SendGridMail, self).save(*args, **kwargs)
-            except SendGridMailTemplate.DoesNotExist:
-                pass
+            except SendGridMailTemplate.DoesNotExist as e:
+                sendgrid_system_mail(e)
 
     def send(self):
         self.save()
@@ -94,5 +95,6 @@ class SendGridMail(Model):
         mail.template_id = template_id
         try:
             return sg.client.mail.send.post(request_body=mail.get())
-        except HTTPError:
+        except HTTPError as e:
+            sendgrid_system_mail(e)
             return None

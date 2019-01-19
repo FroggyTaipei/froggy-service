@@ -15,7 +15,7 @@ class CaseModelTestCase(TestCase):
         call_command('loaddata', 'region', verbosity=0)
         call_command('loaddata', 'type', verbosity=0)
         call_command('loaddata', 'case.test.yaml', verbosity=0)
-        call_command('loaddata', 'sendgrid-template.test.yaml', verbosity=0)
+        call_command('loaddata', 'sendgrid-template.yaml', verbosity=0)
 
         self.case = Case.objects.first()
         self.case_history = CaseHistory.objects.first()
@@ -39,7 +39,7 @@ class CaseCrudTestCase(TestCase):
         call_command('loaddata', 'region', verbosity=0)
         call_command('loaddata', 'type', verbosity=0)
         call_command('loaddata', 'case.test.yaml', verbosity=0)
-        call_command('loaddata', 'sendgrid-template.test.yaml', verbosity=0)
+        call_command('loaddata', 'sendgrid-template.yaml', verbosity=0)
 
         self.case = Case.objects.filter(state='draft').first()
         self.case_history = CaseHistory.objects.first()
@@ -115,7 +115,6 @@ class CaseCrudTestCase(TestCase):
             'title': '上班時段計程車過多',
             'content': 'test',
             'username': '王大明',
-            'email': 'travishen.tw@gmail.com',
             'type': 1,
             'region': 1,
         }

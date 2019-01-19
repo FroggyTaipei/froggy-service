@@ -71,7 +71,7 @@ class Arrange(Model):
     @property
     def email_content(self):
         """將圖片取代為連結"""
-        soup = BeautifulSoup(self.content)
+        soup = BeautifulSoup(self.content, features="html.parser")
         for img in soup.find_all('img'):
             link = img['src']
             a = soup.new_tag('a', href=link, style="color:red;")
