@@ -16,7 +16,7 @@ script:
   - docker-compose exec backend sh -c "pycodestyle --exclude=migrations --ignore=E123,E133,E226,E241,E242,E402,E501,W503 ./"
   - docker-compose exec backend sh -c "flake8 --exclude=migrations --ignore=E123,E133,E226,E241,E242,E402,E501,F401,F403,F405,W503 ./"
   # Run tests
-  - docker-compose exec backend sh -c "python manage.py test --exclude-tag=private"
+  - docker-compose exec backend sh -c "python manage.py test --exclude-tag=mail"
   # Show logs
   - docker-compose logs --tail=20 backend
 after_success:

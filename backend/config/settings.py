@@ -86,7 +86,8 @@ EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
 EMAIL_HOST = env.str('EMAIL_HOST', default='mailhog')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
 # See: https://github.com/sendgrid/sendgrid-python
-if env.bool('USE_SENDGRID', default=False):
+USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
+if USE_SENDGRID:
     EMAIL_PORT = 587
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_USE_TLS = True
