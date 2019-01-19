@@ -10,20 +10,6 @@ el-container.page1
   //佔空間用
   el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="!showFroggy")
   BottomGameDialog(v-show="!showIntro" :title="welcomeText")
-        //- el-row(type="flex" align="end" justify="center")
-          el-col
-            .text-block-back
-              .text-block-front
-                h1 台北市議員邱威傑：
-                span {{dialogue[sceneCount].textContent[0]}}
-                .bottom.bottom-btn
-                  .space
-                  .btn-wrapper
-                    i.el-icon-caret-right(v-show='mouse1')
-                    el-button.text-button(type='text', @mouseover.native='hover(1)', @mouseleave.native='leave(1)' @click="toggleInput") 我要找呱吉
-                  .btn-wrapper
-                    i.el-icon-caret-right(v-show='mouse2')
-                    el-button.text-button(type='text', @mouseover.native='hover(2)', @mouseleave.native='leave(2)') 呱吉做什麼
   //- transition(name="fade")
   //-   InputDialog(v-show="openInput")
 

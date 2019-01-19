@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
+      <!-- <Dialogue id="dialogue" :lorem="lorem"></Dialogue> -->
+      <InputDialog></InputDialog>
   </div>
 </template>
 
 <script>
 import Dialogue from '@/components/Dialogue.vue'
+import InputDialog from '@/components/InputDialog.vue'
 
 export default {
   name: 'Home',
@@ -16,17 +18,10 @@ export default {
     }
   },
   created: function () {
-    // this.visited = document.getCookie('visited')
-    // console.log(this.visited)
-    // if (this.visited) {
-    //   this.showIntro = false
-    // } else {
-    //   setCookie('visited', true)
-    // }
   },
   mounted: function () {
   },
-  components: { Dialogue }
+  components: { Dialogue, InputDialog }
 }
 </script>
 
@@ -77,6 +72,6 @@ form
   padding-top: 16px
   button
     background-color: rgba(#fff, .3)
-    border-color: transparent;
+    border-color: transparent
     font-weight: bold
 </style>
