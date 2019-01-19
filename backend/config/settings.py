@@ -43,6 +43,7 @@ THIRD_PARTY_APPS = [
     'django_admin_lightweight_date_hierarchy',
     'date_range_filter',
     'suit_dashboard',
+    'tagulous',
 ]
 
 LOCAL_APPS = [

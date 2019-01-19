@@ -7,8 +7,9 @@ from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
 from django.forms import TextInput, ModelForm, CharField
 from django.db.models import Q
-from suit_ckeditor.widgets import CKEditorWidget
 from django.utils.translation import ugettext_lazy as _
+
+from suit_ckeditor.widgets import CKEditorWidget
 from fsm_admin.mixins import FSMTransitionMixin
 from date_range_filter import DateRangeFilter
 from suit.widgets import (
@@ -16,7 +17,8 @@ from suit.widgets import (
     AutosizedTextarea,
     SuitSplitDateTimeWidget,
 )
-
+import tagulous
+from tagulous.forms import TagWidget
 
 from apps.cases.models import Case, CaseHistory
 from apps.arranges.models import Arrange
@@ -99,6 +101,10 @@ class CaseForm(ModelForm):
             'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-medium'}),
             'disapprove_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'close_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
+            'tags': TagWidget(attrs={'class': 'input-xxlarge'}),
+        }
+        help_texts = {
+            'tags': '使用逗號分隔多個標籤',
         }
 
     def clean(self):
@@ -138,7 +144,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         (_('Information'), {
             'classes': ('suit-tab suit-tab-general',),
             'description': '案件相關資訊',
-            'fields': ['type', 'region', 'title', 'content', 'location'],
+            'fields': ['type', 'region', 'title', 'content', 'location', 'tags'],
         }),
         (_('Proposer'), {
             'classes': ('suit-tab suit-tab-general',),
