@@ -34,7 +34,7 @@ class CaseSerializer(serializers.ModelSerializer):
     state = serializers.SerializerMethodField(read_only=True)
 
     def get_create_time(self, obj):
-        return obj.format_create_time()
+        return obj.create_time.strftime('%Y-%m-%d')
 
     def get_type(self, obj):
         return obj.type.name
@@ -52,4 +52,6 @@ class CaseRetrieveSerializer(CaseSerializer):
 
     class Meta:
         model = Case
-        fields = ['id', 'number', 'create_time', 'title', 'content', 'location', 'type', 'state', 'arranges']
+        fields = ['id', 'number', 'create_time', 'title',
+                  'content', 'location', 'type', 'state',
+                  'arranges', 'disapprove_info', 'close_info']
