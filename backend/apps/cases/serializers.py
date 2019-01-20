@@ -54,4 +54,4 @@ class CaseRetrieveSerializer(CaseSerializer):
         model = Case
         fields = ['id', 'number', 'create_time', 'title',
                   'content', 'location', 'type', 'state',
-                  'arranges', 'disapprove_info', 'close_info']
+                  'arranges', 'disapprove_info']

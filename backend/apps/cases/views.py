@@ -6,6 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from apps.users.authentication import AccountKitUserAuthentication
+
 from .serializers import (
     CaseWriteSerializer,
     CaseSerializer,
@@ -13,10 +14,12 @@ from .serializers import (
     TypeSerializer,
     RegionSerializer,
 )
+from apps.arranges.models import Arrange
 from .models import (
     Type,
     Region,
     Case,
+    State,
 )
 
 
@@ -35,7 +38,7 @@ class TypeViewSet(ReadOnlyModelViewSet):
 
 
 class CaseViewSet(ModelViewSet):
-    queryset = Case.objects.all()
+    queryset = Case.objects.exclude(state='draft')
     serializer_class = CaseSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     http_method_names = ['get', 'post', 'retrieve']
@@ -73,11 +76,21 @@ class CaseViewSet(ModelViewSet):
         if ascending == 'desc':
             order_by = '-' + order_by
 
+        for state, title in State.CHOICES:
+            if query == title:
+                query = state
+
         if query:
+            arrange_ids = Arrange.objects.filter(Q(title__icontains=query)
+                                                 | Q(content__icontains=query)).values_list('id', flat=True)
+
             queryset = queryset.filter(Q(number__icontains=query)
                                        | Q(title__icontains=query)
                                        | Q(content__icontains=query)
-                                       | Q(location__icontains=query))
+                                       | Q(location__icontains=query)
+                                       | Q(state__icontains=query)
+                                       | Q(disapprove_info__icontains=query)
+                                       | Q(arranges__id__in=arrange_ids))
 
         count = queryset.count()
         start = limit * page
