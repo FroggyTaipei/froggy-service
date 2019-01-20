@@ -176,11 +176,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
         if not user:
             # Register a new account kit user
-            user = User.objects.create_accountkit_user(email=email, mobile=mobile)
+            user = User.objects.create_accountkit_user(email=email, mobile=mobile, full_name='AccountKit User')
 
         payload = jwt_payload_handler(user)
         jwt = jwt_encode_handler(payload)
 
         return JsonResponse({
+            'email': email,
+            'mobile': mobile,
             'jwt': jwt,
         })

@@ -127,9 +127,9 @@ class Case(Model):
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
 
     disapprove_info = TextField(null=True, blank=True, verbose_name=_('Disapprove Info'))
-    close_info = TextField(null=True, blank=True, verbose_name=_('Close Info'))
 
-    tags = TagField(verbose_name=_('Tags'))
+    note = TextField(null=True, blank=True, verbose_name=_('Case Notes'))
+    tags = TagField(verbose_name=_('Case Tags'))
 
     objects = CaseQuerySet.as_manager()
 

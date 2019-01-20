@@ -6,7 +6,7 @@
     location: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5FA9\u8208\u5317\u8DEF", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2019-01-03 23:07:13.357191+00:00', close_time: ! '2019-02-02 23:07:13.357191+00:00', create_time: ! '2019-01-02 23:07:13.357191+00:00',
-    update_time: null, disapprove_info: null, close_info: null}
+    update_time: null, disapprove_info: null, note: ''}
 - model: cases.case
   pk: 2
   fields: {state: arranged, uuid: 157f5b58-6249-403d-8437-a219daf132e1, number: '000002',
@@ -14,7 +14,7 @@
     location: "\u53F0\u5317\u5E02\u5FE0\u5B5D\u6A4B\u9644\u8FD1", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2019-01-16 05:56:30.784417+00:00', close_time: null, create_time: ! '2019-01-13 05:56:30.784417+00:00',
-    update_time: null, disapprove_info: '', close_info: ''}
+    update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 3
   fields: {state: arranged, uuid: eaa5f818-23c6-4c32-9eea-f84cd8f12924, number: '000003',
@@ -23,7 +23,7 @@
     username: "\u738B\u5927\u660E", mobile: "+886912345678",
     address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2016-04-17 05:57:51.709797+00:00', close_time: null, create_time: ! '2016-04-13 05:57:51.709797+00:00',
-    update_time: null, disapprove_info: '', close_info: ''}
+    update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 4
   fields: {state: disapproved, uuid: cce1d9cf-e0f6-48e1-9767-f86c293fb654, number: '000004',
@@ -33,7 +33,7 @@
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: '2017-12-01 05:59:05.499956+00:00', close_time: null, create_time: ! '2017-11-13 05:59:05.499956+00:00',
     update_time: null, disapprove_info: "\u5471\u5409\u6709\u5403\u904E\u54E6\uFF01",
-    close_info: ''}
+    note: ''}
 - model: cases.case
   pk: 5
   fields: {state: disapproved, uuid: 47cc2a28-016f-4812-95ae-444399608018, number: '000005',
@@ -43,7 +43,7 @@
     address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: null, close_time: ! '2018-02-18 06:00:18.955562+00:00', create_time: ! '2018-02-13 06:00:18.955562+00:00',
     update_time: null, disapprove_info: "\u7121\u6CD5\u5E6B\u5FD9\uFF0C\u8B1D\u8B1D\u6307\u6559",
-    close_info: ''}
+    note: ''}
 - model: cases.case
   pk: 6
   fields: {state: closed, uuid: d1eb4e8a-9f1a-408a-9adf-9dee9bd78b0c, number: '000006',
@@ -52,7 +52,7 @@
     location: "\u53F0\u5317\u5E02\u653F\u5E9C\u88E1\u9762", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: null, close_time: ! '2018-07-19 06:01:42.333602+00:00', create_time: ! '2018-07-13 06:01:42.333602+00:00',
-    update_time: null, disapprove_info: '', close_info: "\u4E0D\u540C\u610F\uFF0C\u4F46\u5C0A\u91CD\u5E02\u6C11\u610F\u898B"}
+    update_time: null, disapprove_info: '', note: "\u4E0D\u540C\u610F\uFF0C\u4F46\u5C0A\u91CD\u5E02\u6C11\u610F\u898B"}
 - model: cases.case
   pk: 7
   fields: {state: arranged, uuid: 9799695d-846b-407e-971e-1483d378f07d, number: '000007',
@@ -60,7 +60,7 @@
     location: "\u53F0\u5317\u5E02\u842C\u83EF\u897F\u9580\u7AD9\u9644\u8FD1", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2019-03-20 06:03:10.601697+00:00', close_time: null, create_time: ! '2019-03-01 06:03:10.601697+00:00',
-    update_time: null, disapprove_info: '', close_info: ''}
+    update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 8
   fields: {state: closed, uuid: dbdf2b75-d523-49fe-bee2-f34181c7411a, number: 000008,
@@ -68,7 +68,7 @@
     location: "Youtube\u4E0A\u9762", username: "\u738B\u5927\u660E", mobile: "+886912345678",
     address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2014-06-15 06:04:14.789060+00:00', close_time: ! '2014-07-13 06:04:14.789060+00:00', create_time: ! '2014-06-13 06:04:14.789060+00:00',
-    update_time: null, disapprove_info: '', close_info: "\u611F\u8B1D\u6307\u6559"}
+    update_time: null, disapprove_info: '', note: "\u611F\u8B1D\u6307\u6559"}
 - model: cases.case
   pk: 9
   fields: {state: arranged, uuid: 97ea59e5-da75-4e8f-978d-a76a0ca5b634, number: 000009,
@@ -76,7 +76,7 @@
     location: "\u53F0\u5317\u5E02\u4EFB\u4F55\u4E00\u689D\u8DEF\u4E0A", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2017-12-21 06:05:23.854163+00:00', close_time: null, create_time: ! '2017-12-13 06:05:23.854163+00:00',
-    update_time: null, disapprove_info: '', close_info: ''}
+    update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 10
   fields: {state: arranged, uuid: 7abaed33-18b8-4dd6-9a17-1b46263a4eb5, number: '000010',
@@ -84,7 +84,7 @@
     location: "\u53F0\u5317\u5E02\u6797\u68EE\u5317\u8DEF\u9152\u5E97", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2018-11-14 06:06:06.540631+00:00', close_time: null, create_time: ! '2018-11-13 06:06:06.540631+00:00',
-    update_time: null, disapprove_info: '', close_info: ''}
+    update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 11
   fields: {state: draft, uuid: 4e9776d7-ca17-490a-b1fc-1cb3caef40ac, number: '000011',
@@ -94,7 +94,7 @@
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: null, close_time: null, create_time: ! '2019-02-13 06:07:33.573555+00:00',
     update_time: null, disapprove_info: "\u67EFp\u7684\u554F\u984C\uFF0C\u4E7E\u6211\u5C41\u4E8B",
-    close_info: ''}
+    note: ''}
 - model: cases.case
   pk: 12
   fields: {state: arranged, uuid: 6bd41b10-bf48-4a8d-8590-e69cc50d2ea1, number: '000012',
@@ -103,7 +103,7 @@
     location: "\u53F0\u5317\u5E02\u5357\u6E2F\u5340\u6211\u5BB6\u967D\u53F0", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2019-01-13 06:08:42.105980+00:00', close_time: null, create_time: ! '2019-01-13
-      06:08:42.107468+00:00', update_time: null, disapprove_info: '', close_info: ''}
+      06:08:42.107468+00:00', update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 13
   fields: {state: closed, uuid: 45518cda-544f-4a6b-a663-f2455523fcec, number: '000013',
@@ -111,4 +111,4 @@
     location: "\u53F0\u5317\u5E02\u67D0\u67D0\u82F1\u6587\u88DC\u7FD2\u73ED", username: "\u738B\u5927\u660E",
     mobile: "+886912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
     open_time: ! '2018-01-19 06:10:03.526119+00:00', close_time: ! '2018-01-23 06:10:03.526119+00:00', create_time: ! '2018-01-13 06:10:03.526119+00:00',
-    update_time: null, disapprove_info: '', close_info: "\u5DF2\u7D93\u628A\u8A72\u88DC\u7FD2\u73ED\u70B8\u4E86"}
+    update_time: null, disapprove_info: '', note: "\u5DF2\u7D93\u628A\u8A72\u88DC\u7FD2\u73ED\u70B8\u4E86"}

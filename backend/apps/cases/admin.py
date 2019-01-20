@@ -100,7 +100,7 @@ class CaseForm(ModelForm):
             'mobile': TextInput(attrs={'class': 'input-mini'}),
             'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-medium'}),
             'disapprove_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
-            'close_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
+            'note': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'tags': TagWidget(attrs={'class': 'input-xxlarge'}),
         }
         help_texts = {
@@ -136,25 +136,25 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     inlines = (ArrangeInline,)
 
     fieldsets = [
-        (_('Case'), {
+        ('案件', {
             'classes': ('suit-tab suit-tab-general',),
             'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
             'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
         }),
-        (_('Information'), {
+        ('案件資訊', {
             'classes': ('suit-tab suit-tab-general',),
             'description': '案件相關資訊',
-            'fields': ['type', 'region', 'title', 'content', 'location', 'tags'],
+            'fields': ['type', 'region', 'title', 'content', 'location'],
         }),
-        (_('Proposer'), {
+        ('案件人', {
             'classes': ('suit-tab suit-tab-general',),
             'description': '案件人個人資訊',
             'fields': ['username', 'mobile', 'email', 'address'],
         }),
-        (_('Case Close Information'), {
+        ('內部紀錄事項', {
             'classes': ('suit-tab suit-tab-general',),
-            'description': '結案理由，案件設為不受理前須填寫',
-            'fields': ['disapprove_info', 'close_info'],
+            'description': '案件設為不受理前須填寫不受理理由',
+            'fields': ['disapprove_info', 'note', 'tags'],
         }),
     ]
 
@@ -233,7 +233,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
                 Q(id__in=[histories_ids])
                 | Q(number__icontains=search_term)
                 | Q(disapprove_info__icontains=search_term)
-                | Q(close_info__icontains=search_term),
+                | Q(note__icontains=search_term),
             )
 
         return queryset, use_distinct
