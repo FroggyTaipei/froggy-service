@@ -3,7 +3,11 @@ el-container.page2
   el-row.row-table(type='flex' align='middle',justify='center')
     el-col(:span=22)
       //- v-server-table.v-tb(url=' http://localhost:4000/datas', :columns='columns', :options='options')
+      //- input.form-control(type='text', ref='keyword', placeholder='Search by name or sith/jedi')
+      //- input.form-control(type='button', value='Search', @click='search($refs.keyword.value)')
       v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options')
+        //- template(slot="filter__id")
+          //- input(type="text" class="form-control" placeholder="Search by name or sith/jedi")
         div(slot="id" slot-scope="props" @click="click(props.row.id)") {{props.row.id}}
         div(slot="type" slot-scope="props" @click="click(props.row.id)") {{props.row.type}}
         div(slot="create_time" slot-scope="props" @click="click(props.row.id)") {{props.row.create_time}}
@@ -36,7 +40,7 @@ el-container.page2
 <script>
 import Modal from './Modal.vue'
 import BottomGameDialog from './BottomGameDialog.vue'
-
+import Event from 'vue-tables-2'
 export default {
   name: 'CaseList',
   components: { Modal, BottomGameDialog },
@@ -55,9 +59,23 @@ export default {
           title: '主旨',
           state: '處理進度'
         },
-        sortable: ['id', 'title', 'state'],
+        texts: {
+          count: '顯示 {count} 比資料中的第 {from} 到 {to} 比資料 | 共有 {count} 筆資料|One record',
+          filter: '搜尋內容：',
+          filterPlaceholder: '你要找什麼ㄋ？',
+          loading: '讀取中...',
+          noResults: '找無相關記錄'
+
+        },
+        sortable: ['id', 'create_time', 'state'],
         filterable: ['id', 'title', 'state'],
-        filterByColumn: false,
+        listColumns: {
+          state: [
+            { id: '已結案', text: '已結案' },
+            { id: '處理中', text: '處理中' }
+          ]
+        },
+        // filterByColumn: true,
         perPage: 10,
         perPageValues: [10],
         onRowClick: function (row) {
@@ -88,7 +106,19 @@ export default {
           pushed_at (h, row) {
             return row.pushed_at
           }
-        }
+        },
+        customFilters: [{
+          name: 'filterBySide',
+          callback: function (row, query) {
+            if (query.toLowerCase() === 'sith') {
+              return row.name.startsWith('Darth')
+            } else if (query.toLowerCase() === 'jedi') {
+              return row.name.endsWith('Skywalker')
+            } else {
+              return row.name.toLowerCase().includes(query.toLowerCase())
+            }
+          }
+        }]
       }
     }
   },
@@ -100,6 +130,9 @@ export default {
         .then(response => (this.selectedCaseDetails = response.data))
         .catch(e => console.log(e))
       this.dialogVisible = true
+    },
+    search (keyword) {
+      Event.$emit('vue-tables.filter::filterBySide', keyword)
     }
   },
   computed: {},

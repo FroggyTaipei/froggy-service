@@ -39,8 +39,32 @@ html,body
   height: 100%
   width: 100%
 
-.VueTables__search-field
-  padding: 0px 0px 30px 0px!important
+.VueTables.VueTables--server
+  height: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  &>.row>.col-md-12
+    margin: 50px 0px 20px 0px
+    .VueTables__search-field
+      color: white
+      label
+        margin-right: 20px
+        font-size: 1.2em
+      input
+        font-size: 1em
+  .table-responsive
+    width: 100%
+    height: 80%
+
+.glyphicon
+  width: 10px !important
+  content: '66'
+  position: absolute
+  color: white
+  width: 10px !important
+  height: 10px !important
 
 table
   width: 100%
@@ -60,12 +84,11 @@ table
       text-align: center
       line-height: 2em
 
-.VuePagination ,.VuePagination__pagination, .VuePagination__count, ul
+.VuePagination, .VuePagination__pagination, .VuePagination__count
   display: flex !important
   align-items: center
   justify-content: center
   padding: 0
-
   li
     list-style-type: none!important
     margin: 10px
@@ -80,12 +103,9 @@ nav
 .el-dialog
   width: 80% !important
   max-height: 50%
-  dispaly: flex !important
   margin-top: 5vh !important
-  felx-direction: row
-  align-items: center
-  justify-content: center
-  // height: 100%
+  box-shadow: 0 0 0 !important
+  background: transparent !important
 
 .upper-block-bkg
   height: 100px
@@ -121,7 +141,7 @@ nav
   border-color: #0155E4
   background-color: #dcdcdc
   .case-content
-    padding: 10px !important
+    padding: 20px !important
     max-height: 40vh !important
     overflow: scroll
     .content-title
@@ -135,7 +155,7 @@ nav
   box-sizing: border-box !important
   border-width: 0px 5px 7px 5px
   border-style: solid
-  border-radius: 0px 0px 15px 15px
+  border-radius: 0px 0px 10px 10px
   border-color: #0155E4
   background-color: #dcdcdc
   .dialog-footer

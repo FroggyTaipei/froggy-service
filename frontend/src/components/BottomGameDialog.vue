@@ -14,7 +14,8 @@
           router-link(to="/about")
             a 關於魔鏡號
         span.bottom-dialog-options
-            a -
+          router-link(to="/home")
+            a 回首頁
     //- el-col.footer
       span
         |「選服魔鏡號」台北市議員邱威傑市民服務系統
