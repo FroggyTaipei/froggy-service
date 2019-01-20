@@ -2,10 +2,11 @@
 el-container.page1
   transition(name="fade")
     el-row(type="flex" justify="center" align="middle" v-show="showIntro")
-      img.intro-img(:src="introUrl")
+      img.intro-img(:src="logoUrl")
       h1.intro-text START
   transition(name="fade")
     el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="showFroggy")
+      img.bkg-logo-img(:src="logoUrl")
       img.froggyImage(:src="froggyImageUrl")
   //佔空間用
   el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="!showFroggy")
@@ -39,8 +40,7 @@ export default {
         }
       ],
       openInput: false,
-      bkgUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/gradient_background.png',
-      introUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
+      logoUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
       showFroggy: false
     }
   },
@@ -142,6 +142,13 @@ export default {
 .el-row
   width: 100%
   height: 100%
+
+.bkg-logo-img
+  width: 100%
+  position: absolute
+  top: 10%
+  margin: auto
+  opacity: 0.5
 
 .intro-img
   width: 100%
