@@ -15,7 +15,7 @@ class UserAdmin(BaseUserAdmin):
     # that reference specific fields on auth.User.
     list_display = ['full_name', 'email', 'mobile', 'is_staff', 'is_superuser']
     fieldsets = [
-        [_('Auth'), {'fields': ['avatar_tag', 'email', 'password']}],
+        [_('Auth'), {'fields': ['avatar_tag', 'email', 'mobile', 'password']}],
         [_('Personal info'), {'fields': ['full_name', 'avatar']}],
         [_('Settings'), {'fields': ['groups', 'is_active', 'is_staff', 'is_superuser']}],
         [_('Important dates'), {'fields': ['last_login', 'registered_at']}],

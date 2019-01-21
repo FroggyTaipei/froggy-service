@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext_lazy as _
-from phonenumber_field.modelfields import PhoneNumberField
 
 
 class UserManager(BaseUserManager):
@@ -57,7 +56,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(verbose_name=_('Email'), unique=True, null=True, max_length=255)
-    mobile = PhoneNumberField(verbose_name=_('Mobile'), unique=True, null=True)
+    mobile = models.CharField(max_length=10, unique=True, null=True, blank=True, verbose_name=_('Mobile'))
 
     full_name = models.CharField(verbose_name=_('Full Name'), max_length=30, default=_('Unknown User'))
     avatar = models.ImageField(verbose_name=_('Avatar Setting'), blank=True)

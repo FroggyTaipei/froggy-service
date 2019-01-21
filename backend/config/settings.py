@@ -31,7 +31,6 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'rest_framework.authtoken',
     'django_extensions',
     'ckeditor',
     'ckeditor_uploader',
@@ -39,7 +38,6 @@ THIRD_PARTY_APPS = [
     'suit_ckeditor',
     'fsm_admin',
     'rest_framework_swagger',
-    'phonenumber_field',
     'rest_framework_jwt',
     'django_admin_lightweight_date_hierarchy',
     'date_range_filter',
@@ -86,11 +84,13 @@ DOMAIN = env.str('DOMAIN')
 EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
 EMAIL_HOST = env.str('EMAIL_HOST', default='mailhog')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
+EMAIL_HOST_USER_EMAIL = env.str('EMAIL_HOST_USER_EMAIL', default='')
 # See: https://github.com/sendgrid/sendgrid-python
 USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
 if USE_SENDGRID:
     EMAIL_PORT = 587
     EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
     EMAIL_USE_TLS = True
     EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
     SENDGRID_API_KEY = env.str('SENDGRID_API_KEY')
