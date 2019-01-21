@@ -17,11 +17,11 @@ from suit.widgets import (
     AutosizedTextarea,
     SuitSplitDateTimeWidget,
 )
-import tagulous
 from tagulous.forms import TagWidget
 
 from apps.cases.models import Case, CaseHistory
 from apps.arranges.models import Arrange
+from apps.files.models import CaseFile
 
 
 class ArrangeInlineForm(ModelForm):
@@ -87,6 +87,15 @@ class ArrangeInline(FSMTransitionMixin, admin.StackedInline):
         return self.readonly_fields
 
 
+class CaseFileInline(admin.TabularInline):
+    model = CaseFile
+    verbose_name_plural = _('Case File')
+    suit_classes = 'suit-tab suit-tab-files'
+    fields = ('file', 'preview', 'upload_time')
+    readonly_fields = ('preview', 'upload_time',)
+    extra = 0
+
+
 class CaseForm(ModelForm):
     mobile = CharField(max_length=10, required=False, label=_('Mobile'))
 
@@ -133,7 +142,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     date_hierarchy = 'create_time'
     date_hierarchy_drilldown = False
 
-    inlines = (ArrangeInline,)
+    inlines = (ArrangeInline, CaseFileInline,)
 
     fieldsets = [
         ('案件', {
@@ -161,7 +170,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     suit_form_includes = (
         ('case_history_list.html', '', 'histories'),
         ('sendgrid_mail_list.html', '', 'sendgrid_mails'),
-        ('files_list.html', '', 'files'),
+        # ('files_list.html', '', 'files'),
     )
 
     class Media:
@@ -177,10 +186,8 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         obj = self._obj
         tabs = [
             ('general', _('General')),
+            ('files', _('Case File')),
         ]
-
-        if obj and obj.casefiles.count() > 0:
-            tabs.append(('files', _('Files')))
 
         tabs.append(('histories', _('Case Histories')))
 
