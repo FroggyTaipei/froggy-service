@@ -45,6 +45,10 @@ class TempFile(models.Model):
     size = models.PositiveIntegerField(editable=False, verbose_name=_('Size'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
 
+    class Meta:
+        verbose_name = _('Case File')
+        verbose_name_plural = _('Case File')
+
     def __str__(self):
         return f'{self.case_uuid} - {self.file_name}'
 
@@ -56,19 +60,13 @@ class TempFile(models.Model):
         """
         以案件編號及檔案名稱去query檢查資料是否重複
         """
-        if TempFile.objects.filter(case_uuid=self.case_uuid, file_name=self.file_name):
-            return True
-        else:
-            return False
+        return TempFile.objects.filter(case_uuid=self.case_uuid, file_name=self.file_name).count() > 0
 
     def check_size_per_file(self):
         """
         檢查上傳的檔案大小是否超過大小限制
         """
-        if self.size > FILE_LIMIT_PER_FILE:
-            return True
-        else:
-            return False
+        return self.size > FILE_LIMIT_PER_FILE
 
     def check_size_per_case(self):
         """
@@ -77,10 +75,7 @@ class TempFile(models.Model):
         objs = TempFile.objects.filter(case_uuid=self.case_uuid)
         size = [i.size for i in objs]
 
-        if self.size + sum(size) > FILE_LIMIT_PER_CASE:
-            return True
-        else:
-            return False
+        return self.size + sum(size) > FILE_LIMIT_PER_CASE
 
     def check_size_per_day(self):
         """
@@ -91,10 +86,7 @@ class TempFile(models.Model):
         for i in objs:
             size.append(i.size)
 
-        if sum(size) > FILE_LIMIT_PER_DAY:
-            return True
-        else:
-            return False
+        return sum(size) > FILE_LIMIT_PER_DAY
 
     def save(self, *args, **kwargs):
         """
@@ -131,6 +123,10 @@ class CaseFile(models.Model):
     file = models.FileField(storage=CASE_STORAGE, verbose_name=_('Case File'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
+
+    class Meta:
+        verbose_name = _('Case File')
+        verbose_name_plural = _('Case File')
 
     def __str__(self):
         return f'{self.case} - {self.file_name}'

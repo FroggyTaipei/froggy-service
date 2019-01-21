@@ -128,7 +128,7 @@ class CaseCrudTestCase(TestCase):
     #     with self.assertRaises(ValidationError):
     #         serializer.save()
     #
-    #     mobile = '+886912120227'
+    #     mobile = '0912345678'
     #     serializer.validated_data['mobile'] = mobile
     #     case = serializer.save()
     #
