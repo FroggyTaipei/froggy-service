@@ -92,7 +92,7 @@ class CaseFileInline(admin.TabularInline):
     verbose_name_plural = _('Case File')
     suit_classes = 'suit-tab suit-tab-files'
     fields = ('file', 'preview', 'upload_time')
-    readonly_fields = ('preview', 'upload_time',)
+    readonly_fields = ('preview', 'upload_time')
     extra = 0
 
 
@@ -142,7 +142,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     date_hierarchy = 'create_time'
     date_hierarchy_drilldown = False
 
-    inlines = (ArrangeInline, CaseFileInline,)
+    inlines = (ArrangeInline, CaseFileInline)
 
     fieldsets = [
         ('案件', {
@@ -207,7 +207,9 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     def get_fieldsets(self, request, obj=None):
         """若是已新增過的物件，以tw_mobile取代mobile input"""
         if obj:
-            self.fieldsets[2][1]['fields'] = ['username', 'tw_mobile', 'email', 'address']
+            fieldsets = self.fieldsets
+            fieldsets[2][1]['fields'] = ['username', 'tw_mobile', 'email', 'address']
+            return fieldsets
         return self.fieldsets
 
     def get_readonly_fields(self, request, obj=None):
@@ -219,7 +221,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     def get_fields(self, request, obj=None):
         """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly，加到fields當中"""
         if obj:
-            self.fields += ('tw_mobile',)
+            return self.fields + ('tw_mobile',)
         return self.fields
 
     def get_search_results(self, request, queryset, search_term):

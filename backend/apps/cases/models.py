@@ -129,7 +129,7 @@ class Case(Model):
     disapprove_info = TextField(null=True, blank=True, verbose_name=_('Disapprove Info'))
 
     note = TextField(null=True, blank=True, verbose_name=_('Case Notes'))
-    tags = TagField(null=True, blank=True, verbose_name=_('Case Tags'))
+    tags = TagField(blank=True, verbose_name=_('Case Tags'))
 
     objects = CaseQuerySet.as_manager()
 
@@ -148,7 +148,7 @@ class Case(Model):
             self.confirm(template_name='收件通知')
             self.move_file()
 
-    def clean(self):
+    def clean_mobile(self):
         if not self.mobile:
             raise ValidationError('Must provide mobile.')
 
