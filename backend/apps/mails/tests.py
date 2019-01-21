@@ -17,10 +17,10 @@ class SendGridTestCase(TestCase):
 
         self.case = Case.objects.first()
 
-    @tag('mail')
+    @tag('test')
     def test_system_mail(self):
         response = sendgrid_system_mail("test message")
-        self.assertEqual(response.status_code, 202)
+        self.assertEqual(response, 1)
 
     def test_template_save(self):
         if settings.USE_SENDGRID:

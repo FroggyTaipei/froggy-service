@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils import formats
 from django.db.models.signals import post_save
-from django.core.exceptions import ValidationError
 from django.core.files.storage import FileSystemStorage
 from django.db.models import (
     Model,
@@ -19,7 +18,6 @@ from django.db.models import (
     UUIDField,
 )
 
-from phonenumber_field.modelfields import PhoneNumberField
 from django_fsm import FSMField, transition
 from tagulous.models import TagField
 
@@ -118,7 +116,7 @@ class Case(Model):
     content = TextField(verbose_name=_('Content'))
     location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
-    mobile = PhoneNumberField(null=True, blank=True, verbose_name=_('Mobile'))
+    mobile = CharField(max_length=10, null=True, blank=True, verbose_name=_('Mobile'))
     email = EmailField(null=True, blank=True, verbose_name=_('Email'))
     address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))
@@ -139,7 +137,6 @@ class Case(Model):
         ordering = ('id',)
 
     def save(self, *args, **kwargs):
-        self.full_clean()
         created = self.pk is None
         super(Case, self).save(*args, **kwargs)
         if created:
@@ -147,10 +144,6 @@ class Case(Model):
             self.save()
             self.confirm(template_name='收件通知')
             self.move_file()
-
-    def clean_mobile(self):
-        if not self.mobile:
-            raise ValidationError('Must provide mobile.')
 
     def __str__(self):
         return self.number
@@ -192,12 +185,6 @@ class Case(Model):
                 return title
         return ''
 
-    def tw_mobile(self):
-        if self.mobile:
-            return '0' + str(self.mobile.national_number)
-        return '-'
-    tw_mobile.short_description = _('Mobile')
-
     def format_create_time(self, format_='SHORT_DATETIME_FORMAT'):
         return formats.date_format(self.create_time, format_)
 
@@ -235,7 +222,7 @@ class Case(Model):
         }
         template = SendGridMailTemplate.objects.get(name=template_name)
         SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.EMAIL_HOST_USER,
+                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
                                     to_email=first.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED, conditions=[can_disapprove],
@@ -252,7 +239,7 @@ class Case(Model):
         }
         template = SendGridMailTemplate.objects.get(name='不受理通知')
         SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.EMAIL_HOST_USER,
+                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
                                     to_email=first.email, data=data)
         self.close_time = timezone.now()
 
@@ -283,7 +270,7 @@ class Case(Model):
         }
         template = SendGridMailTemplate.objects.get(name='結案通知')
         SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.EMAIL_HOST_USER,
+                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
                                     to_email=first.email, data=data)
         self.close_time = timezone.now()
 
@@ -323,7 +310,7 @@ class CaseHistory(Model):
     content = TextField(verbose_name=_('Content'))
     location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
-    mobile = PhoneNumberField(verbose_name=_('Mobile'))
+    mobile = CharField(max_length=10, null=True, blank=True, verbose_name=_('Mobile'))
     email = EmailField(null=True, blank=True, verbose_name=_('Email'))
     address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     create_time = DateTimeField(auto_now_add=True, verbose_name=_('Created Time'))
@@ -339,7 +326,3 @@ class CaseHistory(Model):
 
     def __str__(self):
         return self.case.number
-
-    def tw_mobile(self):
-        return '0' + str(self.mobile.national_number)
-    tw_mobile.short_description = _('Mobile')

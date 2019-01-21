@@ -94,8 +94,6 @@ class CaseFileInline(admin.TabularInline):
 
 
 class CaseForm(ModelForm):
-    mobile = CharField(max_length=10, required=False, label=_('Mobile'))
-
     class Meta:
         widgets = {
             'number': TextInput(attrs={'class': 'input-mini'}),
@@ -103,7 +101,7 @@ class CaseForm(ModelForm):
             'content': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'location': TextInput(attrs={'class': 'input-xlarge'}),
             'username': EnclosedInput(append='icon-user', attrs={'class': 'input-small'}),
-            'mobile': TextInput(attrs={'class': 'input-mini'}),
+            'mobile': TextInput(attrs={'class': 'input-small'}),
             'email': EnclosedInput(append='icon-envelope', attrs={'class': 'input-medium'}),
             'disapprove_info': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
             'note': AutosizedTextarea(attrs={'class': 'input-xxlarge'}),
@@ -114,15 +112,12 @@ class CaseForm(ModelForm):
         }
 
     def clean_mobile(self):
-        if not self.instance.pk:
-            mobile = self.cleaned_data['mobile']
+        mobile = self.cleaned_data['mobile']
+        if mobile:
             pattern = re.compile('^09\d{8}$')
             if not re.match(pattern, mobile):
                 raise ValidationError('手機格式不正確')
-            self.cleaned_data['mobile'] = f'+886{mobile[1:]}'
-            self.instance.mobile = f'+886{mobile[1:]}'
-            return self.instance.mobile
-        return self.cleaned_data['mobile']
+            return mobile
 
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
@@ -138,6 +133,29 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     list_select_related = True
     date_hierarchy = 'create_time'
     date_hierarchy_drilldown = False
+    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
+    fieldsets = [
+        ('案件', {
+            'classes': ('suit-tab suit-tab-general',),
+            'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
+            'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
+        }),
+        ('案件資訊', {
+            'classes': ('suit-tab suit-tab-general',),
+            'description': '案件相關資訊',
+            'fields': ['type', 'region', 'title', 'content', 'location'],
+        }),
+        ('案件人', {
+            'classes': ('suit-tab suit-tab-general',),
+            'description': '案件人個人資訊',
+            'fields': ['username', 'mobile', 'email', 'address'],
+        }),
+        ('內部紀錄事項', {
+            'classes': ('suit-tab suit-tab-general',),
+            'description': '案件設為不受理前須填寫不受理理由',
+            'fields': ['disapprove_info', 'note', 'tags'],
+        }),
+    ]
 
     inlines = (ArrangeInline, CaseFileInline)
 
@@ -159,7 +177,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         obj = self._obj
         tabs = [
             ('general', _('General')),
-            ('files', _('Case File')),
+            ('files', _('Files')),
         ]
 
         tabs.append(('histories', _('Case Histories')))
@@ -176,52 +194,6 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         """於post_save時取得編輯者"""
         obj.user = request.user
         super().save_model(request, obj, form, change)
-
-    def get_fieldsets(self, request, obj=None):
-        """若是已新增過的物件，以tw_mobile取代mobile input"""
-        fieldsets = [
-            ('案件', {
-                'classes': ('suit-tab suit-tab-general',),
-                'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
-                'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
-            }),
-            ('案件資訊', {
-                'classes': ('suit-tab suit-tab-general',),
-                'description': '案件相關資訊',
-                'fields': ['type', 'region', 'title', 'content', 'location'],
-            }),
-            ('案件人', {
-                'classes': ('suit-tab suit-tab-general',),
-                'description': '案件人個人資訊',
-                'fields': ['username', 'mobile', 'email', 'address'],
-            }),
-            ('內部紀錄事項', {
-                'classes': ('suit-tab suit-tab-general',),
-                'description': '案件設為不受理前須填寫不受理理由',
-                'fields': ['disapprove_info', 'note', 'tags'],
-            }),
-        ]
-
-        if obj:
-            fieldsets[2][1]['fields'] = ['username', 'tw_mobile', 'email', 'address']
-        return fieldsets
-
-    def get_readonly_fields(self, request, obj=None):
-        """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly"""
-        readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
-        if obj:
-            readonly_fields += ('tw_mobile',)
-        return readonly_fields
-
-    def get_fields(self, request, obj=None):
-        """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly，加到fields當中"""
-        fields = ('number', 'state', 'create_time', 'open_time', 'close_time',
-                  'type', 'region', 'title', 'content', 'location',
-                  'username', 'mobile', 'email', 'address',
-                  'disapprove_info', 'note', 'tags')
-        if obj:
-            fields += ('tw_mobile',)
-        return fields
 
     def get_search_results(self, request, queryset, search_term):
         """加入CaseHistory搜尋"""
