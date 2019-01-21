@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 
 
 def sendgrid_system_mail(message):
-    from_email = settings.EMAIL_HOST_USER_EMAIL
+    from_email = settings.SERVER_EMAIL
 
     subject = "選服系統系統通知"
 

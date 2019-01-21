@@ -103,7 +103,7 @@ class Arrange(Model):
             'content': self.email_content,
         }
         SendGridMail.objects.create(case=self.case, template=template,
-                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
+                                    from_email=settings.SERVER_EMAIL,
                                     to_email=origin.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.PUBLISHED, conditions=[can_publish],

@@ -2,7 +2,6 @@ from python_http_client.exceptions import HTTPError
 from django.test import TestCase, tag
 from django.conf import settings
 from django.core.management import call_command
-from apps.mails.utils import sendgrid_system_mail
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from apps.cases.models import Case
 
@@ -16,11 +15,6 @@ class SendGridTestCase(TestCase):
         call_command('loaddata', 'sendgrid-template.yaml', verbosity=0)
 
         self.case = Case.objects.first()
-
-    @tag('test')
-    def test_system_mail(self):
-        response = sendgrid_system_mail("test message")
-        self.assertEqual(response, 1)
 
     def test_template_save(self):
         if settings.USE_SENDGRID:

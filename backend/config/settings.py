@@ -84,7 +84,7 @@ DOMAIN = env.str('DOMAIN')
 EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
 EMAIL_HOST = env.str('EMAIL_HOST', default='mailhog')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
-EMAIL_HOST_USER_EMAIL = env.str('EMAIL_HOST_USER_EMAIL', default='')
+SERVER_EMAIL = env.str('SERVER_EMAIL', default='')
 # See: https://github.com/sendgrid/sendgrid-python
 USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
 if USE_SENDGRID:
@@ -282,7 +282,7 @@ SENTRY_DSN = env.str('SENTRY_DSN')
 SENTRY_CLIENT = 'raven.contrib.django.raven_compat.DjangoClient'
 LOGGING = {
     'version': 1,
-    'disable_existing_loggers': True,
+    'disable_existing_loggers': False,
     'root': {
         'level': 'WARNING',
         'handlers': ['sentry'],
@@ -302,6 +302,11 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
         },
     },
     'loggers': {
@@ -324,6 +329,11 @@ LOGGING = {
             'level': 'ERROR',
             'handlers': ['console', 'sentry'],
             'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
         },
     },
 }
