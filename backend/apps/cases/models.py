@@ -193,7 +193,9 @@ class Case(Model):
         return ''
 
     def tw_mobile(self):
-        return '0' + str(self.mobile.national_number)
+        if self.mobile:
+            return '0' + str(self.mobile.national_number)
+        return '-'
     tw_mobile.short_description = _('Mobile')
 
     def format_create_time(self, format_='SHORT_DATETIME_FORMAT'):

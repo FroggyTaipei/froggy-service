@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-20 20:06+0800\n"
+"POT-Creation-Date: 2019-01-21 15:33+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,28 +53,29 @@ msgstr "上次更新"
 msgid "Arrange"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:68 apps/cases/admin.py:188
+#: apps/cases/admin.py:68 apps/cases/admin.py:195
 msgid "Arranges"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:91 apps/cases/models.py:121 apps/cases/models.py:197
+#: apps/cases/admin.py:92 apps/cases/admin.py:189 apps/files/models.py:95
+#: apps/files/models.py:96
+msgid "Case File"
+msgstr "案件檔案"
+
+#: apps/cases/admin.py:100 apps/cases/models.py:121 apps/cases/models.py:197
 #: apps/cases/models.py:324 apps/cases/models.py:343 apps/users/models.py:60
 msgid "Mobile"
 msgstr "手機"
 
-#: apps/cases/admin.py:179
+#: apps/cases/admin.py:188
 msgid "General"
 msgstr "一般"
 
-#: apps/cases/admin.py:183
-msgid "Files"
-msgstr "案件檔案"
-
-#: apps/cases/admin.py:185 apps/cases/models.py:331
+#: apps/cases/admin.py:192 apps/cases/models.py:331
 msgid "Case Histories"
 msgstr "案件編輯歷史"
 
-#: apps/cases/admin.py:191
+#: apps/cases/admin.py:198
 msgid "Mails"
 msgstr "信件"
 
@@ -96,7 +97,7 @@ msgstr "地區"
 msgid "Case State"
 msgstr "案件狀態"
 
-#: apps/cases/models.py:113 apps/files/models.py:33
+#: apps/cases/models.py:113 apps/files/models.py:34
 msgid "UUID"
 msgstr "UUID"
 
@@ -160,33 +161,33 @@ msgstr "編輯者"
 msgid "Case History"
 msgstr "案件編輯歷史"
 
-#: apps/files/models.py:34
+#: apps/files/models.py:35
 msgid "Temp file"
 msgstr "暫存檔"
 
-#: apps/files/models.py:35 apps/files/models.py:96
+#: apps/files/models.py:36 apps/files/models.py:97
 msgid "File Name"
 msgstr "檔名"
 
-#: apps/files/models.py:36
+#: apps/files/models.py:37
 msgid "Size"
 msgstr "大小"
 
-#: apps/files/models.py:37 apps/files/models.py:97
+#: apps/files/models.py:38 apps/files/models.py:98
 msgid "Upload Time"
 msgstr "上次更新"
 
-#: apps/files/models.py:79 apps/files/tests.py:150
+#: apps/files/models.py:80 apps/files/tests.py:150
 msgid "Duplicate file"
 msgstr "重複的檔案名稱"
 
-#: apps/files/models.py:81
+#: apps/files/models.py:82
 msgid "File over limit size"
 msgstr "總檔案大小超過上限"
 
-#: apps/files/models.py:94 apps/files/models.py:95
-msgid "Case File"
-msgstr "案件檔案"
+#: apps/files/models.py:125
+msgid "Preview"
+msgstr ""
 
 #: apps/mails/models.py:28
 msgid "Template Id"
@@ -288,10 +289,13 @@ msgstr "使用者"
 msgid "Avatar"
 msgstr "照片"
 
-#: config/settings.py:367 templates/admin/base_site.html:27
+#: config/settings.py:368 templates/admin/base_site.html:27
 msgid "Froggy's Service"
 msgstr "邱威傑（呱吉）選民服務系統"
 
 #: config/views.py:19
 msgid "Dashboard"
 msgstr "主控版"
+
+#~ msgid "Files"
+#~ msgstr "案件檔案"
