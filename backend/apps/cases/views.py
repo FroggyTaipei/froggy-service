@@ -88,6 +88,8 @@ class CaseViewSet(ModelViewSet):
                                        | Q(title__icontains=query)
                                        | Q(content__icontains=query)
                                        | Q(location__icontains=query)
+                                       | Q(type__name__icontains=query)
+                                       | Q(region__name__icontains=query)
                                        | Q(state__icontains=query)
                                        | Q(disapprove_info__icontains=query)
                                        | Q(arranges__id__in=arrange_ids))
