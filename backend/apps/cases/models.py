@@ -222,7 +222,7 @@ class Case(Model):
         }
         template = SendGridMailTemplate.objects.get(name=template_name)
         SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
+                                    from_email=settings.SERVER_EMAIL,
                                     to_email=first.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED, conditions=[can_disapprove],
@@ -239,7 +239,7 @@ class Case(Model):
         }
         template = SendGridMailTemplate.objects.get(name='不受理通知')
         SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
+                                    from_email=settings.SERVER_EMAIL,
                                     to_email=first.email, data=data)
         self.close_time = timezone.now()
 
@@ -270,7 +270,7 @@ class Case(Model):
         }
         template = SendGridMailTemplate.objects.get(name='結案通知')
         SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.EMAIL_HOST_USER_EMAIL,
+                                    from_email=settings.SERVER_EMAIL,
                                     to_email=first.email, data=data)
         self.close_time = timezone.now()
 

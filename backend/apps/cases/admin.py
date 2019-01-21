@@ -178,9 +178,8 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         tabs = [
             ('general', _('General')),
             ('files', _('Files')),
+            ('histories', _('Case Histories')),
         ]
-
-        tabs.append(('histories', _('Case Histories')))
 
         if obj and obj.state in ['arranged', 'closed']:
             tabs.append(('arranges', _('Arranges')))
