@@ -26,6 +26,8 @@ services:
         delay: 10s
       restart_policy:
         condition: on-failure
+      placement:
+        constraints: [node.role == manager]
 
   postgres:
     image: postgres:10-alpine
