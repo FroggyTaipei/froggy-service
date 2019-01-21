@@ -1,4 +1,6 @@
 import uuid
+import datetime
+
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.dispatch import receiver
@@ -10,6 +12,11 @@ from django.utils.safestring import mark_safe
 from rest_framework.exceptions import ValidationError
 
 from apps.files.storages import PrivateStorage
+
+
+FILE_LIMIT_PER_FILE = settings.FILE_LIMIT_PER_FILE
+FILE_LIMIT_PER_CASE = settings.FILE_LIMIT_PER_CASE
+FILE_LIMIT_PER_DAY = settings.FILE_LIMIT_PER_DAY
 
 
 if settings.USE_AWS_S3:
@@ -31,6 +38,7 @@ class TempFile(models.Model):
     * upload_time: 檔案上傳時間
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='tempfiles', verbose_name=_('Temp File'))
     case_uuid = models.UUIDField(verbose_name=_('UUID'))
     file = models.FileField(storage=TEMP_STORAGE, verbose_name=_('Temp file'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
@@ -53,14 +61,37 @@ class TempFile(models.Model):
         else:
             return False
 
-    def check_size(self):
+    def check_size_per_file(self):
+        """
+        檢查上傳的檔案大小是否超過大小限制
+        """
+        if self.size > FILE_LIMIT_PER_FILE:
+            return True
+        else:
+            return False
+
+    def check_size_per_case(self):
         """
         檢查已上傳案件的總大小與目前上傳的檔案相加是否超過限制
         """
         objs = TempFile.objects.filter(case_uuid=self.case_uuid)
         size = [i.size for i in objs]
 
-        if self.size + sum(size) > 41943040:
+        if self.size + sum(size) > FILE_LIMIT_PER_CASE:
+            return True
+        else:
+            return False
+
+    def check_size_per_day(self):
+        """
+        檢查今日上傳的總檔案大小是否達到今日上傳的總額度
+        """
+        objs = TempFile.objects.filter(user=self.user, upload_time__date=datetime.date.today())
+        size = []
+        for i in objs:
+            size.append(i.size)
+
+        if sum(size) > FILE_LIMIT_PER_DAY:
             return True
         else:
             return False
@@ -78,8 +109,12 @@ class TempFile(models.Model):
         self.size = self.file.size
         if self.check_duplicate():
             raise ValidationError(_('Duplicate file'))
-        if self.check_size():
+        if self.check_size_per_file():
             raise ValidationError(_('File over limit size'))
+        if self.check_size_per_case():
+            raise ValidationError(_('File over limit size per case'))
+        if self.check_size_per_day():
+            raise ValidationError(_('File over limit size per today'))
         self.file.name = f'{self.case_uuid}/{self.file_name}'
         super(TempFile, self).save(*args, **kwargs)
 

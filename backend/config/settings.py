@@ -8,6 +8,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
+import datetime
 from django.utils.translation import ugettext_lazy as _
 
 ROOT_DIR = environ.Path(__file__) - 2
@@ -371,4 +372,17 @@ SUIT_CONFIG = {
     'HEADER_TIME_FORMAT': 'H:i',
     'LIST_PER_PAGE': 30,
     'CONFIRM_UNSAVED_CHANGES': True,
+}
+
+# FILES LIMIT
+# ------------------------------------------------------------------------------
+FILE_LIMIT_CASE = 5
+FILE_LIMIT_PER_FILE = 10485760
+FILE_LIMIT_PER_CASE = 52428800
+FILE_LIMIT_PER_DAY = 524288000
+
+# JWT
+# ------------------------------------------------------------------------------
+JWT_AUTH = {
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=1800),
 }

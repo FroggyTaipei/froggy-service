@@ -118,7 +118,7 @@ class Case(Model):
     content = TextField(verbose_name=_('Content'))
     location = CharField(null=True, blank=True, max_length=255, verbose_name=_('Location'))
     username = CharField(max_length=50, verbose_name=_('Username'))
-    mobile = PhoneNumberField(verbose_name=_('Mobile'))
+    mobile = PhoneNumberField(null=True, blank=True, verbose_name=_('Mobile'))
     email = EmailField(null=True, blank=True, verbose_name=_('Email'))
     address = CharField(null=True, blank=True, max_length=255, verbose_name=_('Address'))
     open_time = DateTimeField(null=True, blank=True, verbose_name=_('Opened Time'))

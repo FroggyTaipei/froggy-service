@@ -9,6 +9,7 @@ from django.core.files.storage import FileSystemStorage
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
 from apps.cases.models import State, Case, CaseHistory
+from apps.users.models import User
 from apps.files.storages import PrivateStorage
 from apps.files import models
 
@@ -35,6 +36,9 @@ else:
 
 class CleanStorageTestCase(TestCase):
     def setUp(self):
+        """Create User"""
+        user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
+
         """Clean Storage by Traversal"""
         CleanStorage(storage=TEMP_STORAGE)
         CleanStorage(storage=CASE_STORAGE)
@@ -43,6 +47,7 @@ class CleanStorageTestCase(TestCase):
         """Upload File to Temp Storage"""
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
+        temp.user = user
         temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
         temp.file = file
         temp.file.storage = TEMP_STORAGE
@@ -51,6 +56,7 @@ class CleanStorageTestCase(TestCase):
         """Upload File to Case Storage"""
         file2 = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp2 = models.TempFile()
+        temp2.user = user
         temp2.case_uuid = 'b00455e6-ff5b-4957-922e-95377d6fda28'
         temp2.file = file2
         temp2.file.storage = CASE_STORAGE
@@ -77,6 +83,9 @@ class TempFileCRUDTestCase(TestCase):
     測試TempFile CRUD 功能
     """
     def setUp(self):
+        """Create User"""
+        user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
+
         """Clean Storage by Traversal"""
         CleanStorage(storage=TEMP_STORAGE)
         CleanStorage(storage=CASE_STORAGE)
@@ -85,6 +94,7 @@ class TempFileCRUDTestCase(TestCase):
         """Upload File to Temp Storage"""
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
+        temp.user = user
         temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
         temp.file = file
         temp.file.storage = TEMP_STORAGE
@@ -116,6 +126,9 @@ class TempFileTestCase(TestCase):
     測試TempFile相關功能
     """
     def setUp(self):
+        """Create User"""
+        self.user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
+
         """Clean Storage by Traversal"""
         CleanStorage(storage=TEMP_STORAGE)
         CleanStorage(storage=CASE_STORAGE)
@@ -124,6 +137,7 @@ class TempFileTestCase(TestCase):
         """Upload File to Temp Storage"""
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
+        temp.user = self.user
         temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
         temp.file = file
         temp.file.storage = TEMP_STORAGE
@@ -139,6 +153,7 @@ class TempFileTestCase(TestCase):
         """
         file2 = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp2 = models.TempFile()
+        temp2.user = self.user
         temp2.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
         temp2.file = file2
         temp2.file.storage = TEMP_STORAGE
@@ -155,6 +170,9 @@ class TempFileExpireTestCase(TestCase):
     測試TempFile移除超過時間未送出案件的檔案
     """
     def setUp(self):
+        """Create User"""
+        user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
+
         """Clean Storage by Traversal"""
         CleanStorage(storage=TEMP_STORAGE)
         CleanStorage(storage=CASE_STORAGE)
@@ -163,6 +181,7 @@ class TempFileExpireTestCase(TestCase):
         """Upload File to Temp Storage"""
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
+        temp.user = user
         temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
         temp.file = file
         temp.file.storage = TEMP_STORAGE
@@ -188,6 +207,9 @@ class CaseFileTestCase(TestCase):
     測試CaseFile相關功能
     """
     def setUp(self):
+        """Create User"""
+        user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
+
         """Clean Storage by Traversal"""
         CleanStorage(storage=TEMP_STORAGE)
         CleanStorage(storage=CASE_STORAGE)
@@ -202,6 +224,7 @@ class CaseFileTestCase(TestCase):
         """Upload File to Temp Storage"""
         file = SimpleUploadedFile('test1.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
+        temp.user = user
         temp.case_uuid = self.case.uuid
         temp.file = file
         temp.file.storage = TEMP_STORAGE
@@ -209,6 +232,7 @@ class CaseFileTestCase(TestCase):
 
         file2 = SimpleUploadedFile('test2.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp2 = models.TempFile()
+        temp2.user = user
         temp2.case_uuid = self.case.uuid
         temp2.file = file2
         temp2.file.storage = TEMP_STORAGE

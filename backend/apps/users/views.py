@@ -1,5 +1,7 @@
 import requests
 import environ
+import datetime
+
 from uuid import uuid4
 
 from django.http import JsonResponse
@@ -18,6 +20,7 @@ from rest_framework.authtoken.models import Token
 from django.core.signing import TimestampSigner, BadSignature
 
 from apps.users.models import User
+from apps.files.models import TempFile
 from apps.users.serializers import UserSerializer, UserWriteSerializer
 from apps.users.utils import jwt_payload_handler, jwt_encode_handler
 
@@ -28,6 +31,7 @@ env = environ.Env()
 API_VERSION = env.str('VUE_APP_ACCOUNTKIT_VERSION')
 ACCOUNTKIT_SECRET = env.str('VUE_APP_ACCOUNTKIT_APP_SECRET')
 ACCOUNTKIT_APP_ID = env.str('VUE_APP_ACCOUNTKIT_APP_ID')
+FILE_LIMIT_CASE = settings.FILE_LIMIT_CASE
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -177,6 +181,10 @@ class UserViewSet(viewsets.ModelViewSet):
         if not user:
             # Register a new account kit user
             user = User.objects.create_accountkit_user(email=email, mobile=mobile, full_name='AccountKit User')
+
+        objs = TempFile.objects.filter(user=user, upload_time__date=datetime.date.today())
+        if objs.distinct('case_uuid') >= FILE_LIMIT_CASE:
+            raise AuthenticationFailed('Case limited 5 per day.')
 
         payload = jwt_payload_handler(user)
         jwt = jwt_encode_handler(payload)
