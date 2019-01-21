@@ -360,6 +360,7 @@ if USE_AWS_S3:
 CKEDITOR_UPLOAD_PATH = 'uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_RESTRICT_BY_DATE = False
+CKEDITOR_FILENAME_GENERATOR = 'apps.files.utils.generate_filename'
 
 # DJANGO SUIT
 # ------------------------------------------------------------------------------
