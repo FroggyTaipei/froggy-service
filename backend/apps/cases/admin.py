@@ -35,6 +35,9 @@ class ArrangeInlineForm(ModelForm):
         new_state = self.cleaned_data['state']
         arrange_time = self.cleaned_data['arrange_time']
 
+        if not self.instance.pk and self.instance.case and self.instance.case.state != 'arranged':
+            raise ValidationError('請先將案件設為處理中')
+
         if any(field in self.changed_data for field in ['title', 'content']) and new_state == 'published':
             raise ValidationError('請先儲存變動後再設為發布')
 
@@ -67,24 +70,18 @@ class ArrangeInline(FSMTransitionMixin, admin.StackedInline):
     extra = 0
     verbose_name_plural = _('Arranges')
     suit_classes = 'suit-tab suit-tab-arranges'
-    fields = ('state', 'title', 'content', 'arrange_time', 'publish_time')
-    readonly_fields = ('publish_time',)
-
-    def has_add_permission(self, request, obj=None):
-        return request.user.has_perm('arranges.add_arrange') and obj and obj.state == 'arranged'
-
-    def has_view_permission(self, request, obj=None):
-        return request.user.has_perm('arranges.view_arrange') and obj and obj.state in ['arranged', 'closed']
 
     def get_fields(self, request, obj=None):
+        fields = ['state', 'title', 'content', 'arrange_time', 'publish_time']
         if not request.user.has_perm('arranges.add_arrange'):
-            return 'state', 'title', 'html_content', 'arrange_time', 'publish_time'
-        return self.fields
+            fields[2] = 'html_content'
+        return fields
 
     def get_readonly_fields(self, request, obj=None):
+        readonly_fields = ['publish_time']
         if not request.user.has_perm('arranges.add_arrange'):
-            return self.readonly_fields + ('html_content',)
-        return self.readonly_fields
+            readonly_fields.append('context')
+        return readonly_fields
 
 
 class CaseFileInline(admin.TabularInline):
@@ -116,15 +113,16 @@ class CaseForm(ModelForm):
             'tags': '使用逗號分隔多個標籤',
         }
 
-    def clean(self):
-        pattern = re.compile('^09\d{8}$')
-        if 'mobile' in self.changed_data:
+    def clean_mobile(self):
+        if not self.instance.pk:
             mobile = self.cleaned_data['mobile']
+            pattern = re.compile('^09\d{8}$')
             if not re.match(pattern, mobile):
                 raise ValidationError('手機格式不正確')
             self.cleaned_data['mobile'] = f'+886{mobile[1:]}'
             self.instance.mobile = f'+886{mobile[1:]}'
-            return self.cleaned_data
+            return self.instance.mobile
+        return self.cleaned_data['mobile']
 
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
@@ -137,40 +135,15 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('open_time', DateRangeFilter),
         ('close_time', DateRangeFilter),
     )
-    readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
     list_select_related = True
     date_hierarchy = 'create_time'
     date_hierarchy_drilldown = False
 
     inlines = (ArrangeInline, CaseFileInline)
 
-    fieldsets = [
-        ('案件', {
-            'classes': ('suit-tab suit-tab-general',),
-            'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
-            'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
-        }),
-        ('案件資訊', {
-            'classes': ('suit-tab suit-tab-general',),
-            'description': '案件相關資訊',
-            'fields': ['type', 'region', 'title', 'content', 'location'],
-        }),
-        ('案件人', {
-            'classes': ('suit-tab suit-tab-general',),
-            'description': '案件人個人資訊',
-            'fields': ['username', 'mobile', 'email', 'address'],
-        }),
-        ('內部紀錄事項', {
-            'classes': ('suit-tab suit-tab-general',),
-            'description': '案件設為不受理前須填寫不受理理由',
-            'fields': ['disapprove_info', 'note', 'tags'],
-        }),
-    ]
-
     suit_form_includes = (
         ('case_history_list.html', '', 'histories'),
         ('sendgrid_mail_list.html', '', 'sendgrid_mails'),
-        # ('files_list.html', '', 'files'),
     )
 
     class Media:
@@ -206,23 +179,49 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
 
     def get_fieldsets(self, request, obj=None):
         """若是已新增過的物件，以tw_mobile取代mobile input"""
+        fieldsets = [
+            ('案件', {
+                'classes': ('suit-tab suit-tab-general',),
+                'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
+                'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
+            }),
+            ('案件資訊', {
+                'classes': ('suit-tab suit-tab-general',),
+                'description': '案件相關資訊',
+                'fields': ['type', 'region', 'title', 'content', 'location'],
+            }),
+            ('案件人', {
+                'classes': ('suit-tab suit-tab-general',),
+                'description': '案件人個人資訊',
+                'fields': ['username', 'mobile', 'email', 'address'],
+            }),
+            ('內部紀錄事項', {
+                'classes': ('suit-tab suit-tab-general',),
+                'description': '案件設為不受理前須填寫不受理理由',
+                'fields': ['disapprove_info', 'note', 'tags'],
+            }),
+        ]
+
         if obj:
-            fieldsets = self.fieldsets
             fieldsets[2][1]['fields'] = ['username', 'tw_mobile', 'email', 'address']
-            return fieldsets
-        return self.fieldsets
+        return fieldsets
 
     def get_readonly_fields(self, request, obj=None):
         """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly"""
+        readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
         if obj:
-            return self.readonly_fields + ('tw_mobile',)
-        return self.readonly_fields
+            readonly_fields += ('tw_mobile',)
+        return readonly_fields
 
     def get_fields(self, request, obj=None):
         """若是已新增過的物件，以tw_mobile取代mobile input，設為readonly，加到fields當中"""
+        fields = ('number', 'state', 'create_time', 'open_time', 'close_time',
+                  'type', 'region', 'title', 'content', 'location',
+                  'username', 'mobile', 'email', 'address',
+                  'disapprove_info', 'note', 'tags')
         if obj:
-            return self.fields + ('tw_mobile',)
-        return self.fields
+            fields += ('tw_mobile',)
+        return fields
 
     def get_search_results(self, request, queryset, search_term):
         """加入CaseHistory搜尋"""
