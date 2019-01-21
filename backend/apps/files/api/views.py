@@ -13,3 +13,8 @@ class TempFileViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     authentication_classes = [AccountKitUserAuthentication]
     http_method_names = ['post', 'delete']
+
+    def perform_create(self, serializer):
+        user = self.request.user
+        serializer.validated_data['user'] = user
+        serializer.save()
