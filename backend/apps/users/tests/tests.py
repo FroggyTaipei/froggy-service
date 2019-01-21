@@ -1,16 +1,13 @@
 from django.test import TransactionTestCase
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from rest_framework.authtoken.models import Token
 from apps.users.models import User
-
-from .initial import create_superuser
 
 
 class UserModelTestCase(TransactionTestCase):
     def test_create_superuser_by_script(self):
         """Load superuser"""
-        create_superuser()
+        from apps.users.tests import initial
         self.superuser = User.objects.first()
         self.assertIsNotNone(self.superuser)
 

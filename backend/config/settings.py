@@ -363,12 +363,13 @@ if USE_AWS_S3:
     AWS_S3_OBJECT_PARAMETERS = {
         'CacheControl': 'max-age=86400',
     }
-    AWS_DEFAULT_ACL = None
+    # For ckeditor uploader only, custom private backend on other usage
+    AWS_DEFAULT_ACL = 'public-read'
     AWS_QUERYSTRING_AUTH = False
 
 # CKEDITOR
 # ------------------------------------------------------------------------------
-CKEDITOR_UPLOAD_PATH = 'uploads/'
+CKEDITOR_UPLOAD_PATH = 'public-uploads/'
 CKEDITOR_IMAGE_BACKEND = 'pillow'
 CKEDITOR_RESTRICT_BY_DATE = False
 CKEDITOR_FILENAME_GENERATOR = 'apps.files.utils.generate_filename'

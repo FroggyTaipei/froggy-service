@@ -32,22 +32,23 @@ class ArrangeInlineForm(ModelForm):
         }
 
     def clean(self):
+        case_state = self.instance.case.state
         new_state = self.cleaned_data['state']
         arrange_time = self.cleaned_data['arrange_time']
 
-        if not self.instance.pk and self.instance.case and self.instance.case.state != 'arranged':
-            raise ValidationError('請先將案件設為處理中')
-
-        if any(field in self.changed_data for field in ['title', 'content']) and new_state == 'published':
-            raise ValidationError('請先儲存變動後再設為發布')
-
-        if new_state != 'draft':
-            if self.instance.case.state == 'draft':
-                raise ValidationError(f'請先將案件由「尚未成案」設為「處理中」')
+        if new_state == 'published':
+            if case_state == 'draft':
+                raise ValidationError(f'新增處理事項前請先將案件由「尚未成案」設為「處理中」')
+            if case_state == 'arranged':
+                if any(field in self.changed_data for field in ['title', 'content']):
+                    raise ValidationError('請先儲存變動後再設為發布')
             if arrange_time is None:
                 raise ValidationError(f'請先設定案件處理時間')
             else:
                 self.instance.arrange_time = arrange_time
+
+        if self.instance.pk is None and case_state == 'closed':
+            raise ValidationError(f'新增處理事項前請先將案件由「已結案」設為「處理中」')
 
         transition = None
         for ts in self.instance.get_available_state_transitions():
