@@ -5,6 +5,7 @@ from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.core.files.storage import FileSystemStorage
+from django.utils.safestring import mark_safe
 
 from rest_framework.exceptions import ValidationError
 
@@ -114,6 +115,14 @@ class CaseFile(models.Model):
         self.file_name = self.file.name.replace(f'{self.case.uuid}/', '')
         self.file.name = f'{self.case.uuid}/{self.file_name}'
         super(CaseFile, self).save(*args, **kwargs)
+
+    def preview(self):
+        if not self.file_name:
+            return '-'
+        if any(map(lambda x: x in self.file_name, ['.jpg', '.png', '.gif'])):
+            return mark_safe(f'<a target="_blank" href="{self.file.url}"><img src="{self.file.url}" style="max-width: 200px"/></a>')
+        return mark_safe(f'<a target="_blank" href="{self.file.url}">{self.file_name}</a>')
+    preview.short_description = _('Preview')
 
 
 @receiver(pre_delete, sender=TempFile)

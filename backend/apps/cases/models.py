@@ -129,7 +129,7 @@ class Case(Model):
     disapprove_info = TextField(null=True, blank=True, verbose_name=_('Disapprove Info'))
 
     note = TextField(null=True, blank=True, verbose_name=_('Case Notes'))
-    tags = TagField(verbose_name=_('Case Tags'))
+    tags = TagField(null=True, blank=True, verbose_name=_('Case Tags'))
 
     objects = CaseQuerySet.as_manager()
 
