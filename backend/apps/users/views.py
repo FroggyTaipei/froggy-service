@@ -175,7 +175,9 @@ class UserViewSet(viewsets.ModelViewSet):
             email = identity_response['email']['address']
             user = User.objects.filter(email=email).first()
         elif 'phone' in identity_response:
-            mobile = identity_response['phone']['number']
+            if identity_response['phone']['country_prefix'] != '886':
+                raise AuthenticationFailed('請使用國碼為+886的手機進行驗證')
+            mobile = '0' + identity_response['phone']['national_number']
             user = User.objects.filter(mobile=mobile).first()
 
         if not user:
@@ -183,8 +185,8 @@ class UserViewSet(viewsets.ModelViewSet):
             user = User.objects.create_accountkit_user(email=email, mobile=mobile, full_name='AccountKit User')
 
         objs = TempFile.objects.filter(user=user, upload_time__date=datetime.date.today())
-        if objs.distinct('case_uuid') >= FILE_LIMIT_CASE:
-            raise AuthenticationFailed('Case limited 5 per day.')
+        if objs.distinct('case_uuid').count() >= FILE_LIMIT_CASE:
+            raise AuthenticationFailed('您的手機號碼已超出每日服務驗證次數限制，請聯絡本團隊為您處理')
 
         payload = jwt_payload_handler(user)
         jwt = jwt_encode_handler(payload)
