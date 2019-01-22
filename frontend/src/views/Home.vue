@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
+    <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
   </div>
 </template>
 
@@ -27,23 +27,9 @@ export default {
 </script>
 
 <style lang="sass">
-*
-  // border: solid 1px
-  font-family: PingFangSC-Regular
 @mixin placeholder-color
   &::-webkit-input-placeholder
       color: #7b68eeba
-html,body
-  margin: auto
-  width: 100vw
-  width: 100%
-  height: 100vh
-  height: 100%
-  // background-color: gray
-
-.container
-  height: 100%
-  width: 100%
 
 table
   background-color: transparent

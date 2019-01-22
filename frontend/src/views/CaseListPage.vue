@@ -1,8 +1,6 @@
 <template>
   <div class="container">
-      <!-- <Dialogue id="dialogue" class="" :lorem="lorem"></Dialogue> -->
-      <CaseList id="cases" :lorem="lorem"></CaseList>
-      <!-- <About id="about" :lorem="lorem"></About> -->
+    <CaseList id="cases"></CaseList>
   </div>
 </template>
 
@@ -14,8 +12,7 @@ export default {
   data: function () {
     return {
       data: [],
-      title: [],
-      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?'
+      title: []
     }
   },
   components: { CaseList }
@@ -23,49 +20,7 @@ export default {
 </script>
 
 <style lang="sass">
-*
-  // border: solid 1px
-  font-family: PingFangSC-Regular
-
-html,body
-  margin: auto
-  width: 100vw
-  width: 100%
-  height: 100vh
-  height: 100%
-  // background-color: gray
-
-.container
-  height: 100%
-  width: 100%
-
-.VueTables.VueTables--server
-  height: 100%
-  display: flex
-  flex-direction: column
-  align-items: center
-  justify-content: center
-  &>.row>.col-md-12
-    margin: 50px 0px 20px 0px
-    .VueTables__search-field
-      color: white
-      label
-        margin-right: 20px
-        font-size: 1.2em
-      input
-        font-size: 1em
-  .table-responsive
-    width: 100%
-    height: 80%
-
-.glyphicon
-  width: 10px !important
-  content: '66'
-  position: absolute
-  color: white
-  width: 10px !important
-  height: 10px !important
-
+@import '@/assets/css/style.sass'
 table
   width: 100%
   color: white
@@ -84,6 +39,34 @@ table
       text-align: center
       line-height: 2em
 
+// .glyphicon
+//   width: 10px !important
+//   content: '66'
+//   position: absolute
+//   color: white
+//   width: 10px !important
+//   height: 10px !important
+
+.VueTables.VueTables--server
+  height: 100%
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+  &>.row>.col-md-12
+    margin: 10px 0px 20px 0px
+    .VueTables__search-field
+      color: white
+      label
+        margin-right: 20px
+        font-size: 1.2em
+      input
+        font-size: 1em
+  .table-responsive
+    width: 100%
+    overflow: scroll
+    // height: 80%
+
 .VuePagination, .VuePagination__pagination, .VuePagination__count
   display: flex !important
   align-items: center
@@ -100,27 +83,28 @@ nav
   width: 100%
   color: white
 
+// dialog-content
+
 .el-dialog
-  width: 80% !important
+  width: 60% !important
   max-height: 50%
   margin-top: 5vh !important
   box-shadow: 0 0 0 !important
   background: transparent !important
+  @media screen and (max-width: $break_small)
+    width: 80% !important
+    max-height: 70%
 
 .upper-block-bkg
   height: 100px
   width: 100%
-  background: linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
+  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/case-logo.png'), linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
+  background-position: top right, center
+  background-size: auto 100%, 100%
+  background-repeat: no-repeat, no-repeat
   overflow: hidden
-.case-logo
-  position: absolute !important
-  height: 100%
-  top: 45px
-  right: 0px
-  height: 100px
-
-.el-dialog
-  // position: absolute !important
+  @media screen and (max-width: $break_small)
+    display: none
 
 .el-dialog__header
   background: linear-gradient(#0155E4, #ffffff 0.2, #0155E4)
@@ -133,6 +117,22 @@ nav
     background-color: orange
     color: white !important
 
+.case-content-type-header
+  color: white
+  font-size: 2em
+  font-weight: 500
+  position: absolute
+  top: 95px
+  left: 25px
+  @media screen and (max-width: 650px)
+    display: none
+
+.case-content-type-body
+  font-size: 1.2em
+  font-weight: 700
+  @media screen and (min-width: 650px)
+    display: none
+
 .el-dialog__body
   box-sizing: border-box !important
   border-width: 5px 5px 0px 5px
@@ -144,20 +144,26 @@ nav
     padding: 20px !important
     max-height: 40vh !important
     overflow: scroll
-    .content-title
+    @media screen and (max-width: $break_small)
+      // max-height: 60vh !important
+    .case-content-title, .case-content-details, .arranges-title
       font-size: 1.2em
       font-weight: 700
+    .case-content-date,
+      font-size: 1em
+      font-weight: normal
 
 .el-dialog__footer
-  height: 150px
+  height: 100px
   align-items: center
   display: flex !important
   box-sizing: border-box !important
-  border-width: 0px 5px 7px 5px
+  border-width: 0px 5px 5px 5px
   border-style: solid
-  border-radius: 0px 0px 10px 10px
+  border-radius: 0px 0px 8px 8px
   border-color: #0155E4
   background-color: #dcdcdc
+  padding: 10px !important
   .dialog-footer
     width: 100%
     height: 100%
@@ -168,22 +174,17 @@ nav
       display: flex !important
       align-items: center
       justify-content: center
-      height: 90%
-      width: 80%
-      border: solid 10px black !important
+      height: 80%
+      border: solid 5px black !important
       right: 20px!important
       box-sizing: border-box
-      border-radius: 40px 10px
+      border-radius: 25px 10px
       background-color: white !important
       font-size: 1.5em
       font-weight: 700
-      .content-id
-        flex: 1
-        padding: 0px 20px 0px 20px
-        text-align: center
       .content-status
         flex: 1
         padding: 0px 20px 0px 20px
-        text-align: left
+        text-align: right
 
 </style>

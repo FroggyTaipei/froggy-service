@@ -1,17 +1,14 @@
 <template lang="pug">
 el-container.page1
-  transition(name="fade")
-    el-row(type="flex" justify="center" align="middle" v-show="showIntro")
+  transition(name="introIn" @after-leave="showMainContent")
+    el-row.intro-wrapper(type="flex" justify="center" align="middle" v-show="isShowIntro")
       img.intro-img(:src="logoUrl")
-      h1.intro-text START
-  transition(name="fade")
-    el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="showFroggy")
+      .intro-text(v-show="isShowIntroText") START
+  transition(name="fade" @after-leave="redirect")
+    el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="isShowMainContent")
       img.bkg-logo-img(:src="logoUrl")
       img.froggyImage(:src="froggyImageUrl")
-  //佔空間用
-  el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="!showFroggy")
-  BottomGameDialog(v-show="!showIntro" :title="welcomeText")
-
+  BottomGameDialog(:title="welcomeText" v-show="isShowMainContent || isShowBtnBar")
 </template>
 
 <script>
@@ -22,8 +19,12 @@ export default {
   components: { BottomGameDialog },
   data: function () {
     return {
-      showIntro: true,
+      isShowIntro: false,
+      isShowMainContent: false,
+      isShowIntroText: false,
+      isShowBtnBar: false,
       imageStorageUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/',
+      logoUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
       dialogue: [
         {
           showTime: [5, 12],
@@ -38,42 +39,23 @@ export default {
           textContent: ['晚安，你好！現在時候已經不早了，但你會來找我一定是有些台北市沒做好的事吧？來吧，快告訴我，反正我每天都2、3點才睡覺！'],
           froggyImage: ['night_1.png', 'night_2.png', 'night_3.png']
         }
-      ],
-      openInput: false,
-      logoUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
-      showFroggy: false
+      ]
     }
   },
   methods: {
-    makeInvisible () {
-      this.showIntro = !this.showIntro
-      setTimeout(() => {
-        this.showFroggy = true
-      }, 1000)
-    },
-    toggleInput () {
-      this.showFroggy = !this.showFroggy
-      this.openInput = !this.openInput
-    },
-    hover (index) {
-      if (index === 1) {
-        this.mouse1 = true
-      } else if (index === 2) {
-        this.mouse2 = true
-      }
-    },
-    leave (index) {
-      if (index === 1) {
-        this.mouse1 = false
-      } else if (index === 2) {
-        this.mouse2 = false
-      }
-    },
-    beforePageDestroyed: function (event) {
-      console.log('beforePageDestroyed')
-    },
     setCookie (name, value) {
       document.cookie = name + '=' + (value || '') + '; path=/'
+    },
+    toggleLeaveAnimation: function (destination) {
+      this.isShowMainContent = false
+    },
+    showMainContent: function () {
+      this.isShowMainContent = true
+      this.isShowBtnBar = true
+    },
+    redirect: function () {
+      let direction = this.$store.state.redirectTo
+      this.$router.push(direction)
     }
   },
   computed: {
@@ -99,36 +81,31 @@ export default {
     }
   },
   created: function () {
-    this.visited = document.getCookie('visited')
-    console.log('visited ' + this.visited)
-    if (this.visited) {
-      this.showIntro = false
-    } else {
-      this.setCookie('visited', true)
-    }
-    window.addEventListener('beforeunload', function (e) {
-      document.eraseCookie('visited')
-    })
   },
   mounted: function () {
-    let introTime = 1500
-    let showFroggyTime = 500
-    if (this.visited) {
-      introTime = 0
-      showFroggyTime = 0
-    }
-    setTimeout(() => {
-      this.showIntro = false
+    let visited = this.$store.state.firstVisit
+    if (visited) {
+      console.log('visited')
+      this.isShowMainContent = true
+      this.isShowBtnBar = true
+      return false
+    } else {
+      console.log('not visited')
+      this.$store.commit('setVisited', true)
+      this.isShowIntro = true
       setTimeout(() => {
-        this.showFroggy = true
-      }, showFroggyTime)
-    }, introTime)
+        this.isShowIntroText = true
+        setTimeout(() => { this.isShowIntro = false }, 1500)
+      }, 1000)
+    }
   },
   props: ['lorem']
 }
 </script>
 
 <style lang="sass" scoped>
+@import '@/assets/css/style.sass'
+
 .page1
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
   background-position: center
@@ -150,87 +127,87 @@ export default {
   margin: auto
   opacity: 0.5
 
-.intro-img
+.intro-wrapper
+  background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
+  background-position: center
+  background-size: contain
+  background-repeat: no-repeat
+  position: absolute
+  z-index: 10000
   width: 100%
+  height: 100%
+  .intro-img
+    width: 100%
+  .intro-text
+    font-size: 4em
+    color: white
+    font-weight: bold
+    position: absolute
+    bottom: 20vh
+    animation: blinker 1.5s forwards
+    &:hover
+      cursor: pointer
 
 .forggyImage-wrapper
   flex: 3
+  @media screen and (max-width: $break_small)
+    flex: 3
   .froggyImage
     width: 100%
     max-width: 500px
     transform: translateY(1000px)
     animation: flyin 1.5s forwards
-
-.bottom
-  width: 100%
-  position: absolute
-  bottom: 0px
-  left: 0px
-
-.bottom-btn
-  width: 80%
-  text-align: right
-  padding: 16px 48px
-  color: white
-  display: flex
-  .space
-    flex: auto
-  .btn-wrapper
-    flex-basis: 120px
-    felx: 0 0 120px
-
-.text-button
-  color: white
-  margin-right: 20px
-
-.text-block-back
-  display: flex
-  position: absolute
-  background-color: rgba(255,255,255,0.6)
-  width: 100%
-  height: 20vh
-  bottom: 0
-  border-radius: 10px
-  .text-block-front
-    display: flex
-    flex-direction: column
-    margin: auto
-    color: white
-    background-color: rgba(26,110,99,0.8)
-    width: 95%
-    height: 98%
-    border-radius: 10px
-    h1
-      padding: 20px 20px 0px 20px
-      margin-bottom: 0px
-    span
-      padding: 0px 20px 10px 20px
-      font-size: 1em
+    @media screen and (max-width: $break_small)
+      animation: flyin-mobile 1.5s forwards
 
 .row-dialog
   flex: 1
-
-.intro-text
-  font-size: 80px
-  color: white
-  font-weight: bold
-  position: absolute
-  bottom: 10vh
-  animation: blinker 2s linear infinite
-  &:hover
-    cursor: pointer
+  @media screen and (max-width: $break_small)
+    flex: 2
 
 @keyframes blinker
-  50%
+  0%
     opacity: 0
+  25%
+    opacity: 0
+  26%
+    opacity: 1
+  40%
+    opacity: .1
+  78%
+    opacity: 0
+    transform: scale(1)
+  80%
+    opacity: 1
+    transform: scale(1.1)
+  85%
+    opacity: .1
+  99%
+    opacity: .1
+    transform: scale(1)
+  100%
+    opacity: 1
+    transform: scale(1.3)
 
 @keyframes flyin
   100%
     transform: translateY(20px)
 
-// Vue animation
-.fade-enter-active, .fade-leave-active
-  transition: opacity .5s
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */
-  opacity: 0s
+@keyframes flyin-mobile
+  100%
+    transform: translateY(50px)
+
+.introIn-enter-active
+  animation: intro-in 2s
+
+.introIn-leave-active
+  animation: intro-in .5s reverse
+
+@keyframes intro-in
+  0%
+    opacity: 0
+  25%
+    opacity: 0
+  100%
+    opacity: 1
 </style>
