@@ -24,11 +24,15 @@ from tagulous.models import TagField
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from apps.files.storages import PrivateStorage
 from apps.files.models import TempFile, CaseFile
+from storages.backends.gcloud import GoogleCloudStorage
 
 
 if settings.USE_AWS_S3:
     TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-temp'
     TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
+elif settings.USE_GCS:
+    TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
+    TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
 else:
     TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/tempfile', base_url=f'{settings.MEDIA_URL}tempfile/')
 

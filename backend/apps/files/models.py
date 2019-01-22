@@ -12,6 +12,7 @@ from django.utils.safestring import mark_safe
 from rest_framework.exceptions import ValidationError
 
 from apps.files.storages import PrivateStorage
+from storages.backends.gcloud import GoogleCloudStorage
 
 
 FILE_LIMIT_PER_FILE = settings.FILE_LIMIT_PER_FILE
@@ -24,6 +25,11 @@ if settings.USE_AWS_S3:
     CASE_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-case'
     TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
     CASE_STORAGE = PrivateStorage(bucket=CASE_BUCKET)
+elif settings.USE_GCS:
+    TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
+    CASE_BUCKET = f'{settings.GS_BUCKET_NAME}-case'
+    TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
+    CASE_STORAGE = GoogleCloudStorage(bucket_name=CASE_BUCKET)
 else:
     TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/tempfile', base_url=f'{settings.MEDIA_URL}tempfile/')
     CASE_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/casefile', base_url=f'{settings.MEDIA_URL}casefile/')
