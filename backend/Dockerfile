@@ -15,6 +15,9 @@ RUN apt-get update \
 COPY ./requirements.txt /
 RUN pip install -r ./requirements.txt
 
+# gcloud credential file
+COPY ./gs_credential.json /
+
 # upload scripts
 COPY ./scripts/entrypoint.sh ./scripts/start.sh ./scripts/gunicorn.sh /
 

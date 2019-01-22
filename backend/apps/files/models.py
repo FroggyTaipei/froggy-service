@@ -2,7 +2,7 @@ import uuid
 import datetime
 
 from django.db import models
-from django.db.models.signals import pre_delete, post_save
+from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
@@ -11,21 +11,10 @@ from django.utils.safestring import mark_safe
 
 from rest_framework.exceptions import ValidationError
 
-from apps.files.storages import PrivateStorage
 from storages.backends.gcloud import GoogleCloudStorage
 
 
-FILE_LIMIT_PER_FILE = settings.FILE_LIMIT_PER_FILE
-FILE_LIMIT_PER_CASE = settings.FILE_LIMIT_PER_CASE
-FILE_LIMIT_PER_DAY = settings.FILE_LIMIT_PER_DAY
-
-
-if settings.USE_AWS_S3:
-    TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-temp'
-    CASE_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-case'
-    TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
-    CASE_STORAGE = PrivateStorage(bucket=CASE_BUCKET)
-elif settings.USE_GCS:
+if settings.USE_GCS:
     TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
     CASE_BUCKET = f'{settings.GS_BUCKET_NAME}-case'
     TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
@@ -72,27 +61,24 @@ class TempFile(models.Model):
         """
         檢查上傳的檔案大小是否超過大小限制
         """
-        return self.size > FILE_LIMIT_PER_FILE
+        return self.size > settings.FILE_LIMIT_PER_FILE
 
     def check_size_per_case(self):
         """
         檢查已上傳案件的總大小與目前上傳的檔案相加是否超過限制
         """
-        objs = TempFile.objects.filter(case_uuid=self.case_uuid)
-        size = [i.size for i in objs]
+        total = self.size + sum(TempFile.objects.filter(case_uuid=self.case_uuid).values_list('size', flat=True))
 
-        return self.size + sum(size) > FILE_LIMIT_PER_CASE
+        return total > settings.FILE_LIMIT_PER_CASE
 
     def check_size_per_day(self):
         """
         檢查今日上傳的總檔案大小是否達到今日上傳的總額度
         """
-        objs = TempFile.objects.filter(user=self.user, upload_time__date=datetime.date.today())
-        size = []
-        for i in objs:
-            size.append(i.size)
-
-        return sum(size) > FILE_LIMIT_PER_DAY
+        total = self.size + \
+            sum(TempFile.objects.filter(user=self.user,
+                                        upload_time__date=datetime.date.today()).values_list('size', flat=True))
+        return total > settings.FILE_LIMIT_PER_DAY
 
     def save(self, *args, **kwargs):
         """
@@ -106,13 +92,13 @@ class TempFile(models.Model):
         self.file_name = self.file.name
         self.size = self.file.size
         if self.check_duplicate():
-            raise ValidationError(_('Duplicate file'))
+            raise ValidationError('相同檔名的檔案已經存在')
         if self.check_size_per_file():
-            raise ValidationError(_('File over limit size'))
+            raise ValidationError('單一檔案大小超出限制')
         if self.check_size_per_case():
-            raise ValidationError(_('File over limit size per case'))
+            raise ValidationError('單一案件的上傳檔案大小超出限制')
         if self.check_size_per_day():
-            raise ValidationError(_('File over limit size per today'))
+            raise ValidationError('您的手機號碼已超出上傳限制，請聯絡本團隊為您處理')
         self.file.name = f'{self.case_uuid}/{self.file_name}'
         super(TempFile, self).save(*args, **kwargs)
 
