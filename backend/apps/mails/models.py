@@ -76,6 +76,7 @@ class SendGridMail(Model):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.from_email = self.from_email or settings.SERVER_EMAIL
+            self.to_email = self.to_email or self.case.email
         if self.to_email:
             try:
                 response = SendGridMail.send_template(self.from_email, self.to_email, self.data, self.template.tid)

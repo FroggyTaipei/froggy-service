@@ -14,8 +14,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
-from rest_framework.exceptions import AuthenticationFailed, ParseError
-from rest_framework.authtoken.models import Token
+from rest_framework.exceptions import AuthenticationFailed, ParseError, ValidationError
 
 from django.core.signing import TimestampSigner, BadSignature
 
@@ -176,7 +175,7 @@ class UserViewSet(viewsets.ModelViewSet):
             user = User.objects.filter(email=email).first()
         elif 'phone' in identity_response:
             if identity_response['phone']['country_prefix'] != '886':
-                raise AuthenticationFailed('請使用國碼為+886的手機進行驗證')
+                raise ValidationError('請使用國碼為+886的手機進行驗證')
             mobile = '0' + identity_response['phone']['national_number']
             user = User.objects.filter(mobile=mobile).first()
 
@@ -186,7 +185,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         objs = TempFile.objects.filter(user=user, upload_time__date=datetime.date.today())
         if objs.distinct('case_uuid').count() >= FILE_LIMIT_CASE:
-            raise AuthenticationFailed('您的手機號碼已超出每日服務驗證次數限制，請聯絡本團隊為您處理')
+            raise ValidationError('您的手機號碼已超出每日服務驗證次數限制，請聯絡本團隊為您處理')
 
         payload = jwt_payload_handler(user)
         jwt = jwt_encode_handler(payload)
