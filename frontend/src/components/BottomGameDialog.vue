@@ -32,11 +32,19 @@ export default {
   },
   methods: {
     toggleParentAnimation (to) {
+      let reservedUrl = ['/create', '/cases', '/about', '/home', '/success', '/']
       let destination = '/' + to
+      let currentPath = this.$route.fullPath
       this.$store.commit('setRedirectDestination', destination)
-      if (destination === this.$route.path) {
+      if (destination === this.$route.fullPath) {
+        console.log('redirect situation 1 : nothing')
         return false
+      } else if (reservedUrl.includes(currentPath) === false) {
+        console.log('redirect situation 2 : outer link')
+        this.$router.push('/home')
+        this.$router.push(destination)
       } else {
+        console.log('redirect situation 3 : redirect')
         this.$parent.$parent.toggleLeaveAnimation(destination)
       }
     }

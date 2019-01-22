@@ -146,34 +146,6 @@ export default {
     },
     nextPage () {
       this.$emit('next')
-      // this.$refs.form.validate((valid) => {
-      //   if (valid) {
-      //     if (this.authentication) {
-      //       if (this.applicant.agreement) {
-      //         console.log('form pass')
-      //         this.$store.commit('setCase',
-      //           {
-      //             username: this.applicant.username,
-      //             email: this.applicant.email,
-      //             address: this.applicant.address,
-      //             region: this.applicant.region
-      //           })
-      //         this.$emit('next')
-      //       } else {
-      //         this.$alert('請同意本系統個資使用', '提示', {
-      //           type: 'warning'
-      //         })
-      //       }
-      //     } else {
-      //       this.$alert('請通過手機認證', '提示', {
-      //         type: 'warning'
-      //       })
-      //     }
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
     },
     validate () {
       return new Promise((resolve, reject) => {
