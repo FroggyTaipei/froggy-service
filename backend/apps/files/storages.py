@@ -22,14 +22,22 @@ class CleanStorage():
 
     def clean_file(self, path, file_list):
         for i in file_list:
-            self.storage.delete(f'{path}/{i}')
+            if path[-1:] is '/':
+                self.storage.delete(f'{path}{i}')
+            else:
+                self.storage.delete(f'{path}/{i}')
 
     def clean_dir(self, path, dir):
         storage_list = self.storage.listdir(f'{path}{dir}/')
         self.clean_file(f'{path}{dir}/', storage_list[1])
         for i in storage_list[0]:
             self.clean_dir(f'{path}{dir}/', i)
-        self.storage.delete(f'{path}{dir}/')
+        if path[-1:] is '/':
+            if self.storage.exists(f'{path}{dir}'):
+                self.storage.delete(f'{path}{dir}')
+        else:
+            if self.storage.exists(f'{path}{dir}/'):
+                self.storage.delete(f'{path}{dir}/')
 
     def clean_storage(self, storage):
         path = ''

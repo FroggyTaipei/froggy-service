@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 import environ
 import datetime
+
+from google.oauth2 import service_account
 from django.utils.translation import ugettext_lazy as _
 
 ROOT_DIR = environ.Path(__file__) - 2
@@ -366,6 +368,17 @@ if USE_AWS_S3:
     # For ckeditor uploader only, custom private backend on other usage
     AWS_DEFAULT_ACL = 'public-read'
     AWS_QUERYSTRING_AUTH = False
+
+USE_GCS = env.bool('USE_GCS', default=False)
+if USE_GCS:
+    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    GS_PROJECT_ID = env.str('GS_PROJECT_ID')
+    GS_BUCKET_NAME = env.str('GS_BUCKET_NAME')
+    GS_AUTO_CREATE_BUCKET = env.str('GS_AUTO_CREATE_BUCKET')
+
+    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
+        f"{ROOT_DIR}/{env.str('GS_CREDENTIALS')}",
+    )
 
 # CKEDITOR
 # ------------------------------------------------------------------------------

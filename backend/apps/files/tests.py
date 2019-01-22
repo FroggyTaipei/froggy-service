@@ -2,6 +2,7 @@ import time
 import datetime
 import os
 
+from storages.backends.gcloud import GoogleCloudStorage
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
@@ -25,6 +26,11 @@ if settings.USE_AWS_S3:
     CASE_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-test-case'
     TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
     CASE_STORAGE = PrivateStorage(bucket=CASE_BUCKET)
+elif settings.USE_GCS:
+    TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-test-temp'
+    CASE_BUCKET = f'{settings.GS_BUCKET_NAME}-test-case'
+    TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
+    CASE_STORAGE = GoogleCloudStorage(bucket_name=CASE_BUCKET)
 else:
     TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/test-tempfile', base_url=f'{settings.MEDIA_URL}test-tempfile/')
     CASE_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/test-casefile', base_url=f'{settings.MEDIA_URL}test-casefile/')
@@ -193,12 +199,18 @@ class TempFileExpireTestCase(TestCase):
 
     def test_unexpired(self):
         today = datetime.date.today()
-        self.objs.filter(upload_time__date__lt=today).delete()
+        expire_list = self.objs.filter(upload_time__date__lt=today)
+        for i in expire_list:
+            i.file.storage = TEMP_STORAGE
+            i.delete()
         self.assertEqual(self.objs.count(), 1)
 
     def test_expired(self):
         day_after_tomorrow = datetime.date.today() + datetime.timedelta(2)
-        self.objs.filter(upload_time__date__lt=day_after_tomorrow).delete()
+        expire_list = self.objs.filter(upload_time__date__lt=day_after_tomorrow)
+        for i in expire_list:
+            i.file.storage = TEMP_STORAGE
+            i.delete()
         self.assertEqual(self.objs.count(), 0)
 
 
