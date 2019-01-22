@@ -9,9 +9,10 @@ import InputDialogPage from '@/views/InputDialogPage.vue'
 
 const routes = [
   { path: '*', component: Home },
-  { path: '/create', component: InputDialogPage },
-  { path: '/cases', component: CaseListPage },
-  { path: '/about', component: AboutPage }
+  { path: 'home/:success', name: 'home', component: Home },
+  { path: '/create', name: 'create', component: InputDialogPage },
+  { path: '/cases', name: 'cases', component: CaseListPage },
+  { path: '/about', name: 'about', component: AboutPage }
 ]
 
 Vue.use(VueRouter)

@@ -105,7 +105,7 @@ export default {
     },
     submitCase () {
       console.log(this.cases)
-      this.$router.push('/success')
+      this.$router.push({ name: 'home', params: { success: true } })
       this.axios.post('/api/cases', this.cases, { headers: this.$store.state.jwt })
         .then(response => {
           console.log('submit success')
