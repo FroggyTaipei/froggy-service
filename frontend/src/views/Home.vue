@@ -16,8 +16,11 @@ export default {
     }
   },
   created: function () {
+    console.log('home init')
+    console.log(this.$route.params)
   },
   mounted: function () {
+    console.log('home mounted')
   },
   components: { Dialogue }
 }
@@ -64,7 +67,7 @@ form
   .el-form-item__label
     padding: 0px !important
     color: white
-    font-size: larger
+    font-size: larger;
 .form-footer-btn
   float: right
   padding-top: 16px
@@ -72,4 +75,9 @@ form
     background-color: rgba(#fff, .3)
     border-color: transparent
     font-weight: bold
+.el-form-item__label:before, .el-form-item__error
+  color: #655356 !important
+.el-checkbox
+  color: #ffffff !important
+
 </style>

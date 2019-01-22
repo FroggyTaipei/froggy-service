@@ -1,6 +1,8 @@
 <template>
   <fieldset>
     <el-form label-position="top" :model="applicant" label-width="80px" :rules="rules" ref="form">
+      <el-form-item :label="$store.state.typeText">
+      </el-form-item>
       <el-form-item label="姓名" prop="username">
         <el-input placeholder="e.g. 邱威傑" v-model.trim="applicant.username"></el-input>
       </el-form-item>
@@ -29,7 +31,7 @@
         <el-input placeholder="e.g. froggy@froggy.com" v-model.trim="applicant.email"></el-input>
       </el-form-item>
       <el-form-item prop="agreement">
-          <el-checkbox :label="agreementText" name="type" v-model="applicant.agreement"></el-checkbox>
+          <el-checkbox :label="agreementText" name="type" v-model="applicant.agreement" @change="clickAgreement"></el-checkbox>
       </el-form-item>
     </el-form>
     <div class="form-footer-btn">
@@ -47,7 +49,7 @@ export default {
     AccountKit
   },
   props: {
-    isClose: {
+    dialogAgreement: {
       type: Boolean,
       default: () => {
         return false
@@ -55,10 +57,9 @@ export default {
     }
   },
   data: () => ({
-    showAgreementPopup: false,
     authentication: false,
     authenticating: false,
-    agreementText: '我已閱讀並同意台北市議員邱威傑選民服務系統隱私權及個人資料使用說明',
+    agreementText: '我同意選民服務個資使用',
     applicant: {
       username: '',
       mobile: '',
@@ -96,20 +97,18 @@ export default {
     }
   }),
   watch: {
-    isClose: function (value) {
-      if (value) {
-        this.$validator.errors.clear()
-        this.applicant = {
-          username: '',
-          mobile: '',
-          email: '',
-          address: '',
-          region: ''
-        }
-      }
+    dialogAgreement: function (value) {
+      console.log(value)
+      this.applicant.agreement = value
     }
   },
   methods: {
+    clickAgreement () {
+      if (this.applicant.agreement) {
+        this.dialogAgreement = true
+        this.$emit('showAgreement')
+      }
+    },
     login () {
       this.$refs.accountKit.login(
         {
@@ -120,12 +119,17 @@ export default {
       this.authenticating = true
     },
     loginCallback (response) {
-      let accountKitResp = {
-        code: response.code,
-        status: response.status,
-        state: response.state
+      if (response && response.status === 'PARTIALLY_AUTHENTICATED') {
+        this.getAccountKitToken({
+          code: response.code,
+          status: response.status,
+          state: response.state
+        })
+      } else {
+        this.$alert('發生錯誤，請稍後再試', '提示', {
+          type: 'warning'
+        })
       }
-      this.getAccountKitToken(accountKitResp)
     },
     getAccountKitToken (accountKitResp) {
       console.log(accountKitResp)
@@ -141,29 +145,35 @@ export default {
         })
     },
     nextPage () {
-      this.$refs.form.validate((valid) => {
-        if (valid) {
-          if (this.authentication) {
-            console.log('form pass')
-            this.$store.commit('setCase',
-              {
-                username: this.applicant.username,
-                email: this.applicant.email,
-                address: this.applicant.address,
-                region: this.applicant.region
-              })
-            this.$emit('next')
-          } else {
-            console.log('please authenticate your phone')
-            this.$alert('請通過手機認證', '提示', {
-              type: 'warning'
-            })
-          }
-        } else {
-          console.log('error submit!!')
-          return false
-        }
-      })
+      this.$emit('next')
+      // this.$refs.form.validate((valid) => {
+      //   if (valid) {
+      //     if (this.authentication) {
+      //       if (this.applicant.agreement) {
+      //         console.log('form pass')
+      //         this.$store.commit('setCase',
+      //           {
+      //             username: this.applicant.username,
+      //             email: this.applicant.email,
+      //             address: this.applicant.address,
+      //             region: this.applicant.region
+      //           })
+      //         this.$emit('next')
+      //       } else {
+      //         this.$alert('請同意本系統個資使用', '提示', {
+      //           type: 'warning'
+      //         })
+      //       }
+      //     } else {
+      //       this.$alert('請通過手機認證', '提示', {
+      //         type: 'warning'
+      //       })
+      //     }
+      //   } else {
+      //     console.log('error submit!!')
+      //     return false
+      //   }
+      // })
     },
     validate () {
       return new Promise((resolve, reject) => {

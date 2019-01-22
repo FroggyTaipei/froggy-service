@@ -10,6 +10,7 @@ const store = new Vuex.Store({
     case: {},
     regions: [],
     types: [],
+    typeText: '',
     header: { Authorization: 'Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' },
     jwt: {}
   },
@@ -17,6 +18,9 @@ const store = new Vuex.Store({
   mutations: {
     setCase (state, cases) {
       Object.assign(state.case, cases)
+    },
+    setTypeText (state, text) {
+      state.typeText = text
     },
     setRegions (state, region) {
       state.regions = region
