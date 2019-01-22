@@ -1,6 +1,8 @@
 <template>
   <fieldset>
     <el-form label-position="top" :model="cases" label-width="80px" :rules="rules" ref="form">
+      <el-form-item :label="$store.state.typeText">
+      </el-form-item>
       <el-form-item label="案件主旨" prop="title">
         <el-input placeholder="請輸入案件主旨" v-model.trim="cases.title"></el-input>
       </el-form-item>
@@ -84,27 +86,6 @@ export default {
       }]
     }
   }),
-  props: {
-    isClose: {
-      type: Boolean,
-      default: () => {
-        return false
-      }
-    }
-  },
-  watch: {
-    isClose: function (value) {
-      if (value) {
-        this.$validator.errors.clear()
-        this.applicant = {
-          uuid: '',
-          title: '',
-          content: '',
-          location: ''
-        }
-      }
-    }
-  },
   methods: {
     updateCSRFToken () {
       this.axios.get('api/csrftoken/')
@@ -124,29 +105,19 @@ export default {
     },
     submitCase () {
       console.log(this.cases)
+      this.$router.push('/success')
       this.axios.post('/api/cases', this.cases, { headers: this.$store.state.jwt })
         .then(response => {
           console.log('submit success')
           this.$alert('案件已送出', '恭喜你', {
             type: 'success'
           }).then(
-            window.history.length > 1
-              ? this.$router.go(-1)
-              : this.$router.push('/')
           )
         })
         .catch(e => {
           console.log(e)
           console.log(e.response)
         })
-    },
-    validate () {
-      return new Promise((resolve, reject) => {
-        this.$refs.form.validate((valid) => {
-          this.$emit('on-validate', valid, this.model)
-          resolve(valid)
-        })
-      })
     },
     completeCaseData () {
       this.$refs.form.validate((valid) => {
@@ -207,6 +178,14 @@ export default {
         }).then(
         )
       }
+    },
+    validate () {
+      return new Promise((resolve, reject) => {
+        this.$refs.form.validate((valid) => {
+          this.$emit('on-validate', valid, this.model)
+          resolve(valid)
+        })
+      })
     }
   }
 }
