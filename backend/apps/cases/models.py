@@ -27,10 +27,7 @@ from apps.files.models import TempFile, CaseFile
 from storages.backends.gcloud import GoogleCloudStorage
 
 
-if settings.USE_AWS_S3:
-    TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-temp'
-    TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
-elif settings.USE_GCS:
+if settings.USE_GCS:
     TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
     TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
 else:

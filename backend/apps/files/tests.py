@@ -1,6 +1,6 @@
-import time
 import datetime
 import os
+import uuid
 
 from storages.backends.gcloud import GoogleCloudStorage
 from django.test import TestCase
@@ -8,10 +8,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.core.management import call_command
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
-from django.utils.translation import ugettext_lazy as _
-from apps.cases.models import State, Case, CaseHistory
+from rest_framework.exceptions import ValidationError
+from apps.cases.models import Case
 from apps.users.models import User
-from apps.files.storages import PrivateStorage
 from apps.files import models
 
 from .storages import CleanStorage
@@ -21,23 +20,20 @@ ROOT_DIR = settings.ROOT_DIR
 
 
 """Set Up Storage"""
-if settings.USE_AWS_S3:
-    TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-test-temp'
-    CASE_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-test-case'
-    TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
-    CASE_STORAGE = PrivateStorage(bucket=CASE_BUCKET)
-elif settings.USE_GCS:
+if settings.USE_GCS:
     TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-test-temp'
     CASE_BUCKET = f'{settings.GS_BUCKET_NAME}-test-case'
     TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
     CASE_STORAGE = GoogleCloudStorage(bucket_name=CASE_BUCKET)
 else:
-    TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/test-tempfile', base_url=f'{settings.MEDIA_URL}test-tempfile/')
-    CASE_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/test-casefile', base_url=f'{settings.MEDIA_URL}test-casefile/')
-    if not os.path.exists(f'{settings.MEDIA_ROOT}/test-tempfile'):
-        os.mkdir(f'{settings.MEDIA_ROOT}/test-tempfile')
-    if not os.path.exists(f'{settings.MEDIA_ROOT}/test-casefile'):
-        os.mkdir(f'{settings.MEDIA_ROOT}/test-casefile')
+    temp_dir = f'{settings.MEDIA_ROOT}/test-temp/'
+    case_dir = f'{settings.MEDIA_ROOT}/test-casefile/'
+    TEMP_STORAGE = FileSystemStorage(location=temp_dir, base_url=temp_dir)
+    CASE_STORAGE = FileSystemStorage(location=case_dir, base_url=case_dir)
+    if not os.path.exists(temp_dir):
+        os.mkdir(temp_dir)
+    if not os.path.exists(case_dir):
+        os.mkdir(case_dir)
 
 
 class CleanStorageTestCase(TestCase):
@@ -54,7 +50,7 @@ class CleanStorageTestCase(TestCase):
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
         temp.user = user
-        temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
+        temp.case_uuid = uuid.uuid4()
         temp.file = file
         temp.file.storage = TEMP_STORAGE
         temp.save()
@@ -63,7 +59,7 @@ class CleanStorageTestCase(TestCase):
         file2 = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp2 = models.TempFile()
         temp2.user = user
-        temp2.case_uuid = 'b00455e6-ff5b-4957-922e-95377d6fda28'
+        temp2.case_uuid = uuid.uuid4()
         temp2.file = file2
         temp2.file.storage = CASE_STORAGE
         temp2.save()
@@ -101,7 +97,7 @@ class TempFileCRUDTestCase(TestCase):
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
         temp.user = user
-        temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
+        temp.case_uuid = uuid.uuid4()
         temp.file = file
         temp.file.storage = TEMP_STORAGE
         temp.save()
@@ -113,13 +109,6 @@ class TempFileCRUDTestCase(TestCase):
     def test_save(self):
         self.assertEqual(self.objs.count(), 1)
         self.assertEqual(TEMP_STORAGE.exists(name=self.obj.file.name), True)
-        if settings.USE_AWS_S3:
-            self.assertEqual(
-                TEMP_STORAGE._strip_signing_parameters(
-                    TEMP_STORAGE.url(name=self.obj.file.name),
-                ),
-                f'https://{TEMP_BUCKET}.s3.amazonaws.com/{self.obj.file.name}',
-            )
 
     def test_delete(self):
         self.obj.delete()
@@ -134,6 +123,7 @@ class TempFileTestCase(TestCase):
     def setUp(self):
         """Create User"""
         self.user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
+        self.uuid = uuid.uuid4()
 
         """Clean Storage by Traversal"""
         CleanStorage(storage=TEMP_STORAGE)
@@ -144,7 +134,7 @@ class TempFileTestCase(TestCase):
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
         temp.user = self.user
-        temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
+        temp.case_uuid = self.uuid
         temp.file = file
         temp.file.storage = TEMP_STORAGE
         temp.save()
@@ -160,15 +150,12 @@ class TempFileTestCase(TestCase):
         file2 = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp2 = models.TempFile()
         temp2.user = self.user
-        temp2.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
+        temp2.case_uuid = self.uuid
         temp2.file = file2
         temp2.file.storage = TEMP_STORAGE
 
-        try:
+        with self.assertRaises(ValidationError):
             temp2.save()
-            self.assertEqual(True, False)
-        except Exception as e:
-            self.assertEqual(str(e), "[ErrorDetail(string='{}', code='invalid')]".format(_('Duplicate file')))
 
 
 class TempFileExpireTestCase(TestCase):
@@ -188,7 +175,7 @@ class TempFileExpireTestCase(TestCase):
         file = SimpleUploadedFile('test.txt', open(ROOT_DIR('apps/files/test.txt'), 'rb').read())
         temp = models.TempFile()
         temp.user = user
-        temp.case_uuid = '5082e532-bb97-41c1-b2f7-70b174eaa66c'
+        temp.case_uuid = uuid.uuid4()
         temp.file = file
         temp.file.storage = TEMP_STORAGE
         temp.save()
@@ -257,8 +244,6 @@ class CaseFileTestCase(TestCase):
         案件成立時，將檔案從暫存bucket複製到案件bucket
         並將每個檔案關聯到案件，暫存bucket的檔案不會被刪除
         """
-        if settings.USE_AWS_S3 is False:
-            return True
         for i in self.objs:
             file = TEMP_STORAGE._open(i.file.name)
             case_file = models.CaseFile()
