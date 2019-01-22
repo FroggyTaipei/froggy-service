@@ -104,7 +104,7 @@ class Arrange(Model):
         }
         SendGridMail.objects.create(case=self.case, template=template,
                                     from_email=settings.SERVER_EMAIL,
-                                    to_email=origin.email, data=data)
+                                    to_email=self.case.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.PUBLISHED, conditions=[can_publish],
                 permission=lambda instance, user: user.has_perm('cases.change_arrange'),

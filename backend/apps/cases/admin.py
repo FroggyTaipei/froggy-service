@@ -39,7 +39,7 @@ class ArrangeInlineForm(ModelForm):
         if new_state == 'published':
             if case_state == 'draft':
                 raise ValidationError(f'新增處理事項前請先將案件由「尚未成案」設為「處理中」')
-            if case_state == 'arranged':
+            if case_state == 'arranged' and self.instance.state == 'draft':
                 if any(field in self.changed_data for field in ['title', 'content']):
                     raise ValidationError('請先儲存變動後再設為發布')
             if arrange_time is None:
@@ -123,7 +123,6 @@ class CaseForm(ModelForm):
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     form = CaseForm
-    search_fields = ('id', 'number', 'title')
     list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = (
         'type',
@@ -200,6 +199,11 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         queryset, use_distinct = super(CaseAdmin, self).get_search_results(request, queryset, search_term)
 
         if search_term:
+            arranges = Arrange.objects.filter(
+                Q(title__icontains=search_term)
+                | Q(content__icontains=search_term),
+            )
+            arranges_ids = arranges.values_list('id', flat=True)
             histories = CaseHistory.objects.filter(
                 Q(location__icontains=search_term)
                 | Q(content__icontains=search_term)
@@ -208,9 +212,10 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
                 | Q(mobile__icontains=search_term)
                 | Q(email__icontains=search_term),
             )
-            histories_ids = histories.values_list('case__id', flat=True)
+            histories_ids = histories.values_list('id', flat=True)
             queryset = queryset.filter(
-                Q(id__in=[histories_ids])
+                Q(arranges__id__in=arranges_ids)
+                | Q(case_histories__id__in=histories_ids)
                 | Q(number__icontains=search_term)
                 | Q(disapprove_info__icontains=search_term)
                 | Q(note__icontains=search_term),
