@@ -1,11 +1,10 @@
-### GCloud
-gs_credential.json
-
 ### NPM
 package-lock.json
 
 ### ENV
 .env
+gs_credential.json
+secrets.tar
 
 ### OSX ###
 .DS_Store
