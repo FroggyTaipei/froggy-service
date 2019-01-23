@@ -36,6 +36,9 @@ el-container.page2
               div.arrange-title {{ arrange.title }}
               div.arrange-content(v-html="arrange.content") {{ arrange.content }}
               div.arrange-time {{arrange.arrange_time}}
+            br
+            br
+            div(style="text-align: center") ---------- End ----------
           .dialog-footer(slot='footer')
             .footer-block
               .content-status 處理進度：{{ selectedCaseDetails.state }}
@@ -158,7 +161,7 @@ export default {
   },
   computed: {
     reverseCaseProcess () {
-      return this.selectedCaseDetails.arranges.reverse()
+      return this.selectedCaseDetails.arranges.slice(0).reverse()
     }
   },
   props: []
@@ -191,12 +194,12 @@ export default {
     width: 100%
 
 .row-table
-  flex: 3
+  flex: $flex_mainContentPart
   flex-direction: column
   @media screen and (max-width: $break_small)
     flex: 3
 .row-dialog
-  flex: 1
+  flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
     flex: 2
 </style>

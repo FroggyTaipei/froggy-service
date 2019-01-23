@@ -28,7 +28,7 @@ el-container.page3
                 span 這是「民主開箱」第一步，未來四年，我們繼續前進！
                 br
                 h3 邱威傑
-                img.signImg(src="https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign.png")
+                img.signImg(:src="froggySignUrl")
           el-col.hidden-xs-only(:span=10 :offset=1)
             img.froggyServantImg(:src="froggyservantUrl")
   BottomGameDialog(:title="aboutTitle")
@@ -43,7 +43,8 @@ export default {
     return {
       showMainContent: false,
       aboutTitle: ['選服魔鏡號 市民看得到 －台北市議員邱威傑市民服務系統...'],
-      froggyservantUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/froggy_servant.png'
+      froggyservantUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_servant.png',
+      froggySignUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign.png'
     }
   },
   mounted () {
@@ -82,13 +83,13 @@ export default {
   background-position: center
   background-size: contain
   background-repeat: no-repeat
-  flex: 3
+  flex: $flex_mainContentPart
   flex-direction: column
   flex-shrink: 0
   @media screen and (max-width: $break_small)
     flex: 3
 .row-dialog
-  flex: 1
+  flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
     flex: 2
 

@@ -78,7 +78,19 @@ table
     a
       text-decoration: none!important
       font-size: 1em
-      color: white
+      color: #565758
+      font-weight: 600
+
+.VuePagination li.disabled, .VuePagination__pagination li.disabled, .VuePagination__count li.disabled
+  >a
+    color: transparent
+
+.VuePagination li.active, .VuePagination__pagination li.active, .VuePagination__count li.active
+  cursor: pointer
+  >a
+    color: white
+    border-bottom: solid white 1px
+
 nav
   width: 100%
   color: white
@@ -98,7 +110,7 @@ nav
 .upper-block-bkg
   height: 100px
   width: 100%
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/case-logo.png'), linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
+  background-image: url('https://storage.googleapis.com/froggy-service/frontend/images/cases/case-logo.png'), linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
   background-position: top right, center
   background-size: auto 100%, 100%
   background-repeat: no-repeat, no-repeat
