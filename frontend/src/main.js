@@ -8,6 +8,7 @@ import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import ElementUI from 'element-ui'
 import zh from 'element-ui/lib/locale/lang/zh-TW'
+import locale from 'element-ui/lib/locale'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
@@ -16,7 +17,8 @@ import moment from 'moment'
 import { ServerTable } from 'vue-tables-2'
 
 Vue.use(ServerTable)
-Vue.use(ElementUI, { zh })
+locale.use(zh)
+Vue.use(ElementUI)
 Vue.use(UUID)
 
 Vue.prototype.$moment = moment
@@ -29,9 +31,6 @@ window.axios = require('axios')
 Vue.use(VueAxios, axios)
 Vue.config.productionTip = false
 
-// window.$ = require('jquery')
-// window.JQuery = require('jquery')
-
 // Sentry for logging frontend errors
 if (process.env.NODE_ENV === 'production') {
   Vue.use(VueRaven, { dsn: process.env.VUE_APP_SENTRY_PUBLIC_DSN })
@@ -42,21 +41,6 @@ if (process.env.NODE_ENV === 'production') {
 //   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
 //   router
 // })
-
-document.getCookie = function (name) {
-  var nameEQ = name + '='
-  var ca = document.cookie.split(';')
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i]
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length)
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length)
-  }
-  return null
-}
-
-document.eraseCookie = function (name) {
-  document.cookie = name + '=; Max-Age=-99999999;'
-}
 
 new Vue({
   router,

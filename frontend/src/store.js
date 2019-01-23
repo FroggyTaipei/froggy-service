@@ -12,7 +12,11 @@ const store = new Vuex.Store({
     types: [],
     typeText: '',
     header: { Authorization: 'Token 9944b09199c62bcf9418ad846dd0e4bbdfc6ee4b' },
-    jwt: {}
+    jwt: {},
+    currentTime: '',
+    storageDomain: 'https://storage.googleapis.com/froggy-service/frontend/images/',
+    redirectTo: null,
+    firstVisit: false
   },
   getters: {},
   mutations: {
@@ -30,6 +34,15 @@ const store = new Vuex.Store({
     },
     setJWT (state, jwt) {
       state.jwt = jwt
+    },
+    setTime (state, time) {
+      state.currentTime = time
+    },
+    setRedirectDestination (state, to) {
+      state.redirectTo = to
+    },
+    setVisited (state, visited) {
+      state.firstVisit = visited
     }
   },
   actions: {

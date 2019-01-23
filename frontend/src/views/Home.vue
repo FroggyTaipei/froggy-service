@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-      <Dialogue id="dialogue" :lorem="lorem"></Dialogue>
+    <Dialogue id="dialogue"></Dialogue>
   </div>
 </template>
 
@@ -11,39 +11,23 @@ export default {
   name: 'Home',
   data: function () {
     return {
-      lorem: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Eveniet dolor at autem quas asperiores, dolore iure, assumenda nemo tenetur perferendis voluptates, doloribus iusto voluptate. Ipsa, laudantium. Tenetur totam repellat aliquam?',
-      showIntro: true
     }
   },
   created: function () {
-    console.log('home init')
-    console.log(this.$route.params)
+    // console.log('home init')
+    // console.log(this.$route)
   },
   mounted: function () {
-    console.log('home mounted')
+    // console.log('home mounted')
   },
   components: { Dialogue }
 }
 </script>
 
 <style lang="sass">
-*
-  // border: solid 1px
-  font-family: PingFangSC-Regular
 @mixin placeholder-color
   &::-webkit-input-placeholder
       color: #7b68eeba
-html,body
-  margin: auto
-  width: 100vw
-  width: 100%
-  height: 100vh
-  height: 100%
-  // background-color: gray
-
-.container
-  height: 100%
-  width: 100%
 
 table
   background-color: transparent
@@ -67,7 +51,7 @@ form
   .el-form-item__label
     padding: 0px !important
     color: white
-    font-size: larger;
+    font-size: larger
 .form-footer-btn
   float: right
   padding-top: 16px
@@ -79,5 +63,4 @@ form
   color: #655356 !important
 .el-checkbox
   color: #ffffff !important
-
 </style>

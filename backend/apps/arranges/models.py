@@ -12,7 +12,7 @@ from django.db.models import (
     PositiveIntegerField,
 )
 from django_fsm import FSMField, transition
-from ckeditor_uploader.fields import RichTextUploadingField
+from ckeditor.fields import RichTextField
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from bs4 import BeautifulSoup
 
@@ -41,7 +41,7 @@ class Arrange(Model):
     state = FSMField(default=State.DRAFT, verbose_name=_('Arrange State'), choices=State.CHOICES)
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='arranges', verbose_name=_('Case'))
     title = CharField(max_length=120, verbose_name=_('Arrange Title'))
-    content = RichTextUploadingField(verbose_name=_('Content'))
+    content = RichTextField(verbose_name=_('Content'))
     arrange_time = DateTimeField(null=True, blank=True, verbose_name=_('Arrange Time'))
     publish_time = DateTimeField(null=True, blank=True, verbose_name=_('Arrange Publish Time'))
     update_time = DateTimeField(auto_now=True, null=True, blank=True, verbose_name=_('Updated Time'))
@@ -104,7 +104,7 @@ class Arrange(Model):
         }
         SendGridMail.objects.create(case=self.case, template=template,
                                     from_email=settings.SERVER_EMAIL,
-                                    to_email=origin.email, data=data)
+                                    to_email=self.case.email, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.PUBLISHED, conditions=[can_publish],
                 permission=lambda instance, user: user.has_perm('cases.change_arrange'),

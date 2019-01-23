@@ -9,10 +9,9 @@
       <el-form-item>
         <el-row class="accountkit" type="flex">
           <AccountKit ref="accountKit">
-            <el-button type="primary" @click="login" :disabled="authenticating">手機認證</el-button>
+            <el-button type="primary" @click="login" :loading="authenticating">手機認證</el-button>
           </AccountKit>
           <i class="el-icon-success" v-show="authentication"></i>
-          <i class="el-icon-loading" v-show="authenticating"></i>
         </el-row>
       </el-form-item>
       <el-form-item label="身份別" prop="region">
@@ -126,14 +125,14 @@ export default {
           state: response.state
         })
       } else {
-        this.$alert('發生錯誤，請稍後再試', '提示', {
+        this.$alert('請重新認證', '提示', {
           type: 'warning'
         })
       }
+      this.authenticating = false
     },
     getAccountKitToken (accountKitResp) {
       console.log(accountKitResp)
-      this.authenticating = false
       this.axios.post('/api/users/accountkit_get_token/', accountKitResp)
         .then(response => {
           let jwt = { Authorization: 'JWT ' + response.data.jwt }
@@ -142,38 +141,43 @@ export default {
         })
         .catch(e => {
           console.log(e)
+          console.log(e.response)
+          let title = e.response.status + ' ' + e.response.statusText
+          let content = e.response.data.detail ? e.response.data.detail : e.response.data[0]
+          this.$alert(content, title, {
+            type: 'error'
+          })
         })
     },
     nextPage () {
-      this.$emit('next')
-      // this.$refs.form.validate((valid) => {
-      //   if (valid) {
-      //     if (this.authentication) {
-      //       if (this.applicant.agreement) {
-      //         console.log('form pass')
-      //         this.$store.commit('setCase',
-      //           {
-      //             username: this.applicant.username,
-      //             email: this.applicant.email,
-      //             address: this.applicant.address,
-      //             region: this.applicant.region
-      //           })
-      //         this.$emit('next')
-      //       } else {
-      //         this.$alert('請同意本系統個資使用', '提示', {
-      //           type: 'warning'
-      //         })
-      //       }
-      //     } else {
-      //       this.$alert('請通過手機認證', '提示', {
-      //         type: 'warning'
-      //       })
-      //     }
-      //   } else {
-      //     console.log('error submit!!')
-      //     return false
-      //   }
-      // })
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          if (this.authentication) {
+            if (this.applicant.agreement) {
+              console.log('form pass')
+              this.$store.commit('setCase',
+                {
+                  username: this.applicant.username,
+                  email: this.applicant.email,
+                  address: this.applicant.address,
+                  region: this.applicant.region
+                })
+              this.$emit('next')
+            } else {
+              this.$alert('請同意本系統個資使用', '提示', {
+                type: 'warning'
+              })
+            }
+          } else {
+            this.$alert('請通過手機認證', '提示', {
+              type: 'warning'
+            })
+          }
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
     },
     validate () {
       return new Promise((resolve, reject) => {

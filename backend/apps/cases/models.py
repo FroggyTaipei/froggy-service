@@ -27,10 +27,7 @@ from apps.files.models import TempFile, CaseFile
 from storages.backends.gcloud import GoogleCloudStorage
 
 
-if settings.USE_AWS_S3:
-    TEMP_BUCKET = f'{settings.AWS_STORAGE_BUCKET_NAME}-temp'
-    TEMP_STORAGE = PrivateStorage(bucket=TEMP_BUCKET)
-elif settings.USE_GCS:
+if settings.USE_GCS:
     TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
     TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
 else:
@@ -225,9 +222,7 @@ class Case(Model):
             'location': first.location,
         }
         template = SendGridMailTemplate.objects.get(name=template_name)
-        SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.SERVER_EMAIL,
-                                    to_email=first.email, data=data)
+        SendGridMail.objects.create(case=self, template=template, data=data)
 
     @transition(field=state, source=State.DRAFT, target=State.DISAPPROVED, conditions=[can_disapprove],
                 permission=lambda instance, user: user.has_perm('cases.change_case'),
@@ -242,9 +237,7 @@ class Case(Model):
             'content': self.disapprove_info,
         }
         template = SendGridMailTemplate.objects.get(name='不受理通知')
-        SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.SERVER_EMAIL,
-                                    to_email=first.email, data=data)
+        SendGridMail.objects.create(case=self, template=template, data=data)
         self.close_time = timezone.now()
 
     @transition(field=state, source=State.DRAFT, target=State.ARRANGED, conditions=[can_arrange],
@@ -273,9 +266,7 @@ class Case(Model):
             ],
         }
         template = SendGridMailTemplate.objects.get(name='結案通知')
-        SendGridMail.objects.create(case=self, template=template,
-                                    from_email=settings.SERVER_EMAIL,
-                                    to_email=first.email, data=data)
+        SendGridMail.objects.create(case=self, template=template, data=data)
         self.close_time = timezone.now()
 
     @transition(field=state, source=[State.DISAPPROVED, State.CLOSED], target=State.ARRANGED, conditions=[can_arrange],

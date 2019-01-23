@@ -19,6 +19,8 @@
         :on-change="handleChange"
         :on-remove="handleRemove"
         :on-exceed="handleExceed"
+        :on-success="handleSuccess"
+        :on-error="handleError"
         :before-upload="beforeUpload"
         :before-remove="beforeRemove"
         :headers="$store.state.jwt"
@@ -49,7 +51,6 @@ export default {
     acceptFileType: '.jpg,.jpeg,.png,.mpg,.mpeg,.avi,.wmv,.mp3,.mp4,.zip,.rar,.7z',
     wrongFileType: false,
     fileOverSize: false,
-    uploadFail: false,
     upload_data: {
       case_uuid: ''
     },
@@ -104,15 +105,18 @@ export default {
         .catch(e => { console.log(e) })
     },
     submitCase () {
-      console.log(this.cases)
-      this.$router.push('/success')
+      const loading = this.$loading({
+        lock: true,
+        text: '拼命送出中',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       this.axios.post('/api/cases', this.cases, { headers: this.$store.state.jwt })
         .then(response => {
-          console.log('submit success')
-          this.$alert('案件已送出', '恭喜你', {
-            type: 'success'
-          }).then(
-          )
+          this.$router.push({ name: 'home', params: { success: true } })
+          setTimeout(() => {
+            loading.close()
+          }, 500)
         })
         .catch(e => {
           console.log(e)
@@ -129,21 +133,9 @@ export default {
         console.log('Correct the errors!')
       })
     },
-    handleRemove (file, fileList) {
-      console.log('remove', file)
-      if (file.response) {
-        this.removeFile(file.response.id)
-      }
-    },
-    handleExceed (files, fileList) {
-      return this.$alert('請勿上傳超過 5 個檔案', '提示', {
-        type: 'warning'
-      })
-    },
     beforeUpload (file) {
       console.log('before upload')
       const fileLimit = 10485760
-
       if (!/\.(jpg?|jpeg?|png?|mpg?|mpeg?|avi?|wmv?|mp3?|mp4?|zip?|rar?|7z?)$/i.test(file.name)) {
         this.$refs.upload.abort()
         this.wrongFileType = true
@@ -156,10 +148,14 @@ export default {
     },
     beforeRemove (file, fileList) {
       if (this.wrongFileType) {
-        this.$alert('請上傳符合格式的檔案')
+        this.$alert('請上傳符合格式的檔案', '提示', {
+          type: 'warning'
+        })
         this.wrongFileType = false
       } else if (this.fileOverSize) {
-        this.$alert('請勿上傳超過 10MB 的檔案')
+        this.$alert('請勿上傳超過 10MB 的檔案', '提示', {
+          type: 'warning'
+        })
         this.fileOverSize = false
       } else {
         return this.$confirm(`確定要移除 ${file.name}？`, '提示', {
@@ -170,14 +166,29 @@ export default {
         )
       }
     },
+    handleRemove (file, fileList) {
+      console.log('remove', file)
+      if (file.response) {
+        this.removeFile(file.response.id)
+      }
+    },
+    handleExceed (files, fileList) {
+      return this.$alert('請勿上傳超過 5 個檔案', '提示', {
+        type: 'warning'
+      })
+    },
     handleChange (file, fileList) {
       console.log('change', fileList)
-      if (!this.uploadFail && file.status === 'fail') {
-        this.$alert('上傳發生錯誤，請稍後再試', '很抱歉', {
-          type: 'error'
-        }).then(
-        )
-      }
+    },
+    handleSuccess (response, file, fileList) {
+      console.log(response)
+    },
+    handleError (err, file, fileList) {
+      console.log(err.status)
+      this.$alert(err.message.slice(2, -2), '很抱歉', {
+        type: 'error'
+      }).then(
+      )
     },
     validate () {
       return new Promise((resolve, reject) => {
