@@ -51,7 +51,7 @@ export default {
         return false
       } else if (reservedUrl.includes(currentPath) === false) {
         // console.log('redirect situation 2 : outer link')
-        this.$router.push('/home')
+        this.$router.push({ name: 'home', params: { success: false } })
         this.$router.push(destination)
       } else {
         // console.log('redirect situation 3 : redirect')
@@ -103,6 +103,13 @@ export default {
       font-weight: 600
       margin: 5px
       overflow: scroll
+      @media screen and (min-width: $break_large)
+        font-size: $dialog_left_font_large
+      @media screen and (max-width: $break_medium)
+        font-size: $dialog_left_font_medium
+      @media screen and (max-width: $break_small)
+        font-size: $dialog_left_font_small
+
   .bottom-dialog-right
     background-color: rgba(255,255,255,0.8)
     border: $dialog_border_style
@@ -136,10 +143,12 @@ export default {
         color: black
         font-weight: 700
         letter-spacing: 2px
+        @media screen and (min-width: $break_large)
+          font-size: $dialog_right_font_large
         @media screen and (max-width: $break_medium)
-          font-size: 1.2em
+          font-size: $dialog_right_font_medium
         @media screen and (max-width: $break_small)
-          font-size: 1em
+          font-size: $dialog_right_font_small
       .arrow-icon
         i.el-icon-caret-right
           margin: auto
