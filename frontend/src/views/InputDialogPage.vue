@@ -18,12 +18,12 @@
         <el-row type="flex" justify="center" class="category-content-row2">
             <el-col :sm="12" class="hidden-xs-only category-content-person">
               <transition name="person-slide-fade">
-                <img v-show="category.avatar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/person.png" width="80%">
+                <img v-show="category.avatar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/person.png">
               </transition>
             </el-col>
             <el-col :xs="24" :sm="12">
               <transition name="froggy-slide-fade">
-                <img v-show="category.avatar" class="category-content-center category-content-froggy" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/froggy.png">
+                <img v-show="category.avatar" class="category-content-center category-content-froggy" :src="this.images.froggy">
               </transition>
               <transition name="froggy-slide-fade">
                 <img v-show="category.interface" class="category-content-progress" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/progress.png">
@@ -34,7 +34,7 @@
       <transition name="person-slide-fade">
         <el-row v-show="category.interface" type="flex" class="category-footer">
           <el-col :span="15" style="margin-right:5px;" class="hidden-xs-only">
-            <el-row>
+            <el-row class="category-footer-row">
               <el-col
                 :span="6"
                 v-for="item in $store.state.types"
@@ -53,7 +53,7 @@
             </el-row>
           </el-col>
           <el-col :xs="24" :span="10">
-            <div class="hidden-xs-only">
+            <div class="hidden-xs-only category-footer-row">
             <el-row>
               <el-col :span="12">
                 <div class="category-item">
@@ -104,7 +104,7 @@
           </el-col>
         </el-row>
       </transition>
-      <div class="back-btn">
+      <div class="back-btn hidden-sm-and-up">
         <el-button type="info" icon="el-icon-circle-close" circle @click="back"></el-button>
       </div>
       <transition name="screen-slide-left" @after-leave="screenAfterLeave">
@@ -120,8 +120,8 @@
         <el-container>
           <transition name="person-slide-fade" @after-leave="formAfterLeave">
             <div v-show="form.interface" class="footer">
-              <img style="width:90%" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/froggy.png" >
-              <transition name="el-fade-in-linear" mode="out-in">
+              <img style="width:90%" :src="this.images.froggy" >
+              <transition name="fade" mode="in-out">
                 <img key="33" v-if="progressState" class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress33.png" >
                 <img key="66" v-else class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress66.png" >
               </transition>
@@ -132,21 +132,17 @@
       <el-col :xs="24" :span="12" class="col2">
         <transition name="froggy-slide-fade">
           <div v-show="form.interface" class="input-dialog">
-            <transition name="el-fade-in-linear" mode="out-in">
-              <!-- Page two -->
-              <InputUserInfo
-                key="1"
-                v-if="progressState"
-                @next="next"
-                @showAgreement="showAgreementDialog"
-                @previous="formLeaveAnimation"
-                :dialogAgreement="agreement"/>
-              <!-- Page three -->
-              <InputCase
-                key="2"
-                v-else
-                @previous="previous"/>
-            </transition>
+            <!-- Page two -->
+            <InputUserInfo
+              v-show="step == 1"
+              @next="next"
+              @showAgreement="showAgreementDialog"
+              @previous="formLeaveAnimation"
+              :dialogAgreement="agreement"/>
+            <!-- Page three -->
+            <InputCase
+              v-show="step == 2"
+              @previous="previous"/>
           </div>
         </transition>
       </el-col>
@@ -192,6 +188,10 @@ export default {
       background: false,
       interface: false
     },
+    images: {
+      froggy: ''
+    },
+    froggyImage: ['morning_2.png', 'noon_2.png', 'night_3.png'],
     screenActive: true,
     selected: ''
   }),
@@ -204,6 +204,11 @@ export default {
   },
   created () {
     console.log('input dialog init')
+    if (this.$store.state.currentTime === '') {
+      this.back()
+    } else {
+      this.images.froggy = this.$store.state.storageDomain + 'froggy/' + this.froggyImage[this.$store.state.currentTime]
+    }
     if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
       this.$store.dispatch('getRegionsList')
       this.$store.dispatch('getTypeList')
@@ -321,9 +326,7 @@ export default {
       }
     },
     back () {
-      window.history.length > 1
-        ? this.$router.go(-1)
-        : this.$router.push('/')
+      this.$router.push('/')
     }
   }
 }
@@ -384,23 +387,23 @@ export default {
 }
 
 .category-content-person > img {
-  bottom: -10vh !important;
+  width: 40vw;
+  bottom: -5vmax !important;
   right: 2vw;
 }
 
 .category-content-froggy {
-  bottom: 5vh !important;
-  width: 90%;
+  height: 35vw;
 }
 
 .category-content-progress {
-  width: 95%;
+  width: 40vmax;
 }
 
 .category-content-namebar {
-  width: 95%;
+  width: 40vmax;
   margin-top: 5vh;
-  margin-left: 10vw;
+  margin-left: 8vw;
 }
 
 .category-footer {
@@ -409,12 +412,19 @@ export default {
     flex-direction: row;
     align-self: flex-end;
     flex: 1;
-    background-color: rgba(0,0,0,1)
+    background-color: rgba(0,0,0,0.5);
+    padding: 10px;
+}
+.category-footer-row {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 .category-footer > .el-col {
-    background-color: white;
-    border: solid 5px gray;
-    border-radius: 20px;
+    border: solid 10px #5f5f5f;
+    border-radius: 16px;
+    padding: 5px;
+    background-color: rgba(255,255,255,0.8);
 }
 .category-item {
   height: 100%;
@@ -429,12 +439,12 @@ export default {
 .arrow-icon {
   left: 2vw;
   position: absolute;
-  font-size: 4rem;
+  font-size: 4vw;
   color: transparent;
 }
 .category-icon {
   flex: 1;
-  font-size: 4rem;
+  font-size: 4vw;
   align-self: center;
   color: transparent;
   margin-right: -1.5vw
@@ -443,7 +453,7 @@ export default {
   flex: 4;
   justify-content: center;
   align-items: center;
-  font-size: 2.5rem;
+  font-size: 2.5vw;
   font-weight: 600;
   cursor: pointer;
 }
@@ -452,8 +462,6 @@ div.category-btn:hover + div {
 }
 .back-btn {
   position: fixed;
-  right: 1vw;
-  top: 1vh;
 }
 .bg-unit {
   position: absolute;
@@ -502,7 +510,8 @@ select {
   max-width: 80%;
 }
 .input-dialog > fieldset {
-  height: 90%;
+  overflow-y: auto;
+  max-height: -webkit-fill-available;
   border-color: transparent;
   position: relative;
 }
@@ -532,17 +541,23 @@ select {
 }
 /* Animations */
 .froggy-slide-fade-enter-active, .person-slide-fade-enter-active {
-  transition: all .3s ease;
+  transition: all .5s ease;
+  /* Enable hardware acceleration to fix laggy transitions */
+  -webkit-transform: translateZ(0);
+  -moz-transform: translateZ(0);
+  -ms-transform: translateZ(0);
+  -o-transform: translateZ(0);
+  transform: translateZ(0);
 }
 .froggy-slide-fade-leave-active, .person-slide-fade-leave-active {
   transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
 }
 .froggy-slide-fade-enter, .froggy-slide-fade-leave-to {
-  transform: translateX(50%);
+  transform: translateX(10%);
   opacity: 0;
 }
 .person-slide-fade-enter, .person-slide-fade-leave-to {
-  transform: translateX(-50%);
+  transform: translateX(-10%);
   opacity: 0;
 }
 .screen-slide-left-active, .screen-slide-left-leave-active, .screen-slide-right-active, .screen-slide-right-leave-active {

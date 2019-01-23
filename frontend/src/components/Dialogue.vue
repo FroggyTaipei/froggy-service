@@ -62,10 +62,13 @@ export default {
       let hour = now.getHours()
       switch (true) {
         case (this.dialogue[0].showTime[0] <= hour && hour < this.dialogue[0].showTime[1]):
+          this.$store.commit('setTime', 0)
           return 0
         case (this.dialogue[1].showTime[0] <= hour && hour < this.dialogue[1].showTime[1]):
+          this.$store.commit('setTime', 1)
           return 1
         case (this.dialogue[2].showTime[0] <= hour || hour < this.dialogue[2].showTime[1]):
+          this.$store.commit('setTime', 2)
           return 2
         default:
           break

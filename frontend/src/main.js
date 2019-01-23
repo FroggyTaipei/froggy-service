@@ -8,6 +8,7 @@ import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import ElementUI from 'element-ui'
 import zh from 'element-ui/lib/locale/lang/zh-TW'
+import locale from 'element-ui/lib/locale'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
@@ -16,7 +17,8 @@ import moment from 'moment'
 import { ServerTable } from 'vue-tables-2'
 
 Vue.use(ServerTable)
-Vue.use(ElementUI, { zh })
+locale.use(zh)
+Vue.use(ElementUI)
 Vue.use(UUID)
 
 Vue.prototype.$moment = moment
