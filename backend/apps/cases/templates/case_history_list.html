@@ -23,10 +23,10 @@
           <td>{{ history.title }}</td>
           <td style="max-width:320px">{{ history.content }}</td>
           <td>{{ history.username }}</td>
-          <td>{{ history.location }}</td>
-          <td>{{ history.email }}</td>
-          <td>{{ history.mobile }}</td>
-          <td>{{ history.address }}</td>
+          <td>{{ history.location|default_if_none:"-" }}</td>
+          <td>{{ history.email|default_if_none:"-" }}</td>
+          <td>{{ history.mobile|default_if_none:"-" }}</td>
+          <td>{{ history.address|default_if_none:"-" }}</td>
         </tr>
         <tr>
           <td colspan="8" style="background-color:#dff0d8; border-color:#d6e9c6; color:#468847;">
