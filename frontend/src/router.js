@@ -8,8 +8,8 @@ import AboutPage from '@/views/AboutPage.vue'
 import InputDialogPage from '@/views/InputDialogPage.vue'
 
 const routes = [
-  { path: '*', component: Home },
-  { path: 'home/:success', name: 'home', component: Home },
+  { path: '*', redirect: { name: 'home' } },
+  { path: '/home/:success', name: 'home', component: Home },
   { path: '/create', name: 'create', component: InputDialogPage },
   { path: '/cases', name: 'cases', component: CaseListPage },
   { path: '/about', name: 'about', component: AboutPage }

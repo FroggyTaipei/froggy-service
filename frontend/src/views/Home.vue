@@ -63,5 +63,4 @@ form
   color: #655356 !important
 .el-checkbox
   color: #ffffff !important
-
 </style>
