@@ -8,7 +8,7 @@ el-container.page3
         el-row(type="flex" align="middle" justify="center")
           el-col.noScrollbar(:span=13 :sm="24" :xs="24" style="height: 100%;")
             article
-              .about-content.noScrollbar
+              .about-content
                 span 我們都知道，這是一個已經喊了十幾年的口號，但時間過去了，政治，仍然是一件跟人心一樣複雜的事。
                 br
                 br
@@ -82,7 +82,7 @@ export default {
 
 .darkBackground
   position: absolute
-  z-index: 1
+  z-index: 2
   height: 100%
   width: 100%
   background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
@@ -138,6 +138,8 @@ article
 
 .noScrollbar
   overflow: scroll
+  overflow: -moz-scrollbars-none
+  -ms-overflow-style: none
   &::-webkit-scrollbar
       width: 0 !important
 </style>

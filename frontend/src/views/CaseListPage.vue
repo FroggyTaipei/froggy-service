@@ -47,24 +47,24 @@ table
   justify-content: center
   &>.row>.col-md-12
     margin: 10px 0px 20px 0px
-    .VueTables__search-field
-      color: white
-      font-size: 1em
-      border-radius: 10px
-      border: none
-      height: 30px
-      padding-left: 10px
-      label
-        margin-right: 20px
-        font-size: 1.2em
-      input
-        font-size: 1em
   .table-responsive
     width: 100%
     overflow: scroll
     &::-webkit-scrollbar
       width: 0 !important
     // height: 80%
+
+.VueTables__search-field
+  color: white
+  label
+    margin-right: 20px
+    font-size: 1.2em
+  input
+    font-size: 1em
+    border-radius: 5px !important
+    border: none
+    height: 30px
+    padding-left: 10px
 
 .VuePagination, .VuePagination__pagination, .VuePagination__count
   display: flex !important
@@ -133,11 +133,11 @@ nav
       left: 12px
       font-size: 12px
       color: white
-      content: "\00a0\00a0\00a0\00a0\00a0\00a0 C:\\上班不要看"
+      content: "\00a0\00a0\00a0\00a0\00a0\00a0 C:\\邱威傑議員研究室"
 
   .el-dialog__headerbtn
     top: 10px
-    right: 15px
+    right: 8px
   .el-icon-close
     border: white 1px solid
     border-radius: 3px
@@ -174,18 +174,30 @@ nav
   background-color: #EEECE0
   .case-content
     padding: 20px 20px 5px 20px !important
-    max-height: 40vh !important
+    max-height: 50vh !important
     overflow: scroll
     &::-webkit-scrollbar
       width: 0 !important
-    @media screen and (max-width: $break_small)
-      // max-height: 60vh !important
     .case-content-title, .case-content-details, .arranges-title
       font-size: 1.2em
       font-weight: 700
-    .case-content-date,
+    .case-content-date
       font-size: 1em
       font-weight: normal
+.case-disapproved
+  font-size: 1.2em
+  font-weight: 700
+.disapprove-info
+  font-size: 1em
+  font-weight: normal
+
+.arrange-content>p>img
+  width: 50%
+  margin: 10px
+  float: right
+  display: block
+  @media screen and (max-width: $break_medium)
+    width: 100%
 
 .el-dialog__footer
   height: 100px
@@ -220,9 +232,9 @@ nav
       font-weight: 700
       @media screen and (max-width: $break_small)
         font-size: calc(12px + 1.5vw)
+        border-radius: 15px 5px
       .content-status
         flex: 1
         padding: 0px 20px 0px 20px
         text-align: right
-
 </style>
