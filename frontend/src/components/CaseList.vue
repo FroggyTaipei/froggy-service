@@ -3,8 +3,8 @@ el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22)
-        v-server-table(url=' http://192.168.1.102:4000/datas', :columns='columns', :options='options' @row-click="click")
-        //- v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
+        //- v-server-table(url=' http://192.168.1.102:4000/datas', :columns='columns', :options='options' @row-click="click")
+        v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='', :visible.sync='dialogVisible')
           .upper-block
@@ -20,15 +20,19 @@ el-container.page2
             br
             div {{selectedCaseDetails.content}}
             hr
-            .arranges-title 案件處理進度：
-            .case-content-arranges(v-for="arrange,index in reverseCaseProcess")
-              h4 處理回報（{{ reverseCaseProcess.length - index}}）
-              div.arrange-title {{ arrange.title }}
-              div.arrange-content(v-html="arrange.content") {{ arrange.content }}
-              div.arrange-time {{arrange.arrange_time}}
-            br
-            br
-            div(style="text-align: center") ---------- End ----------
+            div(v-if="selectedCaseDetails.state === '不受理'")
+              .case-disapproved 案件不受理原因：
+              .disapprove-info {{selectedCaseDetails.disapprove_info}}
+            div(v-if="selectedCaseDetails.state !== '不受理'")
+              .arranges-title 案件處理進度：
+              .case-content-arranges(v-for="arrange,index in reverseCaseProcess")
+                h4 處理回報（{{ reverseCaseProcess.length - index}}）
+                div.arrange-title {{ arrange.title }}
+                div.arrange-content(v-html="arrange.content") {{ arrange.content }}
+                div.arrange-time {{arrange.arrange_time}}
+              br
+              br
+            div(style="text-align: center; display:block") ---------- End ----------
           .dialog-footer(slot='footer')
             .footer-block
               .content-status 處理進度：{{ selectedCaseDetails.state }}
@@ -55,11 +59,11 @@ export default {
         'content': '小弟我是台北市民，常常看到很多路上的小黃為了載客硬切慢車道差點造成意外，到了深夜路上的小黃更是快比自用車還多，請問大家會不會覺得台北市的計程車太多了呀？',
         'location': '台北市松山區復興北路',
         'type': '交通運輸',
-        'state': '已結案',
+        'state': '已完結',
         'arranges': [
           {
             'title': '發文交通部1',
-            'content': '<p>面對UBER競爭，計程車司機的日子是越來越難過？交通部每2年進行1次計程車營運狀況調查近日公佈，去年專職計程車駕駛每月平均收入為4萬6045元，較104減少1583元；但營業支出卻微幅增加266元。交通部表示，UBER於102年就進入台灣，104年專職計程車駕駛收入有成長2333元，這個統計數字無法呈現是否是受UBER競爭所致，且抽樣統計時約有3%誤差，相差千餘元不一定代表駕駛所得真的下跌</p>',
+            'content': '<p>面對UBER競爭，計程車司機的日子是越來越難過？<img src="https://i.pinimg.com/564x/a8/ec/82/a8ec828bbda82c7793e49e90aebcb5d1.jpg">交通部每2年進行1次計程車營運狀況調查近日公佈，去年專職計程車駕駛每月平均收入為4萬6045元，較104減少1583元；但營業支出卻微幅增加266元。交通部表示，UBER於102年就進入台灣，104年專職計程車駕駛收入有成長2333元，這個統計數字無法呈現是否是受UBER競爭所致，且抽樣統計時約有3%誤差，相差千餘元不一定代表駕駛所得真的下跌</p>',
             'arrange_time': '2018-01-10'
           },
           {
@@ -68,7 +72,7 @@ export default {
             'arrange_time': '2018-01-12'
           }
         ],
-        'disapprove_info': ''
+        'disapprove_info': '拒絕理由'
       },
       dialogTitle: ['在這裡，你可以看到對呱吉來說最重要的事情⋯⋯'],
       columns: ['id', 'type', 'create_time', 'title', 'state'],
@@ -93,7 +97,7 @@ export default {
           create_time: 'not_mobile'
 
         },
-        sortable: ['id', 'create_time', 'state'],
+        sortable: ['id'],
         filterable: ['id', 'title', 'state'],
         listColumns: {
           state: [
