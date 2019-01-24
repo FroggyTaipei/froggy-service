@@ -16,10 +16,14 @@ const store = new Vuex.Store({
     currentTime: '',
     storageDomain: 'https://storage.googleapis.com/froggy-service/frontend/images/',
     redirectTo: null,
-    firstVisit: false
+    firstVisit: false,
+    isMobile: null
   },
   getters: {},
   mutations: {
+    setIsMobile (state, isMobile) {
+      state.isMobile = isMobile
+    },
     setCase (state, cases) {
       Object.assign(state.case, cases)
     },

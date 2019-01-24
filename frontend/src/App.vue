@@ -5,8 +5,16 @@
 </template>
 
 <script>
+var MobileDetect = require('mobile-detect')
+
 export default {
-  name: 'App'
+  name: 'App',
+  created () {
+    var md = new MobileDetect(window.navigator.userAgent)
+    if (md.mobile()) {
+      this.$store.commit('setIsMobile', true)
+    } else this.$store.commit('setIsMobile', false)
+  }
 }
 </script>
 

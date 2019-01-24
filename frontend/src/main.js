@@ -4,7 +4,7 @@ import router from '@/router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import UUID from 'vue-uuid'
-import VueAnalytics from 'vue-analytics'
+// import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import ElementUI from 'element-ui'
 import zh from 'element-ui/lib/locale/lang/zh-TW'
@@ -15,6 +15,14 @@ import App from '@/App.vue'
 import './registerServiceWorker'
 import moment from 'moment'
 import { ServerTable } from 'vue-tables-2'
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faCoffee, faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faCoffee)
+library.add(faAngleDoubleDown)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+Vue.config.productionTip = false
 
 Vue.use(ServerTable)
 locale.use(zh)
