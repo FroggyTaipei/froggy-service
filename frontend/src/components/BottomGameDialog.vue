@@ -107,7 +107,7 @@ export default {
       overflow: hidden
       border: none
       border-radius: 4px
-      margin: 10px
+      margin: 0px 12px 10px 12px
       box-shadow: 3px 4px #a9a1a1
     .text-left
       height: 90%
@@ -148,7 +148,7 @@ export default {
       border: solid 5px rgba(0,0,0,0.6)
       border-radius: 5px
       background-color: rgba(255,255,255,0.8)
-      margin: 5px 10px 10px 10px
+      margin: 0px 10px 5px 10px
     .bottom-dialog-options
       flex-basis: calc(50%)
       display: flex
@@ -163,7 +163,7 @@ export default {
       a
         text-decoration: none
         cursor: pointer
-        font-size: 1.5em
+        font-size: calc(1em + 0.5vw)
         color: black
         font-weight: 700
         letter-spacing: 2px

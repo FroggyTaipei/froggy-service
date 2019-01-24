@@ -4,7 +4,7 @@ import router from '@/router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import UUID from 'vue-uuid'
-// import VueAnalytics from 'vue-analytics'
+import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import ElementUI from 'element-ui'
 import zh from 'element-ui/lib/locale/lang/zh-TW'
@@ -45,10 +45,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // more info: https://github.com/MatteoGabriele/vue-analytics
-// Vue.use(VueAnalytics, {
-//   id: process.env.VUE_APP_GOOGLE_ANALYTICS,
-//   router
-// })
+if (process.env.NODE_ENV === 'production') {
+  Vue.use(VueAnalytics, {
+    id: process.env.VUE_APP_GOOGLE_ANALYTICS,
+    router
+  })
+}
 
 new Vue({
   router,
