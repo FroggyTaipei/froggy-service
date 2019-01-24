@@ -39,14 +39,6 @@ table
       text-align: center
       line-height: 2em
 
-// .glyphicon
-//   width: 10px !important
-//   content: '66'
-//   position: absolute
-//   color: white
-//   width: 10px !important
-//   height: 10px !important
-
 .VueTables.VueTables--server
   height: 100%
   display: flex
@@ -57,6 +49,11 @@ table
     margin: 10px 0px 20px 0px
     .VueTables__search-field
       color: white
+      font-size: 1em
+      border-radius: 10px
+      border: none
+      height: 30px
+      padding-left: 10px
       label
         margin-right: 20px
         font-size: 1.2em
@@ -65,6 +62,8 @@ table
   .table-responsive
     width: 100%
     overflow: scroll
+    &::-webkit-scrollbar
+      width: 0 !important
     // height: 80%
 
 .VuePagination, .VuePagination__pagination, .VuePagination__count
@@ -78,7 +77,19 @@ table
     a
       text-decoration: none!important
       font-size: 1em
-      color: white
+      color: #565758
+      font-weight: 600
+
+.VuePagination li.disabled, .VuePagination__pagination li.disabled, .VuePagination__count li.disabled
+  >a
+    color: transparent
+
+.VuePagination li.active, .VuePagination__pagination li.active, .VuePagination__count li.active
+  cursor: pointer
+  >a
+    color: white
+    border-bottom: solid white 1px
+
 nav
   width: 100%
   color: white
@@ -98,7 +109,7 @@ nav
 .upper-block-bkg
   height: 100px
   width: 100%
-  background-image: url('https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/case-logo.png'), linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
+  background-image: url('https://storage.googleapis.com/froggy-service/frontend/images/cases/case-logo.png'), linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
   background-position: top right, center
   background-size: auto 100%, 100%
   background-repeat: no-repeat, no-repeat
@@ -107,15 +118,36 @@ nav
     display: none
 
 .el-dialog__header
-  background: linear-gradient(#0155E4, #ffffff 0.2, #0155E4)
+  background: linear-gradient(#004BE0, #9eaeca 0.05, #004BE0 0.1)
   padding-top: 30px !important
+  border-radius: 10px 10px 0 0
+  .el-dialog__title
+    &:before
+      background-image: url('https://storage.googleapis.com/froggy-service/frontend/images/cases/disk_icon.png')
+      background-size: auto 100%
+      background-repeat: no-repeat
+      position: absolute
+      width: 200px
+      height: 20px
+      top: 15px
+      left: 12px
+      font-size: 12px
+      color: white
+      content: "\00a0\00a0\00a0\00a0\00a0\00a0 C:\\上班不要看"
+
   .el-dialog__headerbtn
     top: 10px
-    right: 10px
+    right: 15px
   .el-icon-close
     border: white 1px solid
-    background-color: orange
+    border-radius: 3px
+    background-color: #DC4C2C
     color: white !important
+    width: 20px
+    height: 20px
+    &:before
+      vertical-align: -15%
+      font-weight: 700
 
 .case-content-type-header
   color: white
@@ -138,12 +170,14 @@ nav
   border-width: 5px 5px 0px 5px
   padding: 0 !important
   border-style: solid
-  border-color: #0155E4
-  background-color: #dcdcdc
+  border-color: #004BE0
+  background-color: #EEECE0
   .case-content
-    padding: 20px !important
+    padding: 20px 20px 5px 20px !important
     max-height: 40vh !important
     overflow: scroll
+    &::-webkit-scrollbar
+      width: 0 !important
     @media screen and (max-width: $break_small)
       // max-height: 60vh !important
     .case-content-title, .case-content-details, .arranges-title
@@ -160,10 +194,12 @@ nav
   box-sizing: border-box !important
   border-width: 0px 5px 5px 5px
   border-style: solid
-  border-radius: 0px 0px 8px 8px
-  border-color: #0155E4
-  background-color: #dcdcdc
-  padding: 10px !important
+  border-radius: 0px 0px 5px 5px
+  border-color: #004BE0
+  background-color: #EEECE0
+  padding: 5px 10px 10px 10px !important
+  @media screen and (max-width: $break_small)
+    height: 80px
   .dialog-footer
     width: 100%
     height: 100%
@@ -175,13 +211,15 @@ nav
       align-items: center
       justify-content: center
       height: 80%
-      border: solid 5px black !important
-      right: 20px!important
+      border: solid 3px black !important
+      right: 25px!important
       box-sizing: border-box
       border-radius: 25px 10px
       background-color: white !important
       font-size: 1.5em
       font-weight: 700
+      @media screen and (max-width: $break_small)
+        font-size: calc(12px + 1.5vw)
       .content-status
         flex: 1
         padding: 0px 20px 0px 20px

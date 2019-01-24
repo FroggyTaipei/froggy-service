@@ -103,6 +103,16 @@ class TempFile(models.Model):
         super(TempFile, self).save(*args, **kwargs)
 
 
+class FileType(object):
+    CASE = 'case'
+    ARRANGE = 'arrange'
+
+    CHOICES = (
+        ('case', '案件附件'),
+        ('arrange', '處理紀錄附件'),
+    )
+
+
 class CaseFile(models.Model):
     """
     案件檔案
@@ -112,6 +122,7 @@ class CaseFile(models.Model):
     * upload_time: 檔案上傳時間
     """
     case = models.ForeignKey('cases.Case', on_delete=models.CASCADE, related_name='casefiles', verbose_name=_('Case File'))
+    type = models.CharField(max_length=20, default=FileType.CASE, choices=FileType.CHOICES, verbose_name=_('File Type'))
     file = models.FileField(storage=CASE_STORAGE, verbose_name=_('Case File'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
@@ -119,6 +130,7 @@ class CaseFile(models.Model):
     class Meta:
         verbose_name = _('Case File')
         verbose_name_plural = _('Case File')
+        ordering = ('-type', '-upload_time')
 
     def __str__(self):
         return f'{self.case} - {self.file_name}'
@@ -143,7 +155,9 @@ class CaseFile(models.Model):
         if not self.file_name:
             return '-'
         if any(map(lambda x: x in self.file_name, ['.jpg', '.png', '.gif'])):
-            return mark_safe(f'<a target="_blank" href="{self.file.url}"><img src="{self.file.url}" style="max-width: 200px"/></a>')
+            return mark_safe(f"""
+                <a target="_blank" href="{self.file.url}"><img src="{self.file.url}" style="max-width: 200px"/></a>
+            """)
         return mark_safe(f'<a target="_blank" href="{self.file.url}">{self.file_name}</a>')
     preview.short_description = _('Preview')
 

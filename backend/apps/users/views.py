@@ -14,7 +14,7 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAdminUser
-from rest_framework.exceptions import AuthenticationFailed, ParseError, ValidationError
+from rest_framework.exceptions import AuthenticationFailed, PermissionDenied, ValidationError
 
 from django.core.signing import TimestampSigner, BadSignature
 
@@ -135,7 +135,7 @@ class UserViewSet(viewsets.ModelViewSet):
             # unsign csrf token
             signer.unsign(state)
         except BadSignature:
-            raise ParseError('CSRF token not valid.')
+            raise PermissionDenied('CSRF Failed: token not valid.')
 
         # Exchange authorization code for access token
         token_url = f'https://graph.accountkit.com/{API_VERSION}/access_token'

@@ -23,21 +23,21 @@ export default {
       isShowMainContent: false,
       isShowIntroText: false,
       isShowBtnBar: false,
-      imageStorageUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/',
-      logoUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/intro.png',
+      froggyImageStorageUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/froggy/',
+      logoUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/intro.png',
       successMessage: ['好的，沒問題！我已經發了一封確認信到你的Email裡，然後我們會用最快的速度為你服務！'],
       dialogue: [
         {
           showTime: [5, 12],
-          textContent: ['早安，平安喜樂，迎接新的一天。我是Youtuber呱吉，也是台北市議員邱威傑，我這個人最不喜歡的就是浪費時間，所以你若需要幫助，不囉唆，我們直接處理。有什麼我能協助你的嗎？'],
+          textContent: ['早安，平安喜樂，迎接新的一天。', '我是Youtuber呱吉，也是台北市議員邱威傑。', '我這個人最不喜歡的就是浪費時間，所以你若需要幫助，不囉唆，我們直接處理。', '有什麼我能協助你的嗎？'],
           froggyImage: ['morning_1.png', 'morning_2.png', 'morning_3.png']
         }, {
           showTime: [12, 21],
-          textContent: ['哈囉，午安！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。我是台北市議員邱威傑，也就是你們認識的呱吉。以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事，直接說吧，我能幫上什麼忙？'],
+          textContent: ['哈囉，午安！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。', '我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
           froggyImage: ['noon_1.png', 'noon_2.png', 'noon_3.png']
         }, {
           showTime: [21, 5],
-          textContent: ['晚安，食飽未（tsia̍h-pá-buē）？ 現在時候已經不早了，但我的服務還沒有打烊，你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。'],
+          textContent: ['晚安，食飽未（tsia̍h-pá-buē）？', '現在時候已經不早了，但我的服務還沒有打烊，你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？', '來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。'],
           froggyImage: ['night_1.png', 'night_2.png', 'night_3.png']
         }
       ]
@@ -76,32 +76,32 @@ export default {
     },
     froggyImageUrl: function () {
       if (this.$route.params.success === true) {
-        return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[2]
+        return this.froggyImageStorageUrl + this.dialogue[this.sceneCount].froggyImage[2]
       } else {
-        return this.imageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
+        return this.froggyImageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
       }
     },
     dialogMessage: function () {
       if (this.$route.params.success === true) {
         return this.successMessage
       } else {
-        return [this.dialogue[this.sceneCount].textContent[0]]
+        return this.dialogue[this.sceneCount].textContent
       }
     }
   },
   created: function () {
   },
   mounted: function () {
-    console.log('params: ')
-    console.log(this.$route.params)
+    // console.log('params: ')
+    // console.log(this.$route.params)
     let visited = this.$store.state.firstVisit
     if (visited) {
-      console.log('visited')
+      // console.log('visited')
       this.isShowMainContent = true
       this.isShowBtnBar = true
       return false
     } else {
-      console.log('not visited')
+      // console.log('not visited')
       this.$store.commit('setVisited', true)
       this.isShowIntro = true
       setTimeout(() => {
@@ -160,9 +160,9 @@ export default {
       cursor: pointer
 
 .forggyImage-wrapper
-  flex: 3
+  flex: $flex_mainContentPart
   @media screen and (max-width: $break_small)
-    flex: 3
+    flex: $flex_small_mainContentPart
   .froggyImage
     width: 100%
     max-width: 500px
@@ -172,9 +172,9 @@ export default {
       animation: flyin-mobile 1.5s forwards
 
 .row-dialog
-  flex: 1
+  flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
-    flex: 2
+    flex: $flex_small_dialogPart
 
 @keyframes blinker
   0%

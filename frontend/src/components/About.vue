@@ -6,9 +6,9 @@ el-container.page3
         .about-title 公開透明。
       el-col.about-content-wrapper(:span=22)
         el-row(type="flex" align="middle" justify="center")
-          el-col(:span=13 :sm="24" :xs="24" style="height: 100%; overflow: scroll")
+          el-col.noScrollbar(:span=13 :sm="24" :xs="24" style="height: 100%;")
             article
-              .about-content
+              .about-content.noScrollbar
                 span 我們都知道，這是一個已經喊了十幾年的口號，但時間過去了，政治，仍然是一件跟人心一樣複雜的事。
                 br
                 br
@@ -27,11 +27,12 @@ el-container.page3
                 br
                 span 這是「民主開箱」第一步，未來四年，我們繼續前進！
                 br
-                h3 邱威傑
-                img.signImg(src="https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign.png")
+            img.signImg(:src="froggySignUrl")
           el-col.hidden-xs-only(:span=10 :offset=1)
             img.froggyServantImg(:src="froggyservantUrl")
   BottomGameDialog(:title="aboutTitle")
+  transition(name="fade")
+    .darkBackground(v-show="showMainContent")
 </template>
 
 <script>
@@ -42,8 +43,9 @@ export default {
   data: function () {
     return {
       showMainContent: false,
-      aboutTitle: ['選服魔鏡號 市民看得到 －台北市議員邱威傑市民服務系統...'],
-      froggyservantUrl: 'https://s3-ap-southeast-1.amazonaws.com/o-r-z/froggy-service/froggy_servant.png'
+      aboutTitle: ['「選民魔鏡號，市民看得到！」－台北市議員邱威傑市民服務系統⋯⋯'],
+      froggyservantUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_servant.png',
+      froggySignUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign.png'
     }
   },
   mounted () {
@@ -77,20 +79,29 @@ export default {
 
 .el-row
   width: 100%
-.about-main
+
+.darkBackground
+  position: absolute
+  z-index: 1
+  height: 100%
+  width: 100%
   background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
   background-position: center
   background-size: contain
   background-repeat: no-repeat
-  flex: 3
+
+.about-main
+  z-index: 5
+  flex: $flex_mainContentPart
   flex-direction: column
   flex-shrink: 0
   @media screen and (max-width: $break_small)
-    flex: 3
+    flex: $flex_small_mainContentPart
 .row-dialog
-  flex: 1
+  z-index: 5
+  flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
-    flex: 2
+    flex: $flex_small_dialogPart
 
 .about-title-wrapper
   color: white
@@ -103,13 +114,12 @@ export default {
   display: flex
 
 article
-  overflow: scroll
   .about-content
     color: white
     span
       font-size: 1em
-    .signImg
-      width: 200px
+.signImg
+  width: 150px
 
 .froggyServantImg
   width: 100%
@@ -125,4 +135,9 @@ article
     bottom: 0
     text-align: center
     color: white
+
+.noScrollbar
+  overflow: scroll
+  &::-webkit-scrollbar
+      width: 0 !important
 </style>

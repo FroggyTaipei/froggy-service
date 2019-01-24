@@ -1,6 +1,24 @@
 $break_large: 1024px
 $break_medium: 768px
 $break_small: 500px
+$flex_mainContentPart: 4
+$flex_dialogPart: 1
+
+$flex_small_mainContentPart: 7
+$flex_small_dialogPart: 3
+
+$flex_small_dialog_left: 2
+$flex_small_dialog_right: 2
+
+$dialog_border_style: solid 5px #5f5f5f
+
+$dialog_left_font_large: 1.2em
+$dialog_left_font_medium: 1.1em
+$dialog_left_font_small: 1em
+
+$dialog_right_font_large: 1.6em
+$dialog_right_font_medium: 1.2em
+$dialog_right_font_small: 1.2em
 
 *
     font-family: PingFangSC-Regular
@@ -12,9 +30,22 @@ html,body
     height: 100vh
     height: 100%
 
+// body
+//     min-width: 1024px
+//     min-height: 640px
+//     @media screen and (max-width: $break_small)
+//         min-width: none
+//         min-height: none
+
+
 .container
     height: 100%
     width: 100%
+
+[class*=" el-icon-"], [class^=el-icon-]
+    vertical-align: -webkit-baseline-middle
+    @media screen and (max-width: $break_small)
+        vertical-align: middle
 
 // Vue animation
 .fade-enter-active, .fade-leave-active

@@ -22,7 +22,6 @@ from django_fsm import FSMField, transition
 from tagulous.models import TagField
 
 from apps.mails.models import SendGridMail, SendGridMailTemplate
-from apps.files.storages import PrivateStorage
 from apps.files.models import TempFile, CaseFile
 from storages.backends.gcloud import GoogleCloudStorage
 
