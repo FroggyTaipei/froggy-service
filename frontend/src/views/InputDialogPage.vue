@@ -53,8 +53,8 @@
             </el-row>
           </el-col>
           <el-col :xs="24" :span="10">
-            <div class="hidden-xs-only category-footer-row" style="height: 100%">
-            <el-row style="height: 50%">
+            <div class="hidden-xs-only category-footer-row">
+            <el-row>
               <el-col :span="12">
                 <div class="category-item">
                   <div class="category-btn">
@@ -70,7 +70,7 @@
                 </div>
               </el-col>
             </el-row>
-            <el-row style="height: 50%">
+            <el-row>
               <el-col :span="12">
                 <div class="category-item">
                   <div class="category-btn">

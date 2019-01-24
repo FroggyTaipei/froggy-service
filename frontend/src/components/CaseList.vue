@@ -3,18 +3,8 @@ el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22)
-        //- v-server-table.v-tb(url=' http://localhost:4000/datas', :columns='columns', :options='options')
-          div(slot="id" slot-scope="props" @click="click(props.row.id)") {{props.row.id}}
-          div(slot="type" slot-scope="props" @click="click(props.row.id)") {{props.row.type}}
-          div(slot="create_time" slot-scope="props" @click="click(props.row.id)") {{props.row.create_time.split('-')[0]}}年{{props.row.create_time.split('-')[1]}}月{{props.row.create_time.split('-')[2]}}日
-          div(slot="title" slot-scope="props" @click="click(props.row.id)") {{props.row.title}}
-          div(slot="state" slot-scope="props" @click="click(props.row.id)") {{props.row.state}}
-        v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options')
-          div(slot="id" slot-scope="props" @click="click(props.row.id)") {{props.row.id}}
-          div(slot="type" slot-scope="props" @click="click(props.row.id)") {{props.row.type}}
-          div(slot="create_time" slot-scope="props" @click="click(props.row.id)") {{props.row.create_time.split('-')[0]}}年{{props.row.create_time.split('-')[1]}}月{{props.row.create_time.split('-')[2]}}日
-          div(slot="title" slot-scope="props" @click="click(props.row.id)") {{props.row.title}}
-          div(slot="state" slot-scope="props" @click="click(props.row.id)") {{props.row.state}}
+        v-server-table(url=' http://192.168.1.102:4000/datas', :columns='columns', :options='options' @row-click="click")
+        //- v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='', :visible.sync='dialogVisible')
           .upper-block
@@ -80,7 +70,7 @@ export default {
         ],
         'disapprove_info': ''
       },
-      dialogTitle: ['呱吉做什麼'],
+      dialogTitle: ['在這裡，你可以看到對呱吉來說最重要的事情⋯⋯'],
       columns: ['id', 'type', 'create_time', 'title', 'state'],
       options: {
         headings: {
@@ -93,13 +83,15 @@ export default {
         texts: {
           // count: '顯示 {count} 比資料中的第 {from} 到 {to} 筆資料 | 共有 {count} 筆資料 | One record',
           count: ' |  | ',
-          filter: '搜尋內容：',
-          filterPlaceholder: '你要找什麼ㄋ？',
+          filter: '搜尋：',
+          filterPlaceholder: '輸入編號或內容',
           loading: '讀取中...',
           noResults: '找無相關記錄'
         },
         columnsDisplay: {
+          id: 'not_mobile',
           create_time: 'not_mobile'
+
         },
         sortable: ['id', 'create_time', 'state'],
         filterable: ['id', 'title', 'state'],
@@ -112,13 +104,11 @@ export default {
         // filterByColumn: true,
         perPage: 10,
         perPageValues: [10],
-        onRowClick: function (row) {
-        },
         requestAdapter (data) {
           return {
             limit: 10,
             sort: data.orderBy ? data.orderBy : 'id',
-            ascending: data.ascending ? 'asc' : 'desc',
+            ascending: data.ascending ? 'desc' : 'asc',
             query: data.query,
             page: data.page
           }
@@ -130,21 +120,31 @@ export default {
           }
         },
         templates: {
-          updated_at (h, row) {
-            return row.updated_at
+          create_time (h, row) {
+            let dateList = row.create_time.split('-')
+            let dateFormatted = dateList[0] + '年' + dateList[1] + '月' + dateList[2] + '日'
+            return dateFormatted
           },
-          pushed_at (h, row) {
-            return row.pushed_at
+          title (h, row) {
+            let showLimit = 10
+            let title = row.title
+            if (title.length > showLimit) {
+              return title.substring(0, showLimit) + '...'
+            } else {
+              return title
+            }
           }
         }
       }
     }
   },
+  created () {},
   mounted () {
     this.showMainContent = true
   },
   methods: {
-    click: function (caseId) {
+    click: function (clickedRow) {
+      let caseId = clickedRow.row.id
       this.axios
         .get('/api/cases/' + caseId)
         .then(response => (this.selectedCaseDetails = response.data))
@@ -197,9 +197,9 @@ export default {
   flex: $flex_mainContentPart
   flex-direction: column
   @media screen and (max-width: $break_small)
-    flex: 3
+    flex: $flex_small_mainContentPart
 .row-dialog
   flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
-    flex: 2
+    flex: $flex_small_dialogPart
 </style>
