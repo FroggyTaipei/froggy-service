@@ -186,10 +186,8 @@ msgid "Upload Time"
 msgstr "上次更新"
 
 #: apps/files/models.py:125
-#, fuzzy
-#| msgid "Case Type"
 msgid "File Type"
-msgstr "案件類型"
+msgstr "檔案類型"
 
 #: apps/files/models.py:162
 msgid "Preview"
@@ -305,8 +303,20 @@ msgstr "主控版"
 
 #: templates/admin/actions.html:4
 msgid "Run the selected action"
-msgstr ""
+msgstr "執行選擇的動作"
 
 #: templates/admin/actions.html:4
 msgid "Go"
 msgstr "確認"
+
+#: templates/fsm_admin/fsm_submit_line_suit.html:3
+msgid "Save"
+msgstr "儲存"
+
+#: templates/fsm_admin/fsm_submit_line_suit.html:4
+msgid "Save and continue editing"
+msgstr "儲存後繼續編輯"
+
+#: templates/fsm_admin/fsm_submit_line_suit.html:10
+msgid "Delete"
+msgstr "刪除"
