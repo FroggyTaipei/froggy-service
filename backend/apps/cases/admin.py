@@ -89,7 +89,7 @@ class CaseFileInline(admin.TabularInline):
     model = CaseFile
     verbose_name_plural = _('Case File')
     suit_classes = 'suit-tab suit-tab-files'
-    fields = ('file', 'preview', 'upload_time')
+    fields = ('file', 'type', 'preview', 'upload_time')
     readonly_fields = ('preview', 'upload_time')
     extra = 0
 
