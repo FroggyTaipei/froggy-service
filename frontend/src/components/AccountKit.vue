@@ -17,13 +17,11 @@ export default {
     return {
       appId: '',
       version: '',
-      debug: false,
       state: 'somecrsf',
       fbAppEventsEnabled: true,
       loginType: 'PHONE',
       language: 'zh_TW',
-      autoInit: true,
-      diaplay: 'modal'
+      autoInit: true
     }
   },
   props: {
@@ -83,16 +81,14 @@ export default {
      * @see https://developers.facebook.com/docs/accountkit/webjs/reference
      */
     onLoad () {
-      const { appId, state, version, fbAppEventsEnabled, debug, diaplay } = this.$data
+      const { appId, state, version, fbAppEventsEnabled } = this.$data
       console.log('account onLoad')
 
       window.AccountKit.init({
         appId,
         state,
         version,
-        fbAppEventsEnabled,
-        debug,
-        diaplay
+        fbAppEventsEnabled
       })
     },
     /** console.log
