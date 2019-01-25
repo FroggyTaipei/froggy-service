@@ -128,9 +128,10 @@ export default {
         if (valid) {
           this.cases = Object.assign(this.cases, this.$store.state.case)
           this.submitCase()
-          return
+        } else {
+          console.log('Correct the errors!')
+          this.$emit('validateFail')
         }
-        console.log('Correct the errors!')
       })
     },
     beforeUpload (file) {
