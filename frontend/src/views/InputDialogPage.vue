@@ -9,7 +9,7 @@
         <el-row type="flex" class="category-content-row1">
           <el-col :xs="24" :sm="12">
             <transition name="person-slide-fade">
-              <img v-show="category.interface" class="category-content-namebar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/namebar.png">
+              <img v-show="category.interface" class="category-content-namebar category-content-progress" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/namebar.png">
             </transition>
           </el-col>
           <el-col :sm="12" class="hidden-xs-only">
@@ -23,7 +23,10 @@
             </el-col>
             <el-col :xs="24" :sm="12">
               <transition name="froggy-slide-fade">
-                <img v-show="category.avatar" class="category-content-center category-content-froggy" :src="this.images.froggy">
+                <div v-show="category.avatar"  class="category-content-center">
+                  <img class="category-content-froggy-bottom" :src="this.images.FROGGY_BOTTOM">
+                  <img class="category-content-froggy" :class="{ flip:needFlip }" :src="this.images.FROGGY">
+                </div>
               </transition>
               <transition name="froggy-slide-fade">
                 <img v-show="category.interface" class="category-content-progress" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/progress.png">
@@ -31,6 +34,7 @@
             </el-col>
         </el-row>
       </div>
+      <!-- 下方 footer -->
       <transition name="person-slide-fade">
         <el-row v-show="category.interface" type="flex" class="category-footer">
           <el-col :span="15" style="margin-right:5px;" class="hidden-xs-only">
@@ -74,14 +78,15 @@
               <el-col :span="12">
                 <div class="category-item">
                   <div class="category-btn">
-                    -
+                    <div class="normal-text">-</div>
+                    <div class="color-egg" style="display: none;">餵食</div>
                   </div>
                 </div>
               </el-col>
                <el-col :span="12">
                 <div class="category-item">
                   <div class="category-btn"
-                    @click="back">
+                    @click="categoryOutAnimation(true)">
                     回首頁
                   </div>
                   <div class="arrow-icon">
@@ -104,8 +109,8 @@
           </el-col>
         </el-row>
       </transition>
-      <div class="back-btn hidden-sm-and-up">
-        <el-button type="info" icon="el-icon-circle-close" circle @click="back"></el-button>
+      <div class="back-btn hidden-sm-and-up" @click="categoryOutAnimation(true)">
+        <img src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/back_btn.png" >
       </div>
       <transition name="screen-slide-left" @after-leave="screenAfterLeave">
         <div v-if="screenActive" class="screen screen1"></div>
@@ -120,7 +125,7 @@
         <el-container>
           <transition name="person-slide-fade" @after-leave="formAfterLeave">
             <div v-show="form.interface" class="footer">
-              <img style="width:90%" :src="this.images.froggy" >
+              <img style="width:90%" :class="{ 'validate-error-animation' : validateFail }" :src="this.images.FROGGY" >
               <transition name="fade" mode="in-out">
                 <img key="33" v-if="progressState" class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress33.png" >
                 <img key="66" v-else class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress66.png" >
@@ -136,28 +141,16 @@
             <InputUserInfo
               v-show="step == 1"
               @next="next"
-              @showAgreement="showAgreementDialog"
               @previous="formLeaveAnimation"
-              :dialogAgreement="agreement"/>
+              @validateFail="validateErrorAnimation"/>
             <!-- Page three -->
             <InputCase
               v-show="step == 2"
-              @previous="previous"/>
+              @previous="previous"
+              @validateFail="validateErrorAnimation"/>
           </div>
         </transition>
       </el-col>
-      <el-dialog
-        title="提示"
-        :visible.sync="agreementDialogVisible"
-        width="30%"
-        @close="makeDisagree()"
-        center>
-        <span>需要注意的是内容是默认不居中的</span>
-        <span slot="footer" class="dialog-footer">
-          <el-button @click="agreementDialogVisible=false">不同意</el-button>
-          <el-button type="success" @click="makeAgree()">同意</el-button>
-        </span>
-      </el-dialog>
     </el-row>
   </el-container>
 </template>
@@ -174,10 +167,9 @@ export default {
   data: () => ({
     step: 0,
     isClose: false,
+    needFlip: false,
+    validateFail: false,
     progressState: true,
-    agreement: true,
-    agreeClicked: true,
-    agreementDialogVisible: false,
     transitionState: false,
     category: {
       background: true,
@@ -189,7 +181,8 @@ export default {
       interface: false
     },
     images: {
-      froggy: ''
+      FROGGY: '',
+      FROGGY_BOTTOM: ''
     },
     froggyImage: ['morning_2.png', 'noon_2.png', 'night_3.png'],
     screenActive: true,
@@ -207,7 +200,11 @@ export default {
     if (this.$store.state.currentTime === '') {
       this.back()
     } else {
-      this.images.froggy = this.$store.state.storageDomain + 'froggy/' + this.froggyImage[this.$store.state.currentTime]
+      if (this.$store.state.currentTime === 1) {
+        this.needFlip = true
+      }
+      this.images.FROGGY = this.$store.state.storageDomain + 'froggy/' + this.froggyImage[this.$store.state.currentTime]
+      this.images.FROGGY_BOTTOM = this.$store.state.storageDomain + 'dialog/category/froggy_bottom.png'
     }
     if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
       this.$store.dispatch('getRegionsList')
@@ -221,6 +218,12 @@ export default {
     }, 500)
   },
   methods: {
+    validateErrorAnimation () {
+      this.validateFail = true
+      setTimeout(() => {
+        this.validateFail = false
+      }, 1500)
+    },
     screenAfterLeave () {
       // show category avatar
       setTimeout(() => {
@@ -232,6 +235,7 @@ export default {
       // transitionState, true: p2>p1, false: p1>p2
       if (this.transitionState) {
         console.log('page 2 to page 1')
+        this.back()
       } else {
         this.next()
         setTimeout(() => {
@@ -285,27 +289,15 @@ export default {
       this.$store.commit('setCase', { type: type.id })
       this.$store.commit('setTypeText', typeText)
       // avatar and interface leave first, then background disappear
-      this.transitionState = false
+      this.categoryOutAnimation(false)
+    },
+    categoryOutAnimation (state) {
+      this.transitionState = state
       this.categoryAvatarAnimation()
       this.categoryInterfaceAnimation()
       setTimeout(() => {
         this.categoryBackgroundAnimation()
       }, 500)
-    },
-    makeAgree () {
-      this.agreement = true
-      this.agreeClicked = true
-      this.agreementDialogVisible = false
-    },
-    makeDisagree () {
-      if (!this.agreeClicked) {
-        this.agreement = false
-      }
-    },
-    showAgreementDialog () {
-      this.agreement = true
-      this.agreeClicked = false
-      this.agreementDialogVisible = true
     },
     next () {
       if (this.step < 3) {
@@ -376,32 +368,47 @@ export default {
 .category-content-row2 > div.el-col img {
   position: absolute;
   bottom: 0px
-
 }
 
 .category-content-center {
+  position: absolute;
+  bottom: 20vh;
   margin: auto;
   left: 0;
   right: 0;
+}
 
+.category-content-center > img {
+  margin: auto;
+  left: 0;
+  right: 0;
+}
+
+.category-content-froggy {
+  height: 25vmax;
+  bottom: 3vmax !important;
+}
+
+.category-content-froggy-bottom {
+  width: 85%;
+}
+
+.flip {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
 }
 
 .category-content-person > img {
   width: 40vw;
-  bottom: -5vmax !important;
+  bottom: -4vmax !important;
   right: 2vw;
 }
 
-.category-content-froggy {
-  height: 35vw;
-}
-
 .category-content-progress {
-  width: 40vmax;
+  width: 90%;
 }
 
 .category-content-namebar {
-  width: 40vmax;
   margin-top: 5vh;
   margin-left: 8vw;
 }
@@ -457,11 +464,23 @@ export default {
   font-weight: 600;
   cursor: pointer;
 }
+div.category-btn:hover > div.normal-text {
+  display: none;
+}
+div.category-btn:hover > div.color-egg {
+  cursor: pointer;
+  display: block !important;
+}
 div.category-btn:hover + div {
   color: black;
 }
 .back-btn {
   position: fixed;
+  margin: 1vmax;
+}
+.back-btn img {
+  width: 8vmax;
+  height: 8vmax;
 }
 .bg-unit {
   position: absolute;
@@ -489,6 +508,7 @@ select {
     font-size: 2.5rem;
     font-weight: bold;
     border: transparent;
+    background-color: transparent;
 }
 .category-footer-mobile {
   display: flex;
@@ -581,6 +601,39 @@ select {
 .progress-fade-enter, .progress-fade-leave-to {
   opacity: 0;
 }
+.validate-error-animation {
+  animation: shake 0.5s;
+  animation-iteration-count: 1;
+  -webkit-animation: shake 0.5s;
+  -webkit-animation-iteration-count: 1;
+}
+
+@keyframes shake {
+  0% { transform: translateX(2px) rotate(0deg); }
+  10% { transform: translateX(-1px) rotate(-1deg); }
+  20% { transform: translateX(1px) rotate(1deg); }
+  30% { transform: translateX(-3px) rotate(0deg); }
+  40% { transform: translateX(2px) rotate(1deg); }
+  50% { transform: translateX(-1px) rotate(-1deg); }
+  60% { transform: translateX(1px) rotate(0deg); }
+  70% { transform: translateX(-3px) rotate(-1deg); }
+  80% { transform: translateX(2px) rotate(1deg); }
+  90% { transform: translateX(-2px) rotate(0deg); }
+  100% { transform: translateX(1px) rotate(-1deg); }
+}
+@-webkit-keyframes shake {
+  0% { -webkit-transform: translateX(2px) rotate(0deg); }
+  10% { -webkit-transform: translateX(-1px) rotate(-1deg); }
+  20% { -webkit-transform: translateX(1px) rotate(1deg); }
+  30% { -webkit-transform: translateX(-3px) rotate(0deg); }
+  40% { -webkit-transform: translateX(2px) rotate(1deg); }
+  50% { -webkit-transform: translateX(-1px) rotate(-1deg); }
+  60% { -webkit-transform: translateX(1px) rotate(0deg); }
+  70% { -webkit-transform: translateX(-3px) rotate(-1deg); }
+  80% { -webkit-transform: translateX(2px) rotate(1deg); }
+  90% { -webkit-transform: translateX(-2px) rotate(0deg); }
+  100% { -webkit-transform: translateX(1px) rotate(-1deg); }
+}
 /* RWD */
 @media only screen and (max-width: 768px) {
   .col2 {
@@ -590,15 +643,11 @@ select {
     margin: auto;
     max-width: 90%;
   }
-  .category-content-namebar {
-    margin-left: 0px;
+  .category-content-center {
+    bottom: 10vh;
   }
   .category-content-froggy {
-    width: unset;
-    height: 150%;
-    left: 25%;
-    -webkit-transform: translateX(-50%);
-    transform: translateX(-25%);
+    height: 50vmax;
   }
 }
 </style>

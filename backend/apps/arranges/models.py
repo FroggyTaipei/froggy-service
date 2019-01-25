@@ -74,8 +74,9 @@ class Arrange(Model):
         soup = BeautifulSoup(self.content, features="html.parser")
         for img in soup.find_all('img'):
             link = img['src']
+            alt = img['alt']
             a = soup.new_tag('a', href=link, style="color:red;")
-            a.string = '圖片連結'
+            a.string = alt or '圖片連結'
             img.replaceWith(a)
         return str(soup)
 

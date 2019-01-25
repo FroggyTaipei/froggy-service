@@ -1,5 +1,10 @@
 {% extends "suit_dashboard/base.html" %}
 {% load static %}
+{% load i18n admin_static %}
+
+{% block title %}
+{% trans "Froggy's Service" %}
+{% endblock %}
 
 {% block dashboard_css %}
   {% if not suit %}

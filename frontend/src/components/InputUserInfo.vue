@@ -6,11 +6,12 @@
       <el-form-item label="姓名" prop="username">
         <el-input placeholder="e.g. 邱威傑" v-model.trim="applicant.username"></el-input>
       </el-form-item>
-      <el-form-item>
+      <el-form-item :label="mobileText">
         <el-row class="accountkit" type="flex">
-          <AccountKit ref="accountKit">
+          <AccountKit v-if="!authentication" ref="accountKit">
             <el-button type="primary" @click="login" :loading="authenticating">手機認證</el-button>
           </AccountKit>
+          <div class="mobile-number" v-show="authentication">0938926812</div>
           <i class="el-icon-success" v-show="authentication"></i>
         </el-row>
       </el-form-item>
@@ -30,32 +31,32 @@
         <el-input placeholder="e.g. froggy@froggy.com" v-model.trim="applicant.email"></el-input>
       </el-form-item>
       <el-form-item prop="agreement">
-          <el-checkbox :label="agreementText" name="type" v-model="applicant.agreement" @change="clickAgreement"></el-checkbox>
+          <el-checkbox :label="agreementText" name="type" v-model="applicant.agreement" @change="showAgreementModal=true"></el-checkbox>
       </el-form-item>
     </el-form>
     <div class="form-footer-btn">
       <el-button @click="$emit('previous')">上一頁</el-button>
       <el-button @click="nextPage">下一頁</el-button>
     </div>
+    <AgreementModal v-if="showAgreementModal" @close="showAgreementModal=false" @disagree="disagree">
+    </AgreementModal>
   </fieldset>
 </template>
 
 <script>
 import AccountKit from '@/components/AccountKit.vue'
+import AgreementModal from '@/components/AgreementModal.vue'
 export default {
   name: 'InputUserInfo',
   components: {
-    AccountKit
+    AccountKit,
+    AgreementModal
   },
   props: {
-    dialogAgreement: {
-      type: Boolean,
-      default: () => {
-        return false
-      }
-    }
   },
   data: () => ({
+    mobileText: '',
+    showAgreementModal: false,
     authentication: false,
     authenticating: false,
     agreementText: '我同意選民服務個資使用',
@@ -95,18 +96,10 @@ export default {
       }]
     }
   }),
-  watch: {
-    dialogAgreement: function (value) {
-      console.log(value)
-      this.applicant.agreement = value
-    }
-  },
   methods: {
-    clickAgreement () {
-      if (this.applicant.agreement) {
-        this.dialogAgreement = true
-        this.$emit('showAgreement')
-      }
+    disagree () {
+      this.applicant.agreement = false
+      this.showAgreementModal = false
     },
     login () {
       this.$refs.accountKit.login(
@@ -135,6 +128,9 @@ export default {
       console.log(accountKitResp)
       this.axios.post('/api/users/accountkit_get_token/', accountKitResp)
         .then(response => {
+          console.log(response)
+          this.mobileText = '手機號碼'
+          this.applicant.mobile = response.data.mobile
           let jwt = { Authorization: 'JWT ' + response.data.jwt }
           this.authentication = true
           this.$store.commit('setJWT', jwt)
@@ -175,6 +171,7 @@ export default {
           }
         } else {
           console.log('error submit!!')
+          this.$emit('validateFail')
           return false
         }
       })
@@ -204,5 +201,11 @@ export default {
   line-height: 40px;
   margin-left: 20px;
   color: darkgreen;
+}
+
+.mobile-number {
+  color: #fff;
+  font-size: large;
+  font-weight: 600;
 }
 </style>

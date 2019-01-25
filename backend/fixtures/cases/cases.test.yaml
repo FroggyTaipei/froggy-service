@@ -106,9 +106,9 @@
       06:08:42.107468+00:00', update_time: null, disapprove_info: '', note: ''}
 - model: cases.case
   pk: 13
-  fields: {state: closed, uuid: 45518cda-544f-4a6b-a663-f2455523fcec, number: '000013',
+  fields: {state: draft, uuid: 45518cda-544f-4a6b-a663-f2455523fcec, number: '000013',
     type: 4, region: 8, title: "\u88DC\u7FD2\u73ED\u592A\u56C2\u5F35", content: "\u5C0F\u5F1F\u6211\u662F\u53F0\u5317\u5E02\u6C11\uFF0C\u5E38\u5E38\u770B\u5230\u5F88\u591A\u88DC\u7FD2\u73ED\u592A\u56C2\u5F35\uFF0C\u6536\u9322\u7684\u5634\u81C9\u6709\u5920\u81ED\uFF0C\u8ACB\u554F\u5927\u5BB6\u6703\u4E0D\u6703\u89BA\u5F97\u53F0\u5317\u5E02\u7684\u88DC\u7FD2\u73ED\u592A\u56C2\u5F35\u4E86\u5440\uFF1F",
     location: "\u53F0\u5317\u5E02\u67D0\u67D0\u82F1\u6587\u88DC\u7FD2\u73ED", username: "\u738B\u5927\u660E",
     mobile: "0912345678", address: "\u53F0\u5317\u5E02\u677E\u5C71\u5340\u5357\u8DEF3\u6BB538\u865F7\u6A13",
-    open_time: ! '2018-01-19 06:10:03.526119+00:00', close_time: ! '2018-01-23 06:10:03.526119+00:00', create_time: ! '2018-01-13 06:10:03.526119+00:00',
-    update_time: null, disapprove_info: '', note: "\u5DF2\u7D93\u628A\u8A72\u88DC\u7FD2\u73ED\u70B8\u4E86"}
+    open_time: null, close_time: null, create_time: ! '2019-01-13
+      06:08:42.107468+00:00', update_time: null, disapprove_info: '', note: "\u5DF2\u7D93\u628A\u8A72\u88DC\u7FD2\u73ED\u70B8\u4E86"}
