@@ -31,17 +31,18 @@ def to_unix(datetime):
 def case_state_pie():
     data = []
     qs = Case.objects.all()
-    for i, (state, title) in enumerate(State.CHOICES):
-        y = qs.filter(state=state).count() / qs.count()
-        data.append(
-            {
-                'name': title,
-                'y': y,
-            },
-        )
-    data = sorted(data, key=lambda x: x['y'], reverse=True)
-    data[0]['sliced'] = True
-    data[0]['selected'] = True
+    if qs:
+        for i, (state, title) in enumerate(State.CHOICES):
+            y = qs.filter(state=state).count() / qs.count()
+            data.append(
+                {
+                    'name': title,
+                    'y': y,
+                },
+            )
+        data = sorted(data, key=lambda x: x['y'], reverse=True)
+        data[0]['sliced'] = True
+        data[0]['selected'] = True
 
     chart = get_highchart_pie(data=data)
     return chart
@@ -50,17 +51,18 @@ def case_state_pie():
 def case_region_pie():
     data = []
     qs = Case.objects.all()
-    for region in Region.objects.all():
-        y = qs.filter(region=region).count() / qs.count()
-        data.append(
-            {
-                'name': region.name,
-                'y': y,
-            },
-        )
-    data = sorted(data, key=lambda x: x['y'], reverse=True)
-    data[0]['sliced'] = True
-    data[0]['selected'] = True
+    if qs:
+        for region in Region.objects.all():
+            y = qs.filter(region=region).count() / qs.count()
+            data.append(
+                {
+                    'name': region.name,
+                    'y': y,
+                },
+            )
+        data = sorted(data, key=lambda x: x['y'], reverse=True)
+        data[0]['sliced'] = True
+        data[0]['selected'] = True
 
     chart = get_highchart_pie(data=data)
     return chart
@@ -69,17 +71,18 @@ def case_region_pie():
 def case_type_pie():
     data = []
     qs = Case.objects.all()
-    for type_ in Type.objects.all():
-        y = qs.filter(type=type_).count() / qs.count()
-        data.append(
-            {
-                'name': type_.name,
-                'y': y,
-            },
-        )
-    data = sorted(data, key=lambda x: x['y'], reverse=True)
-    data[0]['sliced'] = True
-    data[0]['selected'] = True
+    if qs:
+        for type_ in Type.objects.all():
+            y = qs.filter(type=type_).count() / qs.count()
+            data.append(
+                {
+                    'name': type_.name,
+                    'y': y,
+                },
+            )
+        data = sorted(data, key=lambda x: x['y'], reverse=True)
+        data[0]['sliced'] = True
+        data[0]['selected'] = True
 
     chart = get_highchart_pie(data=data)
     return chart
