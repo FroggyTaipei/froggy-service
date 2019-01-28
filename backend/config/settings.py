@@ -27,6 +27,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'django.contrib.sites',
     'suit',
     'django.contrib.admin.apps.SimpleAdminConfig',
 ]
@@ -102,6 +103,8 @@ if USE_SENDGRID:
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
     ('ssivart', 'travishen.tw@gmail.com'),
+    ('matt', 'fought123@gmail.com'),
+    ('kai', 'ankycheng@gmail.com'),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -216,6 +219,11 @@ TEMPLATES = [
         },
     },
 ]
+
+# SITE FRAMEWORK
+# ------------------------------------------------------------------------------
+# See https://docs.djangoproject.com/en/2.1/ref/contrib/sites/
+SITE_ID = 1
 
 # PASSWORD STORAGE SETTINGS
 # ------------------------------------------------------------------------------
@@ -347,6 +355,7 @@ RAVEN_CONFIG = {
 # ------------------------------------------------------------------------------
 # See https://docs.djangoproject.com/en/2.1/howto/initial-data/
 FIXTURE_DIRS = (
+    str(ROOT_DIR('fixtures')),
     str(ROOT_DIR('fixtures/cases')),
     str(ROOT_DIR('fixtures/arranges')),
     str(ROOT_DIR('fixtures/mails')),
@@ -376,6 +385,7 @@ SUIT_CONFIG = {
     'HEADER_TIME_FORMAT': 'H:i',
     'LIST_PER_PAGE': 30,
     'CONFIRM_UNSAVED_CHANGES': True,
+    'MENU_EXCLUDE': ('sites',),
 }
 
 # FILES LIMIT
