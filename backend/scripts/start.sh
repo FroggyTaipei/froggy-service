@@ -9,7 +9,7 @@ python manage.py migrate
 python manage.py compilemessages
 python manage.py collectstatic --noinput --verbosity 0
 
-python manage.py loaddata region type sendgrid-template.yaml
+python manage.py loaddata region type site sendgrid-template.yaml
 python manage.py loaddata cases.test.yaml arranges.test.yaml
 echo "from apps.users.tests import initial" | python manage.py shell
 

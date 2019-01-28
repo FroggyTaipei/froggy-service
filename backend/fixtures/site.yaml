@@ -1,0 +1,3 @@
+- model: sites.site
+  pk: 1
+  fields: {domain: service.froggychiu.com, name: service.froggychiu.com}
