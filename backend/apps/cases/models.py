@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.conf import settings
 from django.utils import formats
 from django.db.models.signals import post_save
+from django.contrib.sites.models import Site
+from django.urls import reverse
 from django.core.files.storage import FileSystemStorage
 from django.db.models import (
     Model,
@@ -21,6 +23,7 @@ from django.db.models import (
 from django_fsm import FSMField, transition
 from tagulous.models import TagField
 
+from apps.cases.slack import new_case_notify
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from apps.files.models import TempFile, CaseFile
 from storages.backends.gcloud import GoogleCloudStorage
@@ -139,11 +142,13 @@ class Case(Model):
     def save(self, *args, **kwargs):
         created = self.pk is None
         super(Case, self).save(*args, **kwargs)
+
         if created:
             self.number = str(self.pk).zfill(6)
             self.save()
-            self.confirm(template_name='收件通知')
-            self.move_file()
+            self.move_file()  # 搬移暫存檔案
+            self.confirm(template_name='收件通知')  # 發送確認信
+            new_case_notify(self)  # 發送slack通知
 
     def __str__(self):
         return self.number
@@ -184,6 +189,11 @@ class Case(Model):
             if self.state == state:
                 return title
         return ''
+
+    @property
+    def admin_absolute_url(self, action='change'):
+        admin_url = reverse(f'admin:cases_case_{action}', args=(self.id,))
+        return f'{Site.objects.get_current().domain}{admin_url}'
 
     def format_create_time(self, format_='SHORT_DATETIME_FORMAT'):
         return formats.date_format(self.create_time, format_)
