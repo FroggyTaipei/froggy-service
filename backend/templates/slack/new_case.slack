@@ -1,0 +1,10 @@
+{% extends django_slack %}
+
+{% block text %}
+新的案件來囉～～
+案件標題： {{ case.title }}
+案件內容： {{ case.content }}
+相關地點： {{ case.location }}
+點選以下連結進入後台編輯：
+{{ case.admin_absolute_url }}
+{% endblock %}
