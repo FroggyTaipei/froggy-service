@@ -20,14 +20,11 @@ services:
     networks:
       - overlay
     deploy:
-      replicas: 2
-      update_config:
-        parallelism: 2
-        delay: 10s
       restart_policy:
         condition: on-failure
       placement:
-        constraints: [node.role == manager]
+        constraints:
+         - node.role == manager
 
   postgres:
     image: postgres:10-alpine
@@ -37,7 +34,23 @@ services:
       - overlay
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints:
+         - node.role == manager
+
+  nginx_backend:
+    image: nginx:alpine
+    ports:
+      - "8888:8888"
+    depends_on:
+      - backend
+    networks:
+      - overlay
+    volumes:
+      - ./backend/media/:/media/
+      - ./backend/staticfiles/:/staticfiles/
+      - ./nginx/backend.conf:/etc/nginx/nginx.conf:ro
+    deploy:
+        mode: global
 
   nginx:
     image: froggytaipei/froggy-service-nginx:latest
@@ -48,27 +61,9 @@ services:
     networks:
       - overlay
     volumes:
-      - ./backend/media/:/media/
-      - ./backend/staticfiles/:/staticfiles/
       - ./nginx/prod.conf:/etc/nginx/nginx.conf:ro
     deploy:
         mode: global
-
-  backups:
-    image: prodrigestivill/postgres-backup-local
-    depends_on:
-      - postgres
-    volumes:
-      - /tmp/backups/:/backups/
-
-  portainer:
-    image: portainer/portainer
-    ports:
-      - "9000:9000"
-    command: -H unix:///var/run/docker.sock
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - portainer_data:/data
 
   visualizer:
     image: dockersamples/visualizer:stable
@@ -79,4 +74,5 @@ services:
       - "/var/run/docker.sock:/var/run/docker.sock"
     deploy:
       placement:
-        constraints: [node.role == manager]
+        constraints:
+         - node.role == manager
