@@ -11,8 +11,8 @@ services:
       - postgres
     volumes:
       - ./backend:/app
-    command: /start.sh
-    entrypoint: /entrypoint.sh
+    command: /app/scripts/start.sh
+    entrypoint: /app/scripts/entrypoint.sh
     restart: on-failure
     env_file: .env
 
