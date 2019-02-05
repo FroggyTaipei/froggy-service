@@ -1,6 +1,6 @@
 import environ
 
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.signing import TimestampSigner
 from django.utils.translation import ugettext_lazy as _
 
@@ -37,3 +37,7 @@ def get_token(request):
     return JsonResponse({
         'state': state,
     })
+
+
+def home(request):
+    return HttpResponse('OK')
