@@ -14,8 +14,8 @@ services:
       - postgres
     volumes:
       - ./backend:/app
-    command: /gunicorn.sh
-    entrypoint: /entrypoint.sh
+    command: /app/scripts/start.sh
+    entrypoint: /app/scripts/entrypoint.sh
     env_file: .env
     networks:
       - overlay

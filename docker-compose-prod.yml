@@ -8,13 +8,12 @@ services:
   backend:
     build:
       context: ./backend
-    image: froggy-service-api
     depends_on:
       - postgres
     volumes:
       - ./backend:/app
-    command: /gunicorn.sh
-    entrypoint: /entrypoint.sh
+    command: /app/scripts/gunicorn.sh
+    entrypoint: /app/scripts/entrypoint.sh
     restart: on-failure
     env_file: .env
 

@@ -11,11 +11,8 @@ ENV PYTHONFAULTHANDLER=1 \
 RUN apt-get update \
     && apt-get install -y gettext libgettextpo-dev
 
-# python dependencies
-COPY ./requirements.txt /
-RUN pip install -r ./requirements.txt
-
-# upload scripts
-COPY ./scripts/entrypoint.sh ./scripts/start.sh ./scripts/gunicorn.sh /
+COPY . /app
 
 WORKDIR /app
+
+RUN pip install -r ./requirements.txt
