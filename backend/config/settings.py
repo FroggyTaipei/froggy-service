@@ -367,10 +367,16 @@ FIXTURE_DIRS = (
 # ------------------------------------------------------------------------------
 USE_GCS = env.bool('USE_GCS', default=False)
 if USE_GCS:
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    STATICFILES_STORAGE = 'apps.files.storages.GoogleCloudStaticStorage'
+    DEFAULT_FILE_STORAGE = 'apps.files.storages.GoogleCloudMediaStorage'
     GS_PROJECT_ID = env.str('GS_PROJECT_ID')
     GS_BUCKET_NAME = env.str('GS_BUCKET_NAME')
-    GS_AUTO_CREATE_BUCKET = env.str('GS_AUTO_CREATE_BUCKET')
+
+    GS_MEDIA_BUCKET_NAME = f'{GS_BUCKET_NAME}-media'
+    GS_STATIC_BUCKET_NAME = f'{GS_BUCKET_NAME}-staticfiles'
+    MEDIA_URL = f'https://{GS_MEDIA_BUCKET_NAME}.storage.googleapis.com/'
+    STATIC_URL = f'https://{GS_STATIC_BUCKET_NAME}.storage.googleapis.com/'
+    GS_AUTO_CREATE_BUCKET = True
 
     GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
         f"{ROOT_DIR}/{env.str('GS_CREDENTIALS')}",
