@@ -201,9 +201,9 @@ export default {
   flex: $flex_mainContentPart
   flex-direction: column
   @media screen and (max-width: $break_small)
-    flex: $flex_small_mainContentPart
+    flex: 8
 .row-dialog
   flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
-    flex: $flex_small_dialogPart
+    flex: 2
 </style>

@@ -1,27 +1,27 @@
 <template lang="pug">
   el-row.row-dialog(type="flex" align="middle" justify="center" style="height:100%")
     el-col.bottom-dialog-wrapper
-      .bottom-dialog-left
+      .bottom-dialog-left(:class="{hideDialog: !showSmallDialog}")
         .text-left(@click="changeText")
           .div {{ title[messageCount] }}
-          font-awesome-icon.downAngle(icon="angle-double-down")
+          font-awesome-icon.downAngle(icon="angle-double-down" :class="{blackArrow: lastLine}")
       .bottom-dialog-right
         span.bottom-dialog-options(@click="toggleParentAnimation('create')")
           a 我需要服務
           .arrow-icon
-            i.el-icon-caret-right
+            i.el-icon-caret-right(:class="{showArrow: showArrow[0]}")
         span.bottom-dialog-options(@click="toggleParentAnimation('cases')")
           a 呱吉做什麼
           .arrow-icon
-            i.el-icon-caret-right
+            i.el-icon-caret-right(:class="{showArrow: showArrow[1]}")
         span.bottom-dialog-options(@click="toggleParentAnimation('about')")
           a 關於魔鏡號
           .arrow-icon
-            i.el-icon-caret-right
+            i.el-icon-caret-right(:class="{showArrow: showArrow[2]}")
         span.bottom-dialog-options(@click="toggleParentAnimation('home')")
-          a 回首頁
+          a 首頁
           .arrow-icon
-            i.el-icon-caret-right
+            i.el-icon-caret-right(:class="{showArrow: showHomeArrow}")
     el-col.hidden-xs-only.footer
       span
         |「選服魔鏡號」台北市議員邱威傑市民服務系統
@@ -37,12 +37,15 @@ export default {
   name: 'BottomGameDialog',
   data: function () {
     return {
-      messageCount: 0
+      messageCount: 0,
+      showSmallDialog: true,
+      showArrow: [false, false, false],
+      showHomeArrow: false,
+      lastLine: false
     }
   },
   methods: {
     toggleParentAnimation (to) {
-      this.$emit('test', '456')
       let reservedUrl = ['/create', '/cases', '/about', '/home', '/success', '/home/success']
       let destination = '/' + to
       let currentPath = this.$route.fullPath
@@ -66,8 +69,35 @@ export default {
       } else {
         this.messageCount += 1
       }
+      if (this.messageCount === contentLength - 1) {
+        this.lastLine = true
+      } else {
+        this.lastLine = false
+      }
     }
   },
+  mounted () {
+    // console.log(this.$route.fullPath)
+    if (this.$route.fullPath.includes('about') || this.$route.fullPath.includes('cases')) {
+      this.showSmallDialog = false
+    }
+
+    if (this.$route.fullPath.includes('create')) {
+      this.showArrow[0] = true
+    } else if (this.$route.fullPath.includes('cases')) {
+      this.showArrow[1] = true
+    } else if (this.$route.fullPath.includes('about')) {
+      this.showArrow[2] = true
+    } else {
+      this.showHomeArrow = true
+    }
+
+    let contentLength = this.title.length
+    if (this.messageCount === contentLength - 1) {
+      this.lastLine = true
+    }
+  },
+  watch: {},
   props: ['title']
 }
 </script>
@@ -80,115 +110,123 @@ export default {
   flex-direction: column
 
 .bottom-dialog-wrapper
+  background-color: rgba($color_black,0.8)
   display: flex
   flex-direction: row
   flex: 9
-  // padding: 10px
-  // background-color: rgba(0,0,0,0.5)
-  padding: 10px
+  padding: 5px
   width: 100%
   height: 100%
-  @media screen and (max-width: $break_medium)
+  @media screen and (max-width: $break_small)
+    background-color: rgba($color_black,0)
     flex-direction: column
-    // border: $dialog_border_style
-    // border-radius: 16px
     padding: 0px
-    // background-color: rgba(255,255,255,0.8)
-  .bottom-dialog-left
-    background-color: rgba(255,255,255,0.8)
-    border: $dialog_border_style
-    border-radius: 16px
-    margin-right: 5px
-    overflow: hidden
-    flex: 3
-    @media screen and (max-width: $break_medium)
-      flex: $flex_small_dialog_left
-      background-color: rgba(255,255,255,0.8)
-      overflow: hidden
-      border: none
-      border-radius: 4px
-      margin: 0px 12px 10px 12px
-      box-shadow: 3px 4px #a9a1a1
-    .text-left
-      height: 90%
-      position: relative
-      padding: 5px 5px 0px 5px
-      font-weight: 600
-      margin: 5px
-      overflow: hidden
-      @media screen and (min-width: $break_large)
-        font-size: $dialog_left_font_large
-      @media screen and (max-width: $break_medium)
-        font-size: $dialog_left_font_medium
-        padding: 5px
-      @media screen and (max-width: $break_small)
-        padding: 5px
-        font-size: $dialog_left_font_small
-      .downAngle
-        position: absolute
-        padding: 10px
-        right: 5px
-        bottom: 5px
-        color: #942f2f
-        animation: jump 0.7s infinite ease
-        @media screen and (max-width: $break_small)
-          bottom: 10px
-  .bottom-dialog-right
-    background-color: rgba(255,255,255,0.8)
-    border: $dialog_border_style
-    border-radius: 16px
-    flex: 2
-    display: flex
-    flex-direction: row
-    flex-wrap: wrap
-    align-items: center
-    justify-content: center
-    @media screen and (max-width: $break_medium)
-      flex: $flex_small_dialog_right
-      border: solid 5px rgba(0,0,0,0.6)
-      border-radius: 5px
-      background-color: rgba(255,255,255,0.8)
-      margin: 0px 10px 5px 10px
-    .bottom-dialog-options
-      flex-basis: calc(50%)
-      display: flex
-      justify-content: center
-      flex-direction: row-reverse
-      text-align: center
-      cursor: pointer
-      &:hover
-        .arrow-icon
-          i.el-icon-caret-right
-            color: black
-      a
-        text-decoration: none
-        cursor: pointer
-        font-size: calc(1em + 0.5vw)
-        color: black
-        font-weight: 700
-        letter-spacing: 2px
-        @media screen and (min-width: $break_large)
-          font-size: $dialog_right_font_large
-        @media screen and (max-width: $break_medium)
-          font-size: $dialog_right_font_medium
-        @media screen and (max-width: $break_small)
-          font-size: $dialog_right_font_small
 
-      .arrow-icon
-        i.el-icon-caret-right
-          margin: auto
-          font-size: 1.5em
-          color: transparent
-          @media screen and (max-width: $break_medium)
-            font-size: 1em
+.bottom-dialog-left
+  background-color: rgba(255,255,255,0.8)
+  border: $dialog_border
+  border-radius: 10px
+  margin-right: 5px
+  overflow: hidden
+  flex: 3
+  @media screen and (max-width: $break_small)
+    flex: $flex_small_dialog_left
+    background-color: rgba(255,255,255,0.8)
+    overflow: hidden
+    border: none
+    border-radius: 4px
+    margin: 0px 12px 10px 12px
+    box-shadow: 3px 4px #a9a1a1
+  .text-left
+    font-size: $dialog_left_font
+    letter-spacing: 1.5px
+    height: 90%
+    position: relative
+    padding: 5px 5px 0px 10px
+    font-weight: 600
+    // margin: 5px
+    overflow: hidden
+    @media screen and (max-width: $break_small)
+      font-size: $dialog_left_font_small
+      padding: 5px
+
+.hideDialog
+  @media screen and (max-width: $break_small)
+    flex: 0
+    display: none
+
+.downAngle
+  position: absolute
+  padding: 5px
+  right: 15px
+  bottom: 5px
+  color: $color_red
+  animation: jump 0.7s infinite ease
+  @media screen and (max-width: $break_small)
+    bottom: 10px
+
+.blackArrow
+  color: $color_gray
+  animation: none
+
+.bottom-dialog-right
+  background-color: rgba(255,255,255,0.8)
+  border: $dialog_border
+  border-radius: 10px
+  flex: 2
+  display: flex
+  flex-direction: row
+  flex-wrap: wrap
+  align-items: center
+  justify-content: center
+  @media screen and (max-width: $break_small)
+    flex: $flex_small_dialog_right
+    border: solid 3px rgba(0,0,0,0.6)
+    border-radius: 5px
+    background-color: rgba(255,255,255,0.8)
+    margin: 0px 10px 5px 10px
+
+.bottom-dialog-options
+  flex-basis: calc(50%)
+  display: flex
+  justify-content: center
+  flex-direction: row-reverse
+  text-align: center
+  cursor: pointer
+  &:hover
+    .arrow-icon
+      i.el-icon-caret-right
+        color: rgba($color_black,0.6)
+  a
+    text-decoration: none
+    cursor: pointer
+    font-size: $dialog_right_font
+    font-weight: 700
+    // text-shadow: 1px 1px white
+    letter-spacing: 2px
+    color: $color_black
+    @media screen and (max-width: $break_small)
+      font-size: $dialog_right_font_small
+
+  .arrow-icon
+    i.el-icon-caret-right
+      margin: auto
+      font-size: $dialog_right_font
+      color: transparent
+      @media screen and (max-width: $break_small)
+        font-size: $dialog_right_font_small
+
+//更好的寫法？
+.showArrow
+  color: $color_black !important
 
 .footer
   flex: 1
-  font-size: 0.8em
-  color: white
+  font-size: $fz_tooltip
+  color: $color_white
   padding: 5px
   text-align: center
-  background-color: black
+  background-color: $color_black
 
 @keyframes jump
   0% 100%
