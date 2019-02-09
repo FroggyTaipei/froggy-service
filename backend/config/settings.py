@@ -91,7 +91,7 @@ SERVER_EMAIL = env.str('SERVER_EMAIL', default='')
 # See: https://github.com/sendgrid/sendgrid-python
 USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
 if USE_SENDGRID:
-    EMAIL_PORT = 587
+    # EMAIL_PORT = 587 or 2525
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
     EMAIL_USE_TLS = True
@@ -243,9 +243,15 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        },
+    },
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+
 ]
 
 # AUTHENTICATION CONFIGURATION
