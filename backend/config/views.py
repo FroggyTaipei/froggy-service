@@ -37,7 +37,3 @@ def get_token(request):
     return JsonResponse({
         'state': state,
     })
-
-
-def home(request):
-    return HttpResponse('OK')
