@@ -25,23 +25,14 @@ export default {
 </script>
 
 <style lang="sass">
+@import '@/assets/css/style.sass'
+
 @mixin placeholder-color
   &::-webkit-input-placeholder
       color: #7b68eeba
 
 table
   background-color: transparent
-
-.el-table th, .el-table tr, .el-table, .el-table__expanded-cell
-  background-color: transparent !important
-  color: white
-
-.el-table--enable-row-hover .el-table__body tr:hover>td
-  color: black !important
-
-.el-table .cell
-  font-size: 24px
-  line-height: 30px !important
 
 form
   .el-textarea__inner,.el-input__inner

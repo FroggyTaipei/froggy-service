@@ -128,6 +128,9 @@ export default {
 
 .page1
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
+  // background: #12c2e9
+  // background: -webkit-linear-gradient(#f64f59, #c471ed, #12c2e9)
+  // background: linear-gradient(#f64f59, #c471ed, #12c2e9)
   background-position: center
   background-size: contain
   background-repeat: no-repeat

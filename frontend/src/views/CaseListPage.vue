@@ -25,8 +25,28 @@ table
   width: 100%
   color: white
   border-spacing: unset
+  border-collapse: collapse
+  thead
+    border-bottom: solid 2px white !important
+    line-height: 2em
+  tbody:before
+    content: "-"
+    display: block
+    line-height: 1em
+    color: transparent
+  // tbody>tr:last-child
+  //   border-bottom: white 2px solid
+  //   padding-bottom: 10px
+  // tbody:after
+  //   content: ""
+  //   display: block
+  //   width: inherit
+  //   height: 5px
+  //   border-bottom: 2px white solid
   thead>tr>th
-    font-size: 1.2em
+    font-size: $fz_sub_header_small
+    @media screen and (max-width: $break_small)
+      font-size: $fz_sub_header_small
   tbody>tr
     transition: 0.1s
     &:hover
@@ -35,36 +55,55 @@ table
       transition: 0.2s
       cursor: pointer
     &>td
-      padding: 0
+      font-size: $fz_p
+      padding: 0px 5px
       text-align: center
-      line-height: 2em
+      line-height: 1.5em
+      @media screen and (max-width: $break_small)
+        font-size: $fz_p_small
+      &:nth-child(4)
+        text-align: left
 
 .VueTables.VueTables--server
   height: 100%
   display: flex
   flex-direction: column
   align-items: center
-  justify-content: center
+  justify-content: flex-start
   &>.row>.col-md-12
     margin: 10px 0px 20px 0px
   .table-responsive
     width: 100%
     overflow: scroll
+    border-bottom: 2px solid white
     &::-webkit-scrollbar
       width: 0 !important
     // height: 80%
 
 .VueTables__search-field
-  color: white
+  color: $color_white
+  margin-top: 50px
+  @media screen and (max-width: $break_small)
+    margin-top: 20px
   label
     margin-right: 20px
-    font-size: 1.2em
+    font-size: $fz_p_small
   input
-    font-size: 1em
-    border-radius: 5px !important
+    font-size: 14px
+    border-radius: 4px !important
     border: none
     height: 30px
-    padding-left: 10px
+    padding-left: 15px
+
+.VuePagination
+  position: absolute
+  bottom: 0
+  @media screen and (max-width: $break_small)
+    position: relative
+    bottom: 0
+  // margin-bottom: auto
+  // border-top: 2px solid white
+  // width: 92vw
 
 .VuePagination, .VuePagination__pagination, .VuePagination__count
   display: flex !important
@@ -76,8 +115,8 @@ table
     margin: 10px
     a
       text-decoration: none!important
-      font-size: 1em
-      color: #565758
+      font-size: 20px
+      color: $color_gray
       font-weight: 600
 
 .VuePagination li.disabled, .VuePagination__pagination li.disabled, .VuePagination__count li.disabled
@@ -87,12 +126,12 @@ table
 .VuePagination li.active, .VuePagination__pagination li.active, .VuePagination__count li.active
   cursor: pointer
   >a
-    color: white
+    color: $color_white
     border-bottom: solid white 1px
 
 nav
   width: 100%
-  color: white
+  color: $color_white
 
 // dialog-content
 
@@ -151,18 +190,18 @@ nav
 
 .case-content-type-header
   color: white
-  font-size: 2em
-  font-weight: 500
+  font-size: $fz_p_header
+  font-weight: 700
   position: absolute
   top: 95px
   left: 25px
-  @media screen and (max-width: 650px)
+  @media screen and (max-width: $break_small)
     display: none
 
 .case-content-type-body
-  font-size: 1.2em
+  font-size: $fz_p
   font-weight: 700
-  @media screen and (min-width: 650px)
+  @media screen and (min-width: $break_small)
     display: none
 
 .el-dialog__body
@@ -178,17 +217,18 @@ nav
     overflow: scroll
     &::-webkit-scrollbar
       width: 0 !important
-    .case-content-title, .case-content-details, .arranges-title
-      font-size: 1.2em
+    .case-content-title, .case-content-date, .case-content-location, .case-content-details, .arranges-title
+      font-size: $fz_sub_header_small
       font-weight: 700
-    .case-content-date
-      font-size: 1em
-      font-weight: normal
+      margin-top: 5px
+    // .case-content-date
+    //   font-size: $fz_p_small
+    //   font-weight: normal
 .case-disapproved
-  font-size: 1.2em
-  font-weight: 700
+  font-size: $fz_p
+  font-weight: normal
 .disapprove-info
-  font-size: 1em
+  font-size: $fz_p_small
   font-weight: normal
 
 .arrange-content>p>img
@@ -196,7 +236,7 @@ nav
   margin: 10px
   float: right
   display: block
-  @media screen and (max-width: $break_medium)
+  @media screen and (max-width: $break_small)
     width: 100%
 
 .el-dialog__footer
@@ -228,7 +268,7 @@ nav
       box-sizing: border-box
       border-radius: 25px 10px
       background-color: white !important
-      font-size: 1.5em
+      font-size: $fz_sub_header
       font-weight: 700
       @media screen and (max-width: $break_small)
         font-size: calc(12px + 1.5vw)

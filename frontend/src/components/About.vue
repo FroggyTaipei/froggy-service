@@ -69,6 +69,9 @@ export default {
 
 .page3
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
+  // background: #12c2e9
+  // background: -webkit-linear-gradient(#f64f59, #c471ed, #12c2e9)
+  // background: linear-gradient(#f64f59, #c471ed, #12c2e9)
   background-position: center
   background-size: contain
   background-repeat: no-repeat
@@ -80,15 +83,15 @@ export default {
 .el-row
   width: 100%
 
-.darkBackground
-  position: absolute
-  z-index: 2
-  height: 100%
-  width: 100%
-  background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
-  background-position: center
-  background-size: contain
-  background-repeat: no-repeat
+// .darkBackground
+//   position: absolute
+//   z-index: 2
+//   height: 100%
+//   width: 100%
+  // background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
+  // background-position: center
+  // background-size: contain
+  // background-repeat: no-repeat
 
 .about-main
   z-index: 5
@@ -96,18 +99,17 @@ export default {
   flex-direction: column
   flex-shrink: 0
   @media screen and (max-width: $break_small)
-    flex: $flex_small_mainContentPart
+    flex: 8
 .row-dialog
   z-index: 5
   flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
-    flex: $flex_small_dialogPart
+    flex: 2
 
 .about-title-wrapper
   color: white
-  font-size: 2em
-  min-height: 100px
-  // margin: 0
+  font-size: $fz_p_header
+  min-height: 80px
   .about-title
     padding: 30px 0 0 0
 .about-content-wrapper
@@ -117,7 +119,9 @@ article
   .about-content
     color: white
     span
-      font-size: 1em
+      font-size: $fz_p
+      @media screen and (max-width: $break_small)
+        font-size: $fz_p_small
 .signImg
   width: 150px
 
@@ -131,7 +135,7 @@ article
   margin: auto auto 0 auto
   height: 50px
   .footer
-    font-size: 12px
+    font-size: $fz_tooltip
     bottom: 0
     text-align: center
     color: white
