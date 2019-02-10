@@ -7,17 +7,19 @@ el-container.page1
   transition(name="fade" @after-leave="redirect")
     el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="isShowMainContent")
       img.bkg-logo-img(:src="logoUrl")
-      .marquees 新年快樂 HAPPY NEW YEAR 2019 豬多糧足農家富子孝孫賢親壽高 諸事大吉 台北市議員邱威傑
+      VTextMarquee(ref="marquee" :speed="70") {{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}
+      //- .marquees {{marqueeMessage[0] + marqueeMessage[1] + marqueeMessage[2] + marqueeMessage[3]}}
       img.froggyImage(:src="froggyImageUrl")
   BottomGameDialog(:title="dialogMessage" v-show="isShowMainContent || isShowBtnBar")
 </template>
 
 <script>
 import BottomGameDialog from '@/components/BottomGameDialog.vue'
+import VTextMarquee from '@/components/TextMarquee.vue'
 
 export default {
   name: 'Dialogue',
-  components: { BottomGameDialog },
+  components: { BottomGameDialog, VTextMarquee },
   data: function () {
     return {
       isShowIntro: false,
@@ -44,7 +46,14 @@ export default {
           textContent_mobile: ['晚安，食飽未（tsia̍h-pá-buē）？', '現在時候已經不早了，但我的服務還沒有打烊。', '你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？', '來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。'],
           froggyImage: ['night_1.png', 'night_2.png', 'night_3.png']
         }
-      ]
+      ],
+      marqueeMessage: [
+        '［系統］呱吉祝大家新年快樂，「豬多糧足農家富、子孝孫賢親壽高」，總之諸事大吉就對了啦！',
+        '［中獎］恭喜 一直抓頭的台北市民 獲得邱威傑 認真的市政質詢套裝！',
+        '［活動］現在充值 台灣價值 就可以獲得 執政機率黃金加成！',
+        '［系統］有什麼問題，就問魔鏡號就對了啦！'
+      ],
+      space: '&nbsp&nbsp'
     }
   },
   methods: {
@@ -61,6 +70,7 @@ export default {
     },
     start: function () {
       this.isShowIntro = false
+      setTimeout(() => this.$refs.marquee.start(), 1000)
     }
   },
   computed: {
@@ -145,6 +155,7 @@ export default {
 
 .bkg-logo-img
   width: 100%
+  max-width: 1024px
   position: absolute
   top: 10vh
   margin: auto
@@ -172,6 +183,17 @@ export default {
     &:hover
       cursor: pointer
 
+.v-marquee
+  font-family: DFKai-sb, BiauKai
+  position: absolute
+  overflow: hidden
+  top: 30px
+  font-size: calc(2em)
+  font-weight: 700
+  color: $color_red
+  @media screen and (max-width: $break_small)
+    font-size: calc(1.5em)
+
 .marquees
   font-family: DFKai-sb, BiauKai
   position: absolute
@@ -179,11 +201,11 @@ export default {
   top: 20px
   font-size: calc(2em)
   font-weight: 700
-  color: #d44848
+  color: $color_red
   width: max-content
-  animation: marquees-animation linear 15s infinite
+  animation: marquees-animation linear 40s infinite
   @media screen and (max-width: $break_small)
-    animation: marquees-animation linear 20s infinite
+    animation: marquees-animation linear 40s infinite
 @keyframes marquees-animation
   0%
     transform: translateX(100%)

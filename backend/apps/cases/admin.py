@@ -134,6 +134,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     date_hierarchy = 'create_time'
     date_hierarchy_drilldown = False
     readonly_fields = ('number', 'state', 'create_time', 'open_time', 'close_time')
+    ordering = ('-id',)
     fieldsets = [
         ('案件', {
             'classes': ('suit-tab suit-tab-general',),
