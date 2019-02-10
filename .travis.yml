@@ -7,6 +7,18 @@ before_install:
   # Stop the postgres instance travis sets up automatically
   - sudo /etc/init.d/postgresql stop
   - sudo service mysql stop
+env:
+  global:
+    - DOCKER_ORG=froggytaipei
+    - GOOGLE_APPLICATION_CREDENTIALS=gs_credential.json
+    - CLUSTER=froggy-service
+    - ZONE=asia-east1-a
+    - NGINX_IMAGE=froggy-service-nginx
+    - API_IMAGE=froggy-service-api
+    - NGINX_DEPLOYMENT=nginx
+    - API_DEPLOYMENT=api
+    - NGINX_CONTAINER=froggy-service-nginx-sha256
+    - API_CONTAINER=froggy-service-api-sha256
 install:
   # Start the docker stuff
   - docker-compose up --build -d
@@ -19,5 +31,15 @@ script:
   - docker-compose exec backend sh -c "python manage.py test --exclude-tag=mail"
   # Show logs
   - docker-compose logs --tail=20 backend
-after_success:
-  - bash docker_deploy.sh
+before_deploy:
+  - if [ ! -d "$HOME/google-cloud-sdk/bin" ]; then rm -rf $HOME/google-cloud-sdk; export CLOUDSDK_CORE_DISABLE_PROMPTS=1; curl https://sdk.cloud.google.com | bash; fi
+  - source /home/travis/google-cloud-sdk/path.bash.inc
+  - gcloud --quiet version
+  - gcloud --quiet components update
+  - gcloud --quiet components update kubectl
+deploy:
+  - provider: script
+    script: bash docker_deploy.sh
+    skip_cleanup: true
+    on:
+      branch: master

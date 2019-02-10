@@ -15,10 +15,12 @@ admin.site = DashboardSite()
 admin.sites.site = admin.site
 admin.autodiscover()
 
-schema_view = get_swagger_view(title='Pastebin API')
+schema_view = get_swagger_view(title='Froggy Service API')
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name='admin'),
+    path('admin/', admin.site.urls),
+    # All Kubernetes services must serve a 200 page on '/', set admin page as index
+    path('', admin.site.urls, name='admin'),
     path('api/', include(api.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/docs/', schema_view),

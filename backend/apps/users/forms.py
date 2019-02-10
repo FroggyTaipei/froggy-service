@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.password_validation import validate_password
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 
 from apps.users.models import User
@@ -15,6 +16,11 @@ class UserCreationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['email']
+
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+        validate_password(password1)
+        return password1
 
     def clean_password2(self):
         # Check that the two password entries match

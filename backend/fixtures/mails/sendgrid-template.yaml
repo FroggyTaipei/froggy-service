@@ -1,29 +1,29 @@
 - model: mails.SendGridMailTemplate
   pk: 1
   fields:
-    tid: d-9cfe1bc974c64220a8565645a6dcf10b
+    tid: d-edb7e2a3633f4d528282f26948b43118
     name: 收件通知
 
 - model: mails.SendGridMailTemplate
   pk: 2
   fields:
-    tid: d-e6b254d4a44d476688b7c5ce4d109c61
+    tid: d-699523059c0f41cb8a8f66c6b22aba35
     name: 不受理通知
 
 - model: mails.SendGridMailTemplate
   pk: 3
   fields:
-    tid: d-1b53099d379c4edf8043b1b716d739e1
+    tid: d-fb050a232ac34333a9962a847862a09b
     name: 成案通知
 
 - model: mails.SendGridMailTemplate
   pk: 4
   fields:
-    tid: d-be78436d208242a6bbc42f2cc418748d
+    tid: d-6ebf7e20e7e345bfb8bc47e7d95db0fe
     name: 進度報告
 
 - model: mails.SendGridMailTemplate
   pk: 5
   fields:
-    tid: d-c5a3629e93af49ffbcaa2b5e66fa71cf
+    tid: d-255200b63d2b420283c92abb8ce8cbf8
     name: 結案通知

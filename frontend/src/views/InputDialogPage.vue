@@ -37,7 +37,7 @@
       <!-- 下方 footer -->
       <transition name="person-slide-fade">
         <el-row v-show="category.interface" type="flex" class="category-footer">
-          <el-col :span="15" style="margin-right:5px;" class="hidden-xs-only">
+          <el-col :span="15" style="margin: 5px;" class="hidden-xs-only">
             <el-row class="category-footer-row">
               <el-col
                 :span="6"
@@ -56,7 +56,7 @@
               </el-col>
             </el-row>
           </el-col>
-          <el-col :xs="24" :span="10">
+          <el-col :xs="24" :span="10" style="margin: 5px 5px 5px 0px;">
             <div class="hidden-xs-only category-footer-row">
             <el-row>
               <el-col :span="12">
@@ -419,8 +419,8 @@ export default {
     flex-direction: row;
     align-self: flex-end;
     flex: 1;
-    background-color: rgba(0,0,0,0.5);
-    padding: 10px;
+    background-color: rgba(44,45,45,0.8);
+    /* padding: 10px; */
 }
 .category-footer-row {
     position: relative;
@@ -428,8 +428,8 @@ export default {
     transform: translateY(-50%);
 }
 .category-footer > .el-col {
-    border: solid 10px #5f5f5f;
-    border-radius: 16px;
+    border: solid 4px #5f5f5f;
+    border-radius: 10px;
     padding: 5px;
     background-color: rgba(255,255,255,0.8);
 }
@@ -446,12 +446,12 @@ export default {
 .arrow-icon {
   left: 2vw;
   position: absolute;
-  font-size: 4vw;
+  font-size: 22px;
   color: transparent;
 }
 .category-icon {
   flex: 1;
-  font-size: 4vw;
+  font-size: 22px;
   align-self: center;
   color: transparent;
   margin-right: -1.5vw
@@ -460,7 +460,7 @@ export default {
   flex: 4;
   justify-content: center;
   align-items: center;
-  font-size: 2.5vw;
+  font-size: 22px;
   font-weight: 600;
   cursor: pointer;
 }
@@ -493,7 +493,7 @@ div.category-btn:hover + div {
   background:repeating-linear-gradient(0, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.53) 0.5%, rgba(0, 0, 0, 0) 0.5%, rgba(0, 0, 0, 0) 3%);
 }
 .bg-logo {
-  opacity: 0.5;
+  opacity: 0.2;
   text-align: center;
   background-image: url("https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/logo.png");
   background-repeat: no-repeat;
@@ -505,7 +505,7 @@ select {
     -moz-appearance: none;
     text-indent: 1px;
     text-overflow: '';
-    font-size: 2.5rem;
+    font-size: 22px;
     font-weight: bold;
     border: transparent;
     background-color: transparent;

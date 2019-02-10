@@ -27,6 +27,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'django.contrib.sites',
     'suit',
     'django.contrib.admin.apps.SimpleAdminConfig',
 ]
@@ -60,6 +61,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # MIDDLEWARE CONFIGURATION
 # ------------------------------------------------------------------------------
 MIDDLEWARE = [
+    'config.middlewares.HealthCheckMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
@@ -89,7 +91,7 @@ SERVER_EMAIL = env.str('SERVER_EMAIL', default='')
 # See: https://github.com/sendgrid/sendgrid-python
 USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
 if USE_SENDGRID:
-    EMAIL_PORT = 587
+    # EMAIL_PORT = 587 or 2525
     EMAIL_HOST = 'smtp.sendgrid.net'
     EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
     EMAIL_USE_TLS = True
@@ -102,6 +104,8 @@ if USE_SENDGRID:
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
     ('ssivart', 'travishen.tw@gmail.com'),
+    ('matt', 'fought123@gmail.com'),
+    ('kai', 'ankycheng@gmail.com'),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
@@ -217,6 +221,11 @@ TEMPLATES = [
     },
 ]
 
+# SITE FRAMEWORK
+# ------------------------------------------------------------------------------
+# See https://docs.djangoproject.com/en/2.1/ref/contrib/sites/
+SITE_ID = 1
+
 # PASSWORD STORAGE SETTINGS
 # ------------------------------------------------------------------------------
 # See https://docs.djangoproject.com/en/dev/ref/settings/#password-hashers
@@ -234,9 +243,15 @@ PASSWORD_HASHERS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 8,
+        },
+    },
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+
 ]
 
 # AUTHENTICATION CONFIGURATION
@@ -347,6 +362,7 @@ RAVEN_CONFIG = {
 # ------------------------------------------------------------------------------
 # See https://docs.djangoproject.com/en/2.1/howto/initial-data/
 FIXTURE_DIRS = (
+    str(ROOT_DIR('fixtures')),
     str(ROOT_DIR('fixtures/cases')),
     str(ROOT_DIR('fixtures/arranges')),
     str(ROOT_DIR('fixtures/mails')),
@@ -357,10 +373,16 @@ FIXTURE_DIRS = (
 # ------------------------------------------------------------------------------
 USE_GCS = env.bool('USE_GCS', default=False)
 if USE_GCS:
-    DEFAULT_FILE_STORAGE = 'storages.backends.gcloud.GoogleCloudStorage'
+    STATICFILES_STORAGE = 'apps.files.storages.GoogleCloudStaticStorage'
+    DEFAULT_FILE_STORAGE = 'apps.files.storages.GoogleCloudMediaStorage'
     GS_PROJECT_ID = env.str('GS_PROJECT_ID')
     GS_BUCKET_NAME = env.str('GS_BUCKET_NAME')
-    GS_AUTO_CREATE_BUCKET = env.str('GS_AUTO_CREATE_BUCKET')
+
+    GS_MEDIA_BUCKET_NAME = f'{GS_BUCKET_NAME}-media'
+    GS_STATIC_BUCKET_NAME = f'{GS_BUCKET_NAME}-staticfiles'
+    MEDIA_URL = f'https://{GS_MEDIA_BUCKET_NAME}.storage.googleapis.com/'
+    STATIC_URL = f'https://{GS_STATIC_BUCKET_NAME}.storage.googleapis.com/'
+    GS_AUTO_CREATE_BUCKET = True
 
     GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
         f"{ROOT_DIR}/{env.str('GS_CREDENTIALS')}",
@@ -376,6 +398,7 @@ SUIT_CONFIG = {
     'HEADER_TIME_FORMAT': 'H:i',
     'LIST_PER_PAGE': 30,
     'CONFIRM_UNSAVED_CHANGES': True,
+    'MENU_EXCLUDE': ('sites',),
 }
 
 # FILES LIMIT
