@@ -1,7 +1,7 @@
 <template lang="pug">
 el-container.page3
   transition(name="fade" @after-leave="redirect")
-    el-row.about-main(type="flex" align="middle" justify="center" v-show="showMainContent")
+    el-row.about-main(type="flex" align="middle" justify="center" v-show="showMainContent" style="max-width: 1024px; margin: auto")
       el-col.about-title-wrapper(:span=22)
         .about-title 公開透明。
       el-col.about-content-wrapper(:span=22)
