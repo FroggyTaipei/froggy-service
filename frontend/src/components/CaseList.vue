@@ -2,7 +2,7 @@
 el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
-      el-col(:span=22)
+      el-col(:span=22 style="max-width: 1024px")
         //- v-server-table(url=' http://192.168.1.102:4000/datas', :columns='columns', :options='options' @row-click="click")
         v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
