@@ -81,9 +81,9 @@ class SendGridMail(Model):
             try:
                 response = SendGridMail.send_template(self.from_email, self.to_email, self.data, self.template.tid)
                 self.success = bool(response and response.status_code == 202)
-                super(SendGridMail, self).save(*args, **kwargs)
             except SendGridMailTemplate.DoesNotExist as e:
                 sendgrid_system_mail(e)
+            super(SendGridMail, self).save(*args, **kwargs)
 
     def send(self):
         self.save()

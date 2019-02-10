@@ -6,7 +6,9 @@ class ArrangeSerializer(serializers.ModelSerializer):
     arrange_time = serializers.SerializerMethodField()
 
     def get_arrange_time(self, obj):
-        return obj.arrange_time.strftime('%Y-%m-%d')
+        if obj.arrange_time:
+            return obj.arrange_time.strftime('%Y-%m-%d')
+        return ''
 
     class Meta:
         model = Arrange

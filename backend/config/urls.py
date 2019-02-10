@@ -18,7 +18,6 @@ admin.autodiscover()
 schema_view = get_swagger_view(title='Froggy Service API')
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     # All Kubernetes services must serve a 200 page on '/', set admin page as index
     path('', admin.site.urls, name='admin'),
     path('api/', include(api.urls)),
@@ -29,3 +28,5 @@ urlpatterns = [
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+else:
+    urlpatterns[0] = path('admin/', admin.site.urls, name='admin')
