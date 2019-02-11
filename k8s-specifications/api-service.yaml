@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    beta.cloud.google.com/backend-config: '{"ports": {"8000":"froggy-service-backendconfig"}}'
+  labels:
+    app: api
+  name: api-service
+  namespace: app
+spec:
+  externalTrafficPolicy: Cluster
+  ports:
+  - port: 8000
+    protocol: TCP
+    targetPort: 8000
+  selector:
+    app: api
+  sessionAffinity: None
+  type: NodePort
