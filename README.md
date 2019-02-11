@@ -48,6 +48,46 @@ frontend:
 ```
 See: [Docker ALPINE Linux throws node-sass missing binding error](https://github.com/sass/node-sass/issues/2165) 
 
+### Deploy
+
+Run the app in Kubernetes
+The folder k8s-specifications contains the yaml specifications of the App's services.
+
+First create the app namespace
+```
+$ kubectl create namespace app
+```
+
+Create secrets
+```
+$ kubectl create secret generic environs --from-env-file .env.example --namespace app
+```
+
+Run the following command to create the deployments and services objects:
+```
+$ kubectl create -f k8s-specifications/
+```
+```
+ingress.extensions/admin-ingress created
+deployment.extensions/api created
+service/api-service created
+ingress.extensions/fs-ingress created
+backendconfig.cloud.google.com/froggy-service-backendconfig created
+deployment.extensions/postgres created
+service/postgres created
+deployment.extensions/nginx created
+service/nginx-service created
+```
+
+Clean up
+```
+$ kubectl delete --all ing --namespace=app
+$ kubectl delete --all backendconfig --namespace=app
+$ kubectl delete --all services --namespace=app
+$ kubectl delete --all deployments --namespace=app
+$ kubectl delete --all secrets --namespace=app
+```
+
 
 ### Architecture
 

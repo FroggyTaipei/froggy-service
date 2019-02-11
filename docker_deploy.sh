@@ -10,7 +10,7 @@ if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; th
 
     # Build image and push to google container registry
     docker image build -t gcr.io/${GOOGLE_PROJECT_ID}/${NGINX_IMAGE}:$TRAVIS_COMMIT -f nginx/k8s.Dockerfile .;
-    docker image tag ${DOCKER_ORG}/${API_IMAGE}:$TRAVIS_COMMIT gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE}:$TRAVIS_COMMIT;
+    docker image build -t gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE}:$TRAVIS_COMMIT ./backend;
     docker push gcr.io/${GOOGLE_PROJECT_ID}/${NGINX_IMAGE};
     docker push gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE};
 
