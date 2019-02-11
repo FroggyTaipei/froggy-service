@@ -67,7 +67,7 @@ export default {
     },
     keyframes () {
       const from = this.prefix('transform', `translateX(${this.$el.offsetWidth - 1200}px)`)
-      const to = this.prefix('transform', `translateX(-${this.$el.firstChild.offsetWidth}px)`)
+      const to = this.prefix('transform', `translateX(-${this.$el.firstChild.offsetWidth - 1500}px)`)
       const v = `@keyframes ${this.name} {
                 from { ${from} }
                 to { ${to} }

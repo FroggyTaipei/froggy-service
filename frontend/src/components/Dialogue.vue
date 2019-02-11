@@ -136,6 +136,16 @@ export default {
 <style lang="sass" scoped>
 @import '@/assets/css/style.sass'
 
+// @font-face
+//   font-family: 'aura'
+//   src: url('https://storage.googleapis.com/froggy-service/frontend/assets/Aura.woff2') format('woff2')
+//   src: url('https://storage.googleapis.com/froggy-service/frontend/assets/Aura.ttf') format('opentype')
+
+@font-face
+  font-family: 'aura'
+  src: url('../assets/Aura.woff2') format('woff2')
+  src: url('../assets/Aura.ttf') format('opentype')
+
 .page1
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
   // background: #12c2e9
@@ -184,33 +194,43 @@ export default {
       cursor: pointer
 
 .v-marquee
-  font-family: DFKai-sb, BiauKai
+  font-family: aura
+  background-color: rgba(#e68899,1)
+  // background-color: rgba($color_red, 0.8)
+  padding-top: 3px
+  padding-bottom: 3px
+  border-width: 10px
   position: absolute
   overflow: hidden
+  border-style: double
+  letter-spacing: 3px
   top: 30px
+  height: 2em
+  line-height: 2em
   font-size: calc(2em)
   font-weight: 700
-  color: $color_red
+  color: $color_green
   @media screen and (max-width: $break_small)
     font-size: calc(1.5em)
+    border-width: 5px
 
-.marquees
-  font-family: DFKai-sb, BiauKai
-  position: absolute
-  overflow: hidden
-  top: 20px
-  font-size: calc(2em)
-  font-weight: 700
-  color: $color_red
-  width: max-content
-  animation: marquees-animation linear 40s infinite
-  @media screen and (max-width: $break_small)
-    animation: marquees-animation linear 40s infinite
-@keyframes marquees-animation
-  0%
-    transform: translateX(100%)
-  100%
-    transform: translateX(-150%)
+// .marquees
+//   font-family: DFKai-sb, BiauKai
+//   position: absolute
+//   overflow: hidden
+//   top: 20px
+//   font-size: calc(2em)
+//   font-weight: 700
+//   color: $color_red
+//   width: max-content
+//   animation: marquees-animation linear 40s infinite
+//   @media screen and (max-width: $break_small)
+//     animation: marquees-animation linear 40s infinite
+// @keyframes marquees-animation
+//   0%
+//     transform: translateX(100%)
+//   100%
+//     transform: translateX(-150%)
 
 .forggyImage-wrapper
   flex: $flex_mainContentPart
@@ -257,7 +277,7 @@ export default {
 
 @keyframes flyin
   100%
-    transform: translateY(20px)
+    transform: translateY(50px)
 
 @keyframes flyin-mobile
   100%
