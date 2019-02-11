@@ -26,7 +26,7 @@ services:
   nginx:
     build:
       context: .
-      dockerfile: nginx/Dockerfile
+      dockerfile: nginx/base.Dockerfile
     image: froggy-service-nginx
     ports:
       - "8000:80"

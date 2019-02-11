@@ -13,7 +13,7 @@ RUN npm run build
 # Stage 2 - nginx & frontend dist
 FROM nginx:alpine
 
-COPY k8s/prod.conf /etc/nginx/nginx.conf
+COPY nginx/k8s.conf /etc/nginx/nginx.conf
 COPY --from=build-deps /app/dist/ /dist/
 
 CMD ["nginx", "-g", "daemon off;"]
