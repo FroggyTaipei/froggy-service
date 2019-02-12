@@ -2,4 +2,14 @@ from django.contrib import admin
 from . import models
 
 
-admin.site.register(models.CaseFile)
+class CaseFileAdmin(admin.ModelAdmin):
+    list_display = ('case', 'file_name', 'type', 'upload_time')
+    list_filter = ('type',)
+    search_fields = (
+        'file_name',
+        'case__id',
+    )
+    readonly_fields = ('case',)
+
+
+admin.site.register(models.CaseFile, CaseFileAdmin)

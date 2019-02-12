@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-23 17:32+0800\n"
+"POT-Creation-Date: 2019-02-12 23:58+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -53,29 +53,28 @@ msgstr "上次更新"
 msgid "Arrange"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:72 apps/cases/admin.py:185
+#: apps/cases/admin.py:72 apps/cases/admin.py:186
 msgid "Arranges"
 msgstr "處理紀錄"
 
-#: apps/cases/admin.py:90 apps/files/models.py:44 apps/files/models.py:45
-#: apps/files/models.py:124 apps/files/models.py:126 apps/files/models.py:131
-#: apps/files/models.py:132
+#: apps/cases/admin.py:90 apps/files/models.py:124 apps/files/models.py:126
+#: apps/files/models.py:131 apps/files/models.py:132
 msgid "Case File"
 msgstr "案件檔案"
 
-#: apps/cases/admin.py:179
+#: apps/cases/admin.py:180
 msgid "General"
 msgstr "一般"
 
-#: apps/cases/admin.py:180
+#: apps/cases/admin.py:181
 msgid "Files"
 msgstr "檔案"
 
-#: apps/cases/admin.py:181 apps/cases/models.py:314
+#: apps/cases/admin.py:182 apps/cases/models.py:314
 msgid "Case Histories"
 msgstr "案件編輯歷史"
 
-#: apps/cases/admin.py:188
+#: apps/cases/admin.py:189
 msgid "Mails"
 msgstr "信件"
 
@@ -165,7 +164,7 @@ msgstr "編輯者"
 msgid "Case History"
 msgstr "案件編輯歷史"
 
-#: apps/files/models.py:36
+#: apps/files/models.py:36 apps/files/models.py:44 apps/files/models.py:45
 msgid "Temp File"
 msgstr "暫存檔"
 
@@ -201,7 +200,11 @@ msgstr "範本編號"
 msgid "SendGrid Template"
 msgstr "SendGrid信件範本"
 
-#: apps/mails/models.py:62 apps/mails/models.py:63
+#: apps/mails/models.py:62
+msgid "From Email"
+msgstr "寄件者"
+
+#: apps/mails/models.py:63
 msgid "To Email"
 msgstr "收件者"
 
@@ -241,22 +244,6 @@ msgstr "設定"
 msgid "Important dates"
 msgstr "日期資訊"
 
-#: apps/users/authentication.py:30
-msgid "Signature has expired."
-msgstr ""
-
-#: apps/users/authentication.py:33
-msgid "Error decoding signature."
-msgstr ""
-
-#: apps/users/authentication.py:49
-msgid "Invalid payload."
-msgstr ""
-
-#: apps/users/authentication.py:55
-msgid "Invalid signature."
-msgstr ""
-
 #: apps/users/models.py:61
 msgid "Full Name"
 msgstr "名稱"
@@ -293,7 +280,8 @@ msgstr "使用者"
 msgid "Avatar"
 msgstr "照片"
 
-#: config/settings.py:373 templates/admin/base_site.html:27
+#: config/settings.py:395 templates/admin/base_site.html:27
+#: templates/main.html:6
 msgid "Froggy's Service"
 msgstr "邱威傑（呱吉）選民服務系統"
 
