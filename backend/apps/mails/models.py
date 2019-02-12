@@ -59,7 +59,7 @@ class SendGridMail(Model):
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='sendgrid_mails', verbose_name=_('Case'))
     template = ForeignKey('mails.SendGridMailTemplate', on_delete=CASCADE,
                           related_name='mails', verbose_name=_('SendGrid Template'))
-    from_email = EmailField(verbose_name=_('To Email'))
+    from_email = EmailField(verbose_name=_('From Email'))
     to_email = EmailField(verbose_name=_('To Email'))
     data = HStoreField(verbose_name=_('Mail Data'))
     success = BooleanField(default=False, verbose_name=_('Request Success'))
@@ -91,7 +91,12 @@ class SendGridMail(Model):
     @staticmethod
     def send_template(from_email, to_email, data, template_id):
         """Call Sendgrid Transactional Template API"""
-        mail = Mail(from_email=Email(from_email), to_email=Email(to_email))
+        if from_email == settings.SERVER_EMAIL:
+            from_email = Email(from_email, name=settings.SERVER_EMAIL_NAME)
+        else:
+            from_email = Email(from_email)
+
+        mail = Mail(from_email=from_email, to_email=Email(to_email))
         mail.personalizations[0].dynamic_template_data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
         mail.template_id = template_id
         try:
