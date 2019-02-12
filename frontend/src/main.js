@@ -12,40 +12,37 @@ import locale from 'element-ui/lib/locale'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
-import './registerServiceWorker'
+// import './registerServiceWorker'
 import moment from 'moment'
 import { ServerTable } from 'vue-tables-2'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faCoffee, faAngleDoubleDown } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faCoffee)
-library.add(faAngleDoubleDown)
-Vue.component('font-awesome-icon', FontAwesomeIcon)
-Vue.config.productionTip = false
-
-Vue.use(ServerTable)
-locale.use(zh)
-Vue.use(ElementUI)
-Vue.use(UUID)
-
-Vue.prototype.$moment = moment
-
-Vue.config.productionTip = false
-
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 window.axios = require('axios')
-Vue.use(VueAxios, axios)
+
 Vue.config.productionTip = false
+Vue.prototype.$moment = moment
+
+library.add(faCoffee)
+library.add(faAngleDoubleDown)
+Vue.component('font-awesome-icon', FontAwesomeIcon)
+
+Vue.use(VueAxios, axios)
+Vue.use(UUID)
+Vue.use(ElementUI)
+Vue.use(ServerTable)
+locale.use(zh)
 
 // Sentry for logging frontend errors
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.VUE_APP_SENTRY_PUBLIC_DSN) {
   Vue.use(VueRaven, { dsn: process.env.VUE_APP_SENTRY_PUBLIC_DSN })
 }
 
 // more info: https://github.com/MatteoGabriele/vue-analytics
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.VUE_APP_GOOGLE_ANALYTICS) {
   Vue.use(VueAnalytics, {
     id: process.env.VUE_APP_GOOGLE_ANALYTICS,
     router
