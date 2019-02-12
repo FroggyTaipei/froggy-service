@@ -1,0 +1,7 @@
+apiVersion: cloud.google.com/v1beta1
+kind: BackendConfig
+metadata:
+  name: froggy-service-backendconfig
+  namespace: app
+spec:
+  timeoutSec: 40

@@ -17,8 +17,8 @@ env:
     - API_IMAGE=froggy-service-api
     - NGINX_DEPLOYMENT=nginx
     - API_DEPLOYMENT=api
-    - NGINX_CONTAINER=froggy-service-nginx-sha256
-    - API_CONTAINER=froggy-service-api-sha256
+    - NGINX_CONTAINER=froggy-service-nginx
+    - API_CONTAINER=froggy-service-api
 install:
   # Start the docker stuff
   - docker-compose up --build -d
