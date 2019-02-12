@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='SendGridMail',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('from_email', models.EmailField(max_length=254, verbose_name='To Email')),
+                ('from_email', models.EmailField(max_length=254, verbose_name='From Email')),
                 ('to_email', models.EmailField(max_length=254, verbose_name='To Email')),
                 ('data', django.contrib.postgres.fields.hstore.HStoreField(verbose_name='Mail Data')),
                 ('success', models.BooleanField(default=False, verbose_name='Request Success')),
