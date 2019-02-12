@@ -45,8 +45,8 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tempfiles', to=settings.AUTH_USER_MODEL, verbose_name='Temp File')),
             ],
             options={
-                'verbose_name': 'Case File',
-                'verbose_name_plural': 'Case File',
+                'verbose_name': 'Temp File',
+                'verbose_name_plural': 'Temp File',
             },
         ),
     ]

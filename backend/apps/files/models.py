@@ -41,8 +41,8 @@ class TempFile(models.Model):
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
 
     class Meta:
-        verbose_name = _('Case File')
-        verbose_name_plural = _('Case File')
+        verbose_name = _('Temp File')
+        verbose_name_plural = _('Temp File')
 
     def __str__(self):
         return f'{self.case_uuid} - {self.file_name}'
