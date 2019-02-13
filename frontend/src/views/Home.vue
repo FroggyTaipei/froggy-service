@@ -25,18 +25,27 @@ export default {
 </script>
 
 <style lang="sass">
-@import '@/assets/css/style.sass'
-
 @mixin placeholder-color
   &::-webkit-input-placeholder
-      color: #7b68eeba
+      color: #3819e6
 
 table
   background-color: transparent
 
+.el-table th, .el-table tr, .el-table, .el-table__expanded-cell
+  background-color: transparent !important
+  color: white
+
+.el-table--enable-row-hover .el-table__body tr:hover>td
+  color: black !important
+
+.el-table .cell
+  font-size: 24px
+  line-height: 30px !important
+
 form
   .el-textarea__inner,.el-input__inner
-    background-color: rgba(#fff, .3) !important
+    background-color: rgba(#fff, .9) !important
     border-color: transparent !important
     +placeholder-color
   .el-form-item__label
@@ -44,14 +53,31 @@ form
     color: white
     font-size: larger
 .form-footer-btn
-  float: right
+  display: flex;
+  justify-content: space-between;
   padding-top: 16px
   button
-    background-color: rgba(#fff, .3)
+    background-color: rgba(#fff, .7)
     border-color: transparent
     font-weight: bold
 .el-form-item__label:before, .el-form-item__error
-  color: #655356 !important
+  color: #b33600 !important
 .el-checkbox
   color: #ffffff !important
+
+#category-select
+  color: #fff
+  margin-bottom: 1vh
+  .el-form-item__content
+    font-size: larger
+  .el-input__inner
+    font-size: x-large
+    background-color: transparent !important
+    width: 9vw
+    min-width: 144px
+    color: #fff
+    &::-webkit-input-placeholder
+      color: #fff
+  .el-select__caret
+    color: #fff
 </style>

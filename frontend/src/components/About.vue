@@ -1,7 +1,7 @@
 <template lang="pug">
 el-container.page3
   transition(name="fade" @after-leave="redirect")
-    el-row.about-main(type="flex" align="middle" justify="center" v-show="showMainContent" style="max-width: 1024px; margin: auto")
+    el-row.about-main(type="flex" align="middle" justify="center" v-show="showMainContent")
       el-col.about-title-wrapper(:span=22)
         .about-title 公開透明。
       el-col.about-content-wrapper(:span=22)
@@ -59,8 +59,7 @@ export default {
       let direction = this.$store.state.redirectTo
       this.$router.push(direction)
     }
-  },
-  props: ['lorem']
+  }
 }
 </script>
 
@@ -69,9 +68,6 @@ export default {
 
 .page3
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
-  // background: #12c2e9
-  // background: -webkit-linear-gradient(#f64f59, #c471ed, #12c2e9)
-  // background: linear-gradient(#f64f59, #c471ed, #12c2e9)
   background-position: center
   background-size: contain
   background-repeat: no-repeat
@@ -83,15 +79,15 @@ export default {
 .el-row
   width: 100%
 
-// .darkBackground
-//   position: absolute
-//   z-index: 2
-//   height: 100%
-//   width: 100%
-  // background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
-  // background-position: center
-  // background-size: contain
-  // background-repeat: no-repeat
+.darkBackground
+  position: absolute
+  z-index: 2
+  height: 100%
+  width: 100%
+  background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
+  background-position: center
+  background-size: contain
+  background-repeat: no-repeat
 
 .about-main
   z-index: 5
@@ -99,17 +95,18 @@ export default {
   flex-direction: column
   flex-shrink: 0
   @media screen and (max-width: $break_small)
-    flex: 8
+    flex: $flex_small_mainContentPart
 .row-dialog
   z-index: 5
   flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
-    flex: 2
+    flex: $flex_small_dialogPart
 
 .about-title-wrapper
   color: white
-  font-size: $fz_p_header
-  min-height: 80px
+  font-size: 2em
+  min-height: 100px
+  // margin: 0
   .about-title
     padding: 30px 0 0 0
 .about-content-wrapper
@@ -119,9 +116,7 @@ article
   .about-content
     color: white
     span
-      font-size: $fz_p
-      @media screen and (max-width: $break_small)
-        font-size: $fz_p_small
+      font-size: 1em
 .signImg
   width: 150px
 
@@ -135,7 +130,7 @@ article
   margin: auto auto 0 auto
   height: 50px
   .footer
-    font-size: $fz_tooltip
+    font-size: 12px
     bottom: 0
     text-align: center
     color: white
