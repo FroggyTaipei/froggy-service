@@ -9,7 +9,6 @@ class CaseFileAdmin(admin.ModelAdmin):
         'file_name',
         'case__id',
     )
-    readonly_fields = ('case',)
 
 
 admin.site.register(models.CaseFile, CaseFileAdmin)
