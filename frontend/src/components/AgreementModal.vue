@@ -7,7 +7,7 @@
                 <div class="modal-header">
                     <h2>「選服魔鏡號」台北市議員邱威傑市民服務系統使用說明及隱私權政策</h2>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" @scroll="onScroll">
                   <p>「選服魔鏡號」邱威傑市民服務系統（以下簡稱本網站）係為台北市議員邱威傑及其所屬團隊（以下簡稱本團隊）開發、維護及所有，範圍包含本網站之所有圖片、文字、動畫、音訊、影片及外觀設計、互動模式、服務流程等。</p>
                   <h3>資訊蒐集說明</h3>
                   <p>本網站會於您瀏覽時，依據您所進行的行為蒐集所輸入的案件資訊、個人資訊、附件檔案等，並儲存使用者紀錄以供聯絡服務使用。使用者個人資料之使用、處理期限，至您主動向本團隊提交終止服務通知為止（非指結案通知）。其目的為進行後續追蹤、所有服務案件總體分析（包含處理時間、案件類型、負責局處）之用，以利提供台北市民更好的市政體驗與提出台北市政府具體改善建議。</p>
@@ -38,7 +38,7 @@
 
                 <div class="modal-footer">
                   <el-button @click="$emit('disagree')" plain>不同意</el-button>
-                  <el-button @click="$emit('close')" type="success" plain>同意</el-button>
+                  <el-button @click="$emit('close')" type="success" :disabled="reachBottom" plain>同意</el-button>
                 </div>
                 </div>
             </div>
@@ -48,14 +48,24 @@
 
 <script>
 export default {
-  name: 'AgreementModal'
+  name: 'AgreementModal',
+  data: () => ({
+    reachBottom: true
+  }),
+  methods: {
+    onScroll ({ target: { scrollTop, clientHeight, scrollHeight } }) {
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.reachBottom = false
+      }
+    }
+  }
 }
 </script>
 
 <style lang="css" scoped>
 .modal-mask {
   position: fixed;
-  z-index: 9998;
+  z-index: 999;
   top: 0;
   left: 0;
   width: 100%;

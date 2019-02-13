@@ -32,12 +32,10 @@ export default {
   },
   mounted () {
     if (!window.AccountKit && this.autoInit) {
-      console.log('initAccountKit')
       this.appId = process.env.VUE_APP_ACCOUNTKIT_APP_ID
       this.version = process.env.VUE_APP_ACCOUNTKIT_VERSION
 
       this.getCSRFToken().then(data => {
-        console.log(data)
         this.state = data
         this.initAccountKit()
       })
@@ -82,8 +80,6 @@ export default {
      */
     onLoad () {
       const { appId, state, version, fbAppEventsEnabled } = this.$data
-      console.log('account onLoad')
-
       window.AccountKit.init({
         appId,
         state,
