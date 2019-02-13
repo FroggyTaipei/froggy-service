@@ -1,8 +1,14 @@
+## K8S
+stage-k8s-specifications
+
 ### NPM
 package-lock.json
 
 ### ENV
 .env
+.env.stage
+.env.prod
+.env.travis
 gs_credential.json
 secrets.tar
 
