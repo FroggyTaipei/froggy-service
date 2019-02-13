@@ -11,6 +11,8 @@ if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; th
     # Build image and push to google container registry
     docker image build -t gcr.io/${GOOGLE_PROJECT_ID}/${NGINX_IMAGE}:$TRAVIS_COMMIT -f nginx/k8s.Dockerfile .;
     docker image build -t gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE}:$TRAVIS_COMMIT ./backend;
+    docker image tag gcr.io/${GOOGLE_PROJECT_ID}/${NGINX_IMAGE}:$TRAVIS_COMMIT gcr.io/${GOOGLE_PROJECT_ID}/${NGINX_IMAGE}:latest;
+    docker image tag gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE}:$TRAVIS_COMMIT gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE}:latest;
     docker push gcr.io/${GOOGLE_PROJECT_ID}/${NGINX_IMAGE};
     docker push gcr.io/${GOOGLE_PROJECT_ID}/${API_IMAGE};
 
@@ -31,8 +33,10 @@ if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; th
 
     # Rebuild and push to docker hub
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker image build -t ${DOCKER_ORG}/${NGINX_IMAGE} -f nginx/k8s.Dockerfile .;
-    docker image build -t ${DOCKER_ORG}/${API_IMAGE} ./backend;
+    docker image build -t ${DOCKER_ORG}/${NGINX_IMAGE}:$TRAVIS_COMMIT -f nginx/k8s.Dockerfile .;
+    docker image build -t ${DOCKER_ORG}/${API_IMAGE}:$TRAVIS_COMMIT ./backend;
+    docker image tag ${DOCKER_ORG}/${NGINX_IMAGE}:$TRAVIS_COMMIT ${DOCKER_ORG}/${NGINX_IMAGE}:latest;
+    docker image tag ${DOCKER_ORG}/${API_IMAGE}:$TRAVIS_COMMIT ${DOCKER_ORG}/${API_IMAGE}:latest;
     docker push ${DOCKER_ORG}/${NGINX_IMAGE};
     docker push ${DOCKER_ORG}/${API_IMAGE};
 
