@@ -1,6 +1,20 @@
 // vue.config.js
+
+const CompressionPlugin = require('compression-webpack-plugin')
+
 module.exports = {
   lintOnSave: false,
+  configureWebpack: config => {
+    return {
+      plugins: [
+        new CompressionPlugin({
+          algorithm: 'gzip',
+          test: /\.js$|\.html$|.\css/,
+          threshold: 10240,
+          deleteOriginalAssets: false
+        })]
+    }
+  },
   devServer: {
     hot: true,
     hotOnly: true,
