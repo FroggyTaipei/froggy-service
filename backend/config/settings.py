@@ -88,6 +88,7 @@ EMAIL_PORT = env.int('EMAIL_PORT', default='1025')
 EMAIL_HOST = env.str('EMAIL_HOST', default='mailhog')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
 SERVER_EMAIL = env.str('SERVER_EMAIL', default='')
+SERVER_EMAIL_NAME = '選服魔境號'
 # See: https://github.com/sendgrid/sendgrid-python
 USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
 if USE_SENDGRID:

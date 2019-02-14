@@ -1,7 +1,15 @@
 <template>
   <fieldset>
     <el-form label-position="top" :model="applicant" label-width="80px" :rules="rules" ref="form">
-      <el-form-item :label="$store.state.typeText">
+      <el-form-item id="category-select">
+        您現在選擇的類別是:
+        <el-select v-model="applicant.type">
+          <el-option
+            v-for="item in $store.state.types"
+            :key="item.id"
+            :value="item.id"
+            :label="item.name"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="姓名" prop="username">
         <el-input placeholder="e.g. 邱威傑" v-model.trim="applicant.username"></el-input>
@@ -38,7 +46,7 @@
       <el-button @click="$emit('previous')">上一頁</el-button>
       <el-button @click="nextPage">下一頁</el-button>
     </div>
-    <AgreementModal v-if="showAgreementModal" @close="showAgreementModal=false" @disagree="disagree">
+    <AgreementModal v-if="showAgreementModal" @close="agreeOrNot(true)" @disagree="agreeOrNot(false)">
     </AgreementModal>
   </fieldset>
 </template>
@@ -53,6 +61,17 @@ export default {
     AgreementModal
   },
   props: {
+    selectedType: {
+      type: Number,
+      default: 0
+    }
+  },
+  watch: {
+    selectedType: function (value) {
+      if (value) {
+        this.applicant.type = value
+      }
+    }
   },
   data: () => ({
     mobileText: '',
@@ -66,7 +85,8 @@ export default {
       email: '',
       address: '',
       region: '',
-      agreement: ''
+      agreement: '',
+      type: ''
     },
     rules: {
       username: [{
@@ -97,8 +117,8 @@ export default {
     }
   }),
   methods: {
-    disagree () {
-      this.applicant.agreement = false
+    agreeOrNot (value) {
+      this.applicant.agreement = value
       this.showAgreementModal = false
     },
     login () {
@@ -119,10 +139,12 @@ export default {
         })
       } else {
         this.$alert('請重新認證', '提示', {
-          type: 'warning'
+          type: 'warning',
+          callback: () => {
+            this.authenticating = false
+          }
         })
       }
-      this.authenticating = false
     },
     getAccountKitToken (accountKitResp) {
       console.log(accountKitResp)
@@ -134,6 +156,7 @@ export default {
           let jwt = { Authorization: 'JWT ' + response.data.jwt }
           this.authentication = true
           this.$store.commit('setJWT', jwt)
+          this.authenticating = false
         })
         .catch(e => {
           console.log(e)
@@ -141,14 +164,17 @@ export default {
           let title = e.response.status + ' ' + e.response.statusText
           let content = e.response.data.detail ? e.response.data.detail : e.response.data[0]
           this.$alert(content, title, {
-            type: 'error'
+            type: 'error',
+            callback: () => {
+              this.authenticating = false
+            }
           })
         })
     },
     nextPage () {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (this.authentication) {
+          if (true) {
             if (this.applicant.agreement) {
               console.log('form pass')
               this.$store.commit('setCase',

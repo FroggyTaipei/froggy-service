@@ -18,7 +18,7 @@
         <tr>
           <td>{{ mail.template }}</td>
           <td>{{ mail.to_email }}</td>
-          <td>{{ mail.success }}</td>
+          <td>{{ mail.success|yesno:"成功,失敗" }}</td>
           <td>{{ mail.send_time }}</td>
           <td>
             <a class="btn btn-info" href="{% url 'sendgridmail-resend' mail.id %}">重新寄送</a>

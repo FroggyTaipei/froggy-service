@@ -3,20 +3,20 @@
     <!-- Page one -->
     <el-row type="flex" class="panel category-page" v-show="step == 0">
       <transition name="page" @after-leave="categoryAfterLeave">
-        <div v-show="category.background" class="bg-unit bg-deco"></div>
+        <div v-show="category.background" class="bg-unit bg-logo"></div>
       </transition>
-      <div class="category-content">
+      <div class="category-content hidden-xs-only">
         <el-row type="flex" class="category-content-row1">
           <el-col :xs="24" :sm="12">
             <transition name="person-slide-fade">
               <img v-show="category.interface" class="category-content-namebar category-content-progress" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/namebar.png">
             </transition>
           </el-col>
-          <el-col :sm="12" class="hidden-xs-only">
+          <el-col :sm="12">
           </el-col>
         </el-row>
         <el-row type="flex" justify="center" class="category-content-row2">
-            <el-col :sm="12" class="hidden-xs-only category-content-person">
+            <el-col :sm="12" class="category-content-person">
               <transition name="person-slide-fade">
                 <img v-show="category.avatar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/category/person.png">
               </transition>
@@ -33,90 +33,85 @@
               </transition>
             </el-col>
         </el-row>
+        <div class="bouncing-ball" :class="{ 'feeding-animation' : feeding }" v-show="feeding"></div>
       </div>
       <!-- 下方 footer -->
       <transition name="person-slide-fade">
-        <el-row v-show="category.interface" type="flex" class="category-footer">
-          <el-col :span="15" style="margin: 5px;" class="hidden-xs-only">
-            <el-row class="category-footer-row">
-              <el-col
-                :span="6"
-                v-for="item in $store.state.types"
-                :key="item.id">
-                <div class="category-item">
-                  <div
-                    class="category-btn"
-                    @click="selectCaseType(item)">
-                    {{ item.name }}
-                  </div>
-                  <div class="category-icon">
-                    <i class="el-icon-caret-right"></i>
-                  </div>
+        <el-row v-show="category.interface" class="row-dialog category-footer hidden-xs-only" type="flex" align="middle" justify="center" style="height:100%">
+
+          <el-col class="bottom-dialog-wrapper">
+            <div class="bottom-dialog-right left-actually" style="flex: 3;margin-right: 5px;">
+              <span class="bottom-dialog-options" @click="selectCaseType(item.id)" v-for="item in $store.state.types" :key="item.id">
+                <a>{{ item.name }}</a>
+                <div class="arrow-icon">
+                  <i class="el-icon-caret-right"></i>
                 </div>
-              </el-col>
-            </el-row>
+              </span>
+            </div>
+            <div class="bottom-dialog-right">
+              <span class="bottom-dialog-options">
+                <a>-</a>
+                <div class="arrow-icon">
+                  <i class="el-icon-caret-right" style="color: transparent;"></i>
+                </div>
+              </span>
+              <span class="bottom-dialog-options">
+                <a>-</a>
+                <div class="arrow-icon">
+                  <i class="el-icon-caret-right" style="color: transparent;"></i>
+                </div>
+              </span>
+              <span class="bottom-dialog-options" @click="feedFroggy">
+                <a class="normal-text">-</a>
+                <a class="color-egg" style="display: none;">餵食</a>
+                <div class="arrow-icon">
+                  <i class="el-icon-caret-right"></i>
+                </div>
+              </span>
+              <span class="bottom-dialog-options" @click="categoryOutAnimation(true)">
+                <a>回首頁</a>
+                <div class="arrow-icon">
+                  <i class="el-icon-caret-right"></i>
+                </div>
+              </span>
+            </div>
           </el-col>
-          <el-col :xs="24" :span="10" style="margin: 5px 5px 5px 0px;">
-            <div class="hidden-xs-only category-footer-row">
-            <el-row>
-              <el-col :span="12">
-                <div class="category-item">
-                  <div class="category-btn">
-                    -
-                  </div>
-                </div>
-              </el-col>
-               <el-col :span="12">
-                <div class="category-item">
-                  <div class="category-btn">
-                    -
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="12">
-                <div class="category-item">
-                  <div class="category-btn">
-                    <div class="normal-text">-</div>
-                    <div class="color-egg" style="display: none;">餵食</div>
-                  </div>
-                </div>
-              </el-col>
-               <el-col :span="12">
-                <div class="category-item">
-                  <div class="category-btn"
-                    @click="categoryOutAnimation(true)">
-                    回首頁
-                  </div>
-                  <div class="arrow-icon">
-                    <i class="el-icon-caret-right"></i>
-                  </div>
-                </div>
-              </el-col>
-            </el-row>
-            </div>
-            <div class="hidden-sm-and-up category-footer-mobile">
-              <select v-model="selected">
-                <option disabled value="">請選擇類別</option>
-                <option
-                  v-for="item in $store.state.types"
-                  :key="item.id"
-                  :value="item"
-                  :label="item.name"></option>
-              </select>
-            </div>
+          <el-col class="footer hidden-xs-only">
+            <span>
+            「選服魔鏡號」台北市議員邱威傑市民服務系統
+             110 台北市信義區仁愛路四段507號 台北市議會 752研究室
+            <br>
+             02-27297708 分機 7152、7252
+             或 02-87862707
+             servant@65535studio.com
+            </span>
           </el-col>
         </el-row>
+
       </transition>
-      <div class="back-btn hidden-sm-and-up" @click="categoryOutAnimation(true)">
-        <img src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/back_btn.png" >
+      <div class="mobile-title hidden-sm-and-up">
+        <div class="back-btn" @click="back">
+          <el-button icon="el-icon-close" style="font-size=1.5em;font-weight=900;" circle></el-button>
+        </div>
+        <h2>
+          選擇類別
+        </h2>
       </div>
+
+      <transition name="froggy-slide-fade">
+        <div v-show="category.avatar" class="mobile-content hidden-sm-and-up">
+          <div class="mobile-category-select">
+            <div class="mobile-category-button" v-for="item in $store.state.types" :key="item.id" @click="selectCaseType(item.id)">
+              <button type="button">{{ item.name }}</button>
+            </div>
+          </div>
+        </div>
+      </transition>
       <transition name="screen-slide-left" @after-leave="screenAfterLeave">
-        <div v-if="screenActive" class="screen screen1"></div>
+        <div v-if="screenActive" class="screen screen1 hidden-xs-only"></div>
       </transition>
       <transition name="screen-slide-right">
-        <div v-if="screenActive" class="screen screen2"></div>
+        <div v-if="screenActive" class="screen screen2 hidden-xs-only"></div>
       </transition>
     </el-row>
     <el-row type="flex" class="panel form-page" :gutter="10" v-show="step > 0">
@@ -124,7 +119,7 @@
       <el-col :span="12" class="col1 hidden-xs-only">
         <el-container>
           <transition name="person-slide-fade" @after-leave="formAfterLeave">
-            <div v-show="form.interface" class="footer">
+            <div v-show="form.interface" class="form-footer">
               <img style="width:90%" :class="{ 'validate-error-animation' : validateFail }" :src="this.images.FROGGY" >
               <transition name="fade" mode="in-out">
                 <img key="33" v-if="progressState" class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress33.png" >
@@ -135,11 +130,20 @@
         </el-container>
       </el-col>
       <el-col :xs="24" :span="12" class="col2">
+        <div class="mobile-title hidden-sm-and-up">
+          <div class="back-btn" @click="back">
+            <el-button icon="el-icon-close" style="font-size=1.5em;font-weight=900;" circle></el-button>
+          </div>
+          <h2>
+            您的資料
+          </h2>
+        </div>
         <transition name="froggy-slide-fade">
-          <div v-show="form.interface" class="input-dialog">
+          <div v-show="form.interface" class="input-dialog mobile-content">
             <!-- Page two -->
             <InputUserInfo
               v-show="step == 1"
+              :selectedType="typeProps"
               @next="next"
               @previous="formLeaveAnimation"
               @validateFail="validateErrorAnimation"/>
@@ -171,6 +175,7 @@ export default {
     validateFail: false,
     progressState: true,
     transitionState: false,
+    feeding: false,
     category: {
       background: true,
       avatar: false,
@@ -186,17 +191,9 @@ export default {
     },
     froggyImage: ['morning_2.png', 'noon_2.png', 'night_3.png'],
     screenActive: true,
-    selected: ''
+    typeProps: 0
   }),
-  watch: {
-    selected: function (value) {
-      if (value) {
-        this.selectCaseType(value)
-      }
-    }
-  },
   created () {
-    console.log('input dialog init')
     if (this.$store.state.currentTime === '') {
       this.back()
     } else {
@@ -212,10 +209,13 @@ export default {
     }
   },
   mounted () {
-    console.log('input dialog mounted')
-    setTimeout(() => {
-      this.screenActive = false
-    }, 500)
+    if (this.$store.state.isMobile) {
+      this.categoryAvatarAnimation()
+    } else {
+      setTimeout(() => {
+        this.screenActive = false
+      }, 500)
+    }
   },
   methods: {
     validateErrorAnimation () {
@@ -234,27 +234,27 @@ export default {
       // when category background animation finished
       // transitionState, true: p2>p1, false: p1>p2
       if (this.transitionState) {
-        console.log('page 2 to page 1')
         this.back()
       } else {
+        var sec = this.$store.state.isMobile ? 0 : 100
         this.next()
         setTimeout(() => {
           this.formInterfaceAnimation()
-        }, 100)
+        }, sec)
       }
     },
     formAfterLeave () {
       // when form background animation finished
       // transitionState, true: p2>p1, false: p1>p2
       if (this.transitionState) {
+        var sec = this.$store.state.isMobile ? 0 : 500
         this.previous()
         this.categoryBackgroundAnimation()
         setTimeout(() => {
           this.categoryAvatarAnimation()
           this.categoryInterfaceAnimation()
-        }, 500)
+        }, sec)
       } else {
-        console.log('page 1 to page 2')
       }
     },
     categoryBackgroundAnimation () {
@@ -273,11 +273,12 @@ export default {
       this.form.interface = !this.form.interface
     },
     formLeaveAnimation () {
+      var sec = this.$store.state.isMobile ? 0 : 300
       this.transitionState = true
       this.formInterfaceAnimation()
       setTimeout(() => {
         this.formBackgroundAnimation()
-      }, 300)
+      }, sec)
     },
     closeInput () {
       this.step = 0
@@ -285,24 +286,30 @@ export default {
       this.$emit('closeInput')
     },
     selectCaseType (type) {
-      let typeText = '您選擇的類別是：' + type.name
-      this.$store.commit('setCase', { type: type.id })
-      this.$store.commit('setTypeText', typeText)
+      this.typeProps = type
       // avatar and interface leave first, then background disappear
       this.categoryOutAnimation(false)
     },
     categoryOutAnimation (state) {
+      var sec = this.$store.state.isMobile ? 0 : 500
       this.transitionState = state
       this.categoryAvatarAnimation()
       this.categoryInterfaceAnimation()
       setTimeout(() => {
         this.categoryBackgroundAnimation()
-      }, 500)
+      }, sec)
+    },
+    feedFroggy () {
+      if (!this.feeding) {
+        this.feeding = true
+        setTimeout(() => {
+          this.feeding = false
+        }, 1800)
+      }
     },
     next () {
       if (this.step < 3) {
         this.step += 1
-        console.log('go to page', this.step)
         if (this.step === 2) {
           this.progressState = false
         }
@@ -310,7 +317,6 @@ export default {
     },
     previous () {
       if (this.step > 0) {
-        console.log('go to previous page')
         this.step -= 1
         if (this.step === 1) {
           this.progressState = true
@@ -329,7 +335,7 @@ export default {
     background-repeat: no-repeat;
     background-size: 100% auto;
     position: relative;
-    width: -webkit-fill-available;
+    width: stretch;
 }
 /* Category page */
 .category-page {
@@ -356,6 +362,7 @@ export default {
   flex-direction: column;
   width: 90%;
   margin: auto;
+  position: relative;
 }
 .category-content > div.el-row {
   flex: 1;
@@ -409,78 +416,28 @@ export default {
 }
 
 .category-content-namebar {
-  margin-top: 5vh;
+  margin-top: 6vh;
   margin-left: 8vw;
 }
 
 .category-footer {
-    width: 100%;
-    position: relative;
-    flex-direction: row;
-    align-self: flex-end;
     flex: 1;
-    background-color: rgba(44,45,45,0.8);
-    /* padding: 10px; */
 }
-.category-footer-row {
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
+
+.left-actually > .bottom-dialog-options {
+  flex-basis: calc(25%) !important;
 }
-.category-footer > .el-col {
-    border: solid 4px #5f5f5f;
-    border-radius: 10px;
-    padding: 5px;
-    background-color: rgba(255,255,255,0.8);
-}
-.category-item {
-  height: 100%;
-  margin-top: 1vh;
-  display: flex;
-  flex-direction: row-reverse;
-  position: relative;
-}
-.category-item > div {
-  display: flex;
-}
-.arrow-icon {
-  left: 2vw;
-  position: absolute;
-  font-size: 22px;
-  color: transparent;
-}
-.category-icon {
-  flex: 1;
-  font-size: 22px;
-  align-self: center;
-  color: transparent;
-  margin-right: -1.5vw
-}
-.category-btn {
-  flex: 4;
-  justify-content: center;
-  align-items: center;
-  font-size: 22px;
-  font-weight: 600;
-  cursor: pointer;
-}
-div.category-btn:hover > div.normal-text {
+
+.bottom-dialog-options:hover > a.normal-text {
   display: none;
 }
-div.category-btn:hover > div.color-egg {
+.bottom-dialog-options:hover > a.color-egg {
   cursor: pointer;
   display: block !important;
 }
-div.category-btn:hover + div {
-  color: black;
-}
 .back-btn {
-  position: fixed;
-  margin: 1vmax;
-}
-.back-btn img {
-  width: 8vmax;
-  height: 8vmax;
+  margin: 2vh;
+  position: absolute;
 }
 .bg-unit {
   position: absolute;
@@ -493,45 +450,31 @@ div.category-btn:hover + div {
   background:repeating-linear-gradient(0, rgba(255, 255, 255, 0.52) 0%, rgba(255, 255, 255, 0.53) 0.5%, rgba(0, 0, 0, 0) 0.5%, rgba(0, 0, 0, 0) 3%);
 }
 .bg-logo {
-  opacity: 0.2;
+  opacity: 0.3;
   text-align: center;
   background-image: url("https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/logo.png");
   background-repeat: no-repeat;
   background-size: 100% auto;
   background-position: center;
 }
-select {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    text-indent: 1px;
-    text-overflow: '';
-    font-size: 22px;
-    font-weight: bold;
-    border: transparent;
-    background-color: transparent;
-}
-.category-footer-mobile {
-  display: flex;
-  justify-content: center;
-  height: 100%;
-}
 /* Input page */
 .form-page {
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF);
 }
 .input-dialog {
-  height: fill-available;
+  height: stretch;
   z-index: 999;
-  opacity: 0.9;
   border: 1px solid transparent;
   border-radius: 10px;
-  background-color: rgba(236, 148, 156, 0.9);
+  background-color: rgba(152, 208, 231, 0.8);
   padding: 16px;
   max-width: 80%;
+  position: relative;
 }
 .input-dialog > fieldset {
   overflow-y: auto;
-  max-height: -webkit-fill-available;
+  width: stretch;
+  max-height: stretch;
   border-color: transparent;
   position: relative;
 }
@@ -541,12 +484,12 @@ select {
 .col1 .el-main {
   padding: 0px
 }
-.footer {
+.form-footer {
   height: 100%;
   width: 100%;
   position: relative;
 }
-.footer img{
+.form-footer img{
   width: 80%;
   position: absolute;
   bottom: 0px;
@@ -634,20 +577,81 @@ select {
   90% { -webkit-transform: translateX(-2px) rotate(0deg); }
   100% { -webkit-transform: translateX(1px) rotate(-1deg); }
 }
+
+.bouncing-ball {
+    width: 100px;
+    height: 100px;
+    background-size: 100% auto;
+    background-image: url("https://upload.wikimedia.org/wikipedia/commons/thumb/6/6a/Emoji_u1f4a9.svg/177px-Emoji_u1f4a9.svg.png");
+    position:absolute;
+    bottom: 0;
+    left: 20%;
+}
+.feeding-animation {
+  animation: bounce 2s, move 2s;
+}
+@keyframes bounce{
+  100% {
+      left: 65vw;
+  }
+}
+
+@keyframes move {
+  50% {
+      bottom: 70vh;
+  }
+  100% {
+      bottom: 55vh;
+  }
+}
 /* RWD */
 @media only screen and (max-width: 768px) {
   .col2 {
-    padding: 1vh 1vw
+    padding: 1vh 1vw;
+    display: flex;
+    flex-direction: column;
+  }
+  .col2 > div {
+    display: flex;
   }
   .input-dialog {
-    margin: auto;
-    max-width: 90%;
+    background-color: rgba(0, 0, 0, 0.5);
+    max-width: 90vw;
+    margin: 0 16px;
   }
-  .category-content-center {
-    bottom: 10vh;
+
+  .mobile-title {
+    flex: 1;
+    display: inline-block;
+    z-index: 1;
   }
-  .category-content-froggy {
-    height: 50vmax;
+  .mobile-title h2 {
+    margin: auto
+  }
+  .mobile-content {
+    flex: 9;
+    padding: 0 16px;
+    z-index: 1;
+  }
+  .mobile-category-select {
+    display: flex;
+    flex-direction: column;
+    width: stretch;
+    overflow-y: auto;
+    position:relative;
+    -webkit-overflow-scrolling: touch;
+  }
+  .mobile-category-button {
+    text-align: center;
+    margin-bottom: 2vh;
+  }
+  .mobile-category-button > button {
+    min-width: 80vw;
+    min-height: 15vh;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: transparent;
+    border-radius: 10px;
   }
 }
 </style>
