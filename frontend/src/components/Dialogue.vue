@@ -116,16 +116,20 @@ export default {
       // console.log('visited')
       this.isShowMainContent = true
       this.isShowBtnBar = true
+      this.$refs.marquee.start()
       return false
     } else {
       // console.log('not visited')
       this.$store.commit('setVisited', true)
       this.isShowIntro = true
-      setTimeout(() => { this.isShowIntroText = true }, 1000)
-      // setTimeout(() => {
-      //   this.isShowIntroText = true
-      //   setTimeout(() => { this.isShowIntro = false }, 1500)
-      // }, 1000)
+      // setTimeout(() => { this.isShowIntroText = true }, 1000)
+      setTimeout(() => {
+        this.isShowIntroText = true
+        setTimeout(() => {
+          this.isShowIntro = false
+          setTimeout(() => this.$refs.marquee.start(), 1000)
+        }, 1500)
+      }, 1000)
     }
   },
   props: []
@@ -257,7 +261,7 @@ export default {
 
 @keyframes flyin-mobile
   100%
-    transform: translateY(100px)
+    transform: translateY(200px)
 
 .introIn-enter-active
   animation: intro-in 2s
