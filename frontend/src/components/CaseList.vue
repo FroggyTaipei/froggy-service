@@ -3,10 +3,9 @@ el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22 style="max-width: 1024px")
-        //- v-server-table(url=' http://192.168.1.102:4000/datas', :columns='columns', :options='options' @row-click="click")
-        v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
+        v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click" @loading="loadingTable")
 
-        el-dialog(title='', :visible.sync='dialogVisible')
+        el-dialog(title='', :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block
             .upper-block-bkg
               .case-content-type-header {{selectedCaseDetails.type}}
@@ -18,7 +17,7 @@ el-container.page2
             hr
             .case-content-details 案件內容：
             br
-            div {{selectedCaseDetails.content}}
+            div(v-html="selectedCaseDetails.content") {{selectedCaseDetails.content}}
             hr
             div(v-if="selectedCaseDetails.state === '不受理'")
               .case-disapproved 案件不受理原因：
@@ -42,6 +41,7 @@ el-container.page2
 
 <script>
 import BottomGameDialog from './BottomGameDialog.vue'
+import { Event } from 'vue-tables-2'
 
 export default {
   name: 'CaseList',
@@ -50,6 +50,8 @@ export default {
     return {
       showMainContent: false,
       dialogVisible: false,
+      isTableLoaded: false,
+      isDetailLoaded: false,
       selectedRow: null,
       selectedCaseDetails: {
         'id': 1,
@@ -93,9 +95,8 @@ export default {
           noResults: '找無相關記錄'
         },
         columnsDisplay: {
-          id: 'not_mobile',
-          create_time: 'not_mobile'
-
+          id: 'min_tabletL',
+          create_time: 'min_tabletL'
         },
         sortable: ['id'],
         filterable: ['id', 'title', 'state'],
@@ -106,11 +107,11 @@ export default {
           ]
         },
         // filterByColumn: true,
-        perPage: 10,
+        perPage: 15,
         perPageValues: [10],
         requestAdapter (data) {
           return {
-            limit: 10,
+            limit: this.perPage,
             sort: data.orderBy ? data.orderBy : 'id',
             ascending: data.ascending ? 'desc' : 'asc',
             query: data.query,
@@ -142,18 +143,63 @@ export default {
       }
     }
   },
-  created () {},
+  created () {
+    if (this.$store.state.isMobile === true) {
+      this.options.perPage = 10
+    }
+  },
   mounted () {
     this.showMainContent = true
   },
   methods: {
     click: function (clickedRow) {
       let caseId = clickedRow.row.id
+      this.isDetailLoaded = false
+      const loading = this.$loading({
+        lock: true,
+        text: '案件資料讀取中',
+        target: '.row-table',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       this.axios
         .get('/api/cases/' + caseId)
         .then(response => (this.selectedCaseDetails = response.data))
         .catch(e => console.log(e))
-      this.dialogVisible = true
+        .finally(() => {
+          this.dialogVisible = true
+          loading.close()
+        }
+        )
+    },
+    loadingTable: function () {
+      this.isTableLoaded = false
+      const loading = this.$loading({
+        lock: true,
+        text: '資料讀取中',
+        target: '.row-table',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+      Event.$on('vue-tables.loaded', function (data) {
+        this.isTableLoaded = true
+        loading.close()
+      })
+    },
+    closeDialog: function () {
+      this.isDetailLoaded = false
+      this.selectedCaseDetails = {
+        'id': 0,
+        'number': '0',
+        'create_time': '',
+        'title': '',
+        'content': '',
+        'location': '',
+        'type': '',
+        'state': '',
+        'arranges': [],
+        'disapprove_info': ''
+      }
     },
     toggleLeaveAnimation: function (destination) {
       this.showMainContent = false

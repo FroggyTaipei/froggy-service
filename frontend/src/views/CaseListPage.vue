@@ -67,6 +67,7 @@ table
     width: 100%
     overflow: scroll
     border-bottom: 2px solid white
+    margin-bottom: 100px
     &::-webkit-scrollbar
       width: 0 !important
     // height: 80%
@@ -89,12 +90,6 @@ table
 .VuePagination
   position: absolute
   bottom: 0
-  @media screen and (max-width: $break_small)
-    position: relative
-    bottom: 0
-  // margin-bottom: auto
-  // border-top: 2px solid white
-  // width: 92vw
 
 .VuePagination, .VuePagination__pagination, .VuePagination__count
   display: flex !important
@@ -109,6 +104,8 @@ table
       font-size: 20px
       color: $color_gray
       font-weight: 600
+      @media screen and (max-width: 480px)
+        font-size: 24px
 
 .VuePagination li.disabled, .VuePagination__pagination li.disabled, .VuePagination__count li.disabled
   >a
@@ -119,6 +116,11 @@ table
   >a
     color: $color_white
     border-bottom: solid white 1px
+
+.VuePagination__pagination-item.page-item
+  @media screen and (max-width: 480px)
+    a[role='button']
+      display: none
 
 nav
   width: 100%
@@ -228,13 +230,14 @@ nav
   font-size: $fz_p_small
   font-weight: normal
 
-.arrange-content>p>img
-  width: 50%
+.arrange-content>p>img, .arrange-content img
+  width: 50% !important
+  height: auto !important
   margin: 10px
   float: right
   display: block
   @media screen and (max-width: $break_small)
-    width: 100%
+    width: 100% !important
 
 .el-dialog__footer
   height: 100px
@@ -278,4 +281,10 @@ nav
         flex: 1
         padding: 0px 20px 0px 20px
         text-align: right
+
+.el-loading-mask.is-fullscreen, .el-loading-mask
+  z-index: 9999 !important
+
+.el-loading-spinner>i,.el-loading-text
+  color: $color_white !important
 </style>

@@ -6,6 +6,7 @@
   > div {
     display: inline-block;
     animation: marquee linear infinite;
+    transition: 0.5s
   }
   .pause {
     animation-play-state: paused;
