@@ -8,5 +8,4 @@ then
   sudo cp gs_credential.json backend/gs_credential.json
 else
   sudo cp .env.example .env
-  sudo touch backend/gs_credential.json
 fi
