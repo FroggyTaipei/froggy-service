@@ -92,7 +92,7 @@ class CaseViewSet(ModelViewSet):
                                        | Q(region__name__icontains=query)
                                        | Q(state__icontains=query)
                                        | Q(disapprove_info__icontains=query)
-                                       | Q(arranges__id__in=arrange_ids))
+                                       | Q(arranges__id__in=arrange_ids)).distinct()
 
         count = queryset.count()
         start = limit * page
