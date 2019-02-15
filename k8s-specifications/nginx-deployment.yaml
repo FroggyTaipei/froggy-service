@@ -16,3 +16,19 @@ spec:
         ports:
         - containerPort: 80
           protocol: TCP
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        readinessProbe:
+          exec:
+            command:
+            - curl
+            - api-service:8000/readiness
+          initialDelaySeconds: 5
+          periodSeconds: 5
