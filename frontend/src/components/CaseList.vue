@@ -50,7 +50,6 @@ export default {
     return {
       showMainContent: false,
       dialogVisible: false,
-      isTableLoaded: false,
       isDetailLoaded: false,
       selectedRow: null,
       selectedCaseDetails: {
@@ -173,18 +172,18 @@ export default {
         )
     },
     loadingTable: function () {
-      this.isTableLoaded = false
-      const loading = this.$loading({
-        lock: true,
-        text: '資料讀取中',
-        target: '.row-table',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
-      Event.$on('vue-tables.loaded', function (data) {
-        this.isTableLoaded = true
-        loading.close()
-      })
+      setTimeout(() => {
+        const loading = this.$loading({
+          lock: true,
+          text: '資料讀取中',
+          target: '.row-table.el-row',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+        Event.$on('vue-tables.loaded', function (data) {
+          loading.close()
+        })
+      }, 500)
     },
     closeDialog: function () {
       this.isDetailLoaded = false

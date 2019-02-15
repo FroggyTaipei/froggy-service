@@ -28,7 +28,6 @@
 </template>
 
 <script>
-let count = 0
 export default {
   name: 'VTextMarquee',
   props: {
@@ -43,10 +42,9 @@ export default {
     }
   },
   data () {
-    count++
     return {
       time: 0,
-      name: 'marquee' + count,
+      name: 'marquee',
       styleEl: document.createElement('style'),
       visibility: 'hidden'
     }
@@ -74,6 +72,7 @@ export default {
                 to { ${to} }
             }`
       this.styleEl.innerHTML = v
+      console.log(this.styleEl)
       document.head.appendChild(this.styleEl)
     },
     start () {
@@ -85,7 +84,10 @@ export default {
     }
   },
   mounted () {
-    // this.start()
+    const marq = this
+    window.onresize = function () {
+      marq.start()
+    }
   }
 }
 </script>

@@ -18,5 +18,12 @@
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
+    <% if (process.env.NODE_ENV === "production") { %>
+      <!-- 運行時依賴 -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.4/vue.min.js" type="text/javascript"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.2/vue-router.min.js" type="text/javascript"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/vuex/3.1.0/vuex.min.js" type="text/javascript"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/element-ui/2.5.4/index.js" type="text/javascript"></script>
+     <% } %>
   </body>
 </html>

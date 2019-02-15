@@ -13,6 +13,8 @@ RUN npm run build
 # Stage 2 - nginx & frontend dist
 FROM nginx:alpine
 
+RUN apk add curl
+
 COPY nginx/prod.conf /etc/nginx/nginx.conf
 COPY --from=build-deps /app/dist/ /dist/
 

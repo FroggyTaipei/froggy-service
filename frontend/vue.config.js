@@ -5,14 +5,23 @@ const CompressionPlugin = require('compression-webpack-plugin')
 module.exports = {
   lintOnSave: false,
   configureWebpack: config => {
-    return {
-      plugins: [
-        new CompressionPlugin({
-          algorithm: 'gzip',
-          test: /\.js$|\.html$|.\css/,
-          threshold: 10240,
-          deleteOriginalAssets: false
-        })]
+    if (process.env.NODE_ENV === 'production') {
+      return {
+        plugins: [
+          new CompressionPlugin({
+            algorithm: 'gzip',
+            test: /\.js$|\.html$|.\css/,
+            threshold: 10240,
+            deleteOriginalAssets: false
+          })
+        ],
+        externals: {
+          'vue': 'Vue',
+          'vue-router': 'VueRouter',
+          'vuex': 'Vuex',
+          'element-ui': 'ELEMENT'
+        }
+      }
     }
   },
   devServer: {
