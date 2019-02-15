@@ -3,7 +3,8 @@ el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22 style="max-width: 1024px")
-        v-server-table(url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click" @loading="loadingTable")
+        v-server-table(v-if="mounted" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
+        //- v-server-table(v-if="mounted" url='http://localhost:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='', :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block
@@ -52,6 +53,7 @@ export default {
       dialogVisible: false,
       isDetailLoaded: false,
       selectedRow: null,
+      mounted: false,
       selectedCaseDetails: {
         'id': 1,
         'number': '000001',
@@ -146,9 +148,24 @@ export default {
     if (this.$store.state.isMobile === true) {
       this.options.perPage = 10
     }
+    Event.$off(['vue-tables.loading', 'vue-tables.loaded'])
+    Event.$on('vue-tables.loading', function () {
+      this.loading = this.$loading({
+        lock: true,
+        text: '案件資料讀取中',
+        target: '.row-table',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
+    })
+
+    Event.$on('vue-tables.loaded', function () {
+      this.loading.close()
+    })
   },
   mounted () {
     this.showMainContent = true
+    this.mounted = true
   },
   methods: {
     click: function (clickedRow) {
@@ -170,20 +187,6 @@ export default {
           loading.close()
         }
         )
-    },
-    loadingTable: function () {
-      setTimeout(() => {
-        const loading = this.$loading({
-          lock: true,
-          text: '資料讀取中',
-          target: '.row-table.el-row',
-          spinner: 'el-icon-loading',
-          background: 'rgba(0, 0, 0, 0.7)'
-        })
-        Event.$on('vue-tables.loaded', function (data) {
-          loading.close()
-        })
-      }, 500)
     },
     closeDialog: function () {
       this.isDetailLoaded = false

@@ -72,7 +72,7 @@ export default {
                 to { ${to} }
             }`
       this.styleEl.innerHTML = v
-      console.log(this.styleEl)
+
       document.head.appendChild(this.styleEl)
     },
     start () {
