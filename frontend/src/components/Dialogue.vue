@@ -261,7 +261,7 @@ export default {
 
 @keyframes flyin-mobile
   100%
-    transform: translateY(200px)
+    transform: translateY(calc(30vh))
 
 .introIn-enter-active
   animation: intro-in 2s
