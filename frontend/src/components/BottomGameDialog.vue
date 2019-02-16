@@ -27,8 +27,13 @@
         |「選服魔鏡號」台北市議員邱威傑市民服務系統
         | 110 台北市信義區仁愛路四段507號 台北市議會 752研究室
         br
-        | 02-27297708 分機 7152、7252
-        | servant@65535studio.com
+        | 02-27297708 分機 7152、7252 &nbsp;
+        a(href="mailto:servant@65535studio.com") servant@65535studio.com
+        | &nbsp;&nbsp;
+        a.githubLink(href="https://github.com/FroggyTaipei/froggy-service" target="_blank")
+          font-awesome-icon(:icon="['fab', 'github']" href="https://github.com/FroggyTaipei/froggy-service")
+          span 「選服魔鏡號」GitHub 專案
+
 </template>
 
 <script>
@@ -125,6 +130,7 @@ export default {
   border: $dialog_border
   border-radius: 10px
   margin-right: 5px
+  padding: 10px 5px
   overflow: hidden
   flex: 3
   @media screen and (max-width: $break_small)
@@ -221,10 +227,14 @@ export default {
 .footer
   flex: 1
   font-size: $fz_tooltip
+  letter-spacing: 0.5px
   color: $color_white
   padding: 5px
   text-align: center
   background-color: $color_black
+  a
+    text-decoration: none
+    color: white
 
 @keyframes jump
   0% 100%
