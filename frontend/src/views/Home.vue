@@ -62,19 +62,31 @@ form
     font-weight: bold
 .el-form-item__label:before, .el-form-item__error
   color: #b33600 !important
+  @media only screen and (max-width: 768px)
+    color: #ff944d !important
 .el-checkbox
   color: #ffffff !important
-
-#category-select
+.el-checkbox__input
+  line-height: 24px !important
+  white-space: unset !important
+@media only screen and (max-width: 768px)
+  .el-icon-success
+    color: lightblue !important
+  .el-upload__tip, .el-upload-list__item-name
+    color: lightgray !important
+  .el-message-box
+    width: 98%!important
+    max-width: 420px
+#type-select
   color: #fff
   margin-bottom: 1vh
   .el-form-item__content
     font-size: larger
   .el-input__inner
     font-size: x-large
+    padding: 0
     background-color: transparent !important
-    width: 9vw
-    min-width: 144px
+    max-width: 125px;
     color: #fff
     &::-webkit-input-placeholder
       color: #fff

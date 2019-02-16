@@ -96,7 +96,6 @@ export default {
       this.lastLine = true
     }
   },
-  watch: {},
   props: ['title']
 }
 </script>
