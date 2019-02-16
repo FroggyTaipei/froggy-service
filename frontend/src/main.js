@@ -16,6 +16,7 @@ import moment from 'moment'
 import { ServerTable } from 'vue-tables-2'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDoubleDown, faHome } from '@fortawesome/free-solid-svg-icons'
+import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
 axios.defaults.xsrfCookieName = 'csrftoken'
@@ -25,8 +26,7 @@ window.axios = require('axios')
 Vue.config.productionTip = false
 Vue.prototype.$moment = moment
 
-library.add(faAngleDoubleDown)
-library.add(faHome)
+library.add([faAngleDoubleDown, faGithub, faHome])
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(VueAxios, axios)
