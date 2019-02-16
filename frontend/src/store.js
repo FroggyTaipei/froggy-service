@@ -16,7 +16,8 @@ const store = new Vuex.Store({
     storageDomain: 'https://storage.googleapis.com/froggy-service/frontend/images/',
     redirectTo: null,
     firstVisit: false,
-    isMobile: null
+    isMobile: null,
+    authentication: false
   },
   getters: {},
   mutations: {
@@ -43,6 +44,9 @@ const store = new Vuex.Store({
     },
     setVisited (state, visited) {
       state.firstVisit = visited
+    },
+    setAuthenticated (state, auth) {
+      state.authentication = auth
     }
   },
   actions: {

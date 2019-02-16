@@ -1,12 +1,12 @@
 <template>
   <fieldset>
     <el-form label-position="top" :model="applicant" label-width="80px" :rules="rules" ref="form">
-      <el-form-item id="category-select">
-        您現在選擇的類別是:
-        <el-select v-model="applicant.type">
+      <el-form-item id="type-select">
+        您選擇的類別是
+        <el-select v-model="type" placeholder="請選擇">
           <el-option
-            v-for="item in $store.state.types"
-            :key="item.id"
+            v-for="(item, index) in $store.state.types"
+            :key="index"
             :value="item.id"
             :label="item.name"></el-option>
         </el-select>
@@ -16,11 +16,11 @@
       </el-form-item>
       <el-form-item :label="mobileText">
         <el-row class="accountkit" type="flex">
-          <AccountKit v-if="!authentication" ref="accountKit">
+          <AccountKit v-if="!$store.state.authentication" ref="accountKit">
             <el-button type="primary" @click="login" :loading="authenticating">手機認證</el-button>
           </AccountKit>
-          <div class="mobile-number" v-show="authentication">0938926812</div>
-          <i class="el-icon-success" v-show="authentication"></i>
+          <div class="mobile-number" v-show="$store.state.authentication">{{ applicant.mobile }}</div>
+          <i class="el-icon-success" v-show="$store.state.authentication"></i>
         </el-row>
       </el-form-item>
       <el-form-item label="身份別" prop="region">
@@ -38,15 +38,21 @@
       <el-form-item label="Email" prop="email">
         <el-input placeholder="e.g. froggy@froggy.com" v-model.trim="applicant.email"></el-input>
       </el-form-item>
-      <el-form-item prop="agreement">
-          <el-checkbox :label="agreementText" name="type" v-model="applicant.agreement" @change="showAgreementModal=true"></el-checkbox>
+      <el-form-item prop="agreement" style="margin-bottom:1vh;">
+          <label style="color:#fff;">
+            <span aria-checked="mixed" class="el-checkbox__input" :class="{'is-checked' : applicant.agreement}">
+              <span class="el-checkbox__inner"></span>
+              <input type="checkbox" aria-hidden="true" class="el-checkbox__original" v-model="applicant.agreement" @change="showAgreementModal=true"/>
+              {{agreementText}}
+            </span>
+          </label>
       </el-form-item>
     </el-form>
     <div class="form-footer-btn">
       <el-button @click="$emit('previous')">上一頁</el-button>
       <el-button @click="nextPage">下一頁</el-button>
     </div>
-    <AgreementModal v-if="showAgreementModal" @close="agreeOrNot(true)" @disagree="agreeOrNot(false)">
+    <AgreementModal v-if="showAgreementModal" @close="showAgreementModal=false" @disagree="disagree">
     </AgreementModal>
   </fieldset>
 </template>
@@ -60,33 +66,19 @@ export default {
     AccountKit,
     AgreementModal
   },
-  props: {
-    selectedType: {
-      type: Number,
-      default: 0
-    }
-  },
-  watch: {
-    selectedType: function (value) {
-      if (value) {
-        this.applicant.type = value
-      }
-    }
-  },
   data: () => ({
     mobileText: '',
     showAgreementModal: false,
-    authentication: false,
     authenticating: false,
-    agreementText: '我同意選民服務個資使用',
+    agreementText: '我同意《台北市議員邱威傑市民服務系統使用說明及隱私權政策》',
+    type: '',
     applicant: {
       username: '',
       mobile: '',
       email: '',
       address: '',
       region: '',
-      agreement: '',
-      type: ''
+      agreement: ''
     },
     rules: {
       username: [{
@@ -116,9 +108,18 @@ export default {
       }]
     }
   }),
+  props: ['selectedType'],
+  watch: {
+    selectedType: function (value) {
+      this.type = value
+    },
+    type: function (value) {
+      this.$store.commit('setCase', { type: value })
+    }
+  },
   methods: {
-    agreeOrNot (value) {
-      this.applicant.agreement = value
+    disagree () {
+      this.applicant.agreement = false
       this.showAgreementModal = false
     },
     login () {
@@ -139,12 +140,10 @@ export default {
         })
       } else {
         this.$alert('請重新認證', '提示', {
-          type: 'warning',
-          callback: () => {
-            this.authenticating = false
-          }
+          type: 'warning'
         })
       }
+      this.authenticating = false
     },
     getAccountKitToken (accountKitResp) {
       console.log(accountKitResp)
@@ -154,9 +153,8 @@ export default {
           this.mobileText = '手機號碼'
           this.applicant.mobile = response.data.mobile
           let jwt = { Authorization: 'JWT ' + response.data.jwt }
-          this.authentication = true
+          this.$store.commit('setAuthenticated', true)
           this.$store.commit('setJWT', jwt)
-          this.authenticating = false
         })
         .catch(e => {
           console.log(e)
@@ -164,17 +162,14 @@ export default {
           let title = e.response.status + ' ' + e.response.statusText
           let content = e.response.data.detail ? e.response.data.detail : e.response.data[0]
           this.$alert(content, title, {
-            type: 'error',
-            callback: () => {
-              this.authenticating = false
-            }
+            type: 'error'
           })
         })
     },
     nextPage () {
       this.$refs.form.validate((valid) => {
         if (valid) {
-          if (true) {
+          if (this.$store.state.authentication) {
             if (this.applicant.agreement) {
               console.log('form pass')
               this.$store.commit('setCase',
