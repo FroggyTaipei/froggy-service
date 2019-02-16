@@ -25,7 +25,8 @@
               <transition name="froggy-slide-fade">
                 <div v-show="category.avatar"  class="category-content-center">
                   <img class="category-content-froggy-bottom" :src="this.images.FROGGY_BOTTOM">
-                  <img class="category-content-froggy" :class="{ flip:needFlip }" :src="this.images.FROGGY">
+                  <img class="category-content-froggy" v-show="!hitted" :class="{ flip:needFlip }" :src="this.images.FROGGY">
+                  <img class="category-content-froggy" v-show="hitted" :src="this.images.FROGGY_HITTED">
                 </div>
               </transition>
               <transition name="froggy-slide-fade">
@@ -91,7 +92,7 @@
       </transition>
       <div class="mobile-title hidden-sm-and-up">
         <div class="back-btn" @click="back">
-          <el-button icon="el-icon-close" style="font-size=1.5em;font-weight=900;" circle></el-button>
+          <font-awesome-icon icon="home" />
         </div>
         <h2>
           選擇類別
@@ -132,7 +133,7 @@
       <el-col :xs="24" :span="12" class="col2">
         <div class="mobile-title hidden-sm-and-up">
           <div class="back-btn" @click="back">
-            <el-button icon="el-icon-close" style="font-size=1.5em;font-weight=900;" circle></el-button>
+            <font-awesome-icon icon="home" />
           </div>
           <h2>
             您的資料
@@ -143,13 +144,14 @@
             <!-- Page two -->
             <InputUserInfo
               v-show="step == 1"
-              :selectedType="typeProps"
+              :selectedType="selectedType"
               @next="next"
               @previous="formLeaveAnimation"
               @validateFail="validateErrorAnimation"/>
             <!-- Page three -->
             <InputCase
               v-show="step == 2"
+              :selectedType="selectedType"
               @previous="previous"
               @validateFail="validateErrorAnimation"/>
           </div>
@@ -170,6 +172,7 @@ export default {
   },
   data: () => ({
     step: 0,
+    hitted: false,
     isClose: false,
     needFlip: false,
     validateFail: false,
@@ -187,11 +190,12 @@ export default {
     },
     images: {
       FROGGY: '',
-      FROGGY_BOTTOM: ''
+      FROGGY_BOTTOM: '',
+      FROGGY_HITTED: ''
     },
     froggyImage: ['morning_2.png', 'noon_2.png', 'night_3.png'],
     screenActive: true,
-    typeProps: 0
+    selectedType: ''
   }),
   created () {
     if (this.$store.state.currentTime === '') {
@@ -202,6 +206,7 @@ export default {
       }
       this.images.FROGGY = this.$store.state.storageDomain + 'froggy/' + this.froggyImage[this.$store.state.currentTime]
       this.images.FROGGY_BOTTOM = this.$store.state.storageDomain + 'dialog/category/froggy_bottom.png'
+      this.images.FROGGY_HITTED = this.$store.state.storageDomain + 'froggy/hitted.png'
     }
     if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
       this.$store.dispatch('getRegionsList')
@@ -286,7 +291,8 @@ export default {
       this.$emit('closeInput')
     },
     selectCaseType (type) {
-      this.typeProps = type
+      this.selectedType = type
+      this.$store.commit('setCase', { type: type })
       // avatar and interface leave first, then background disappear
       this.categoryOutAnimation(false)
     },
@@ -302,6 +308,12 @@ export default {
     feedFroggy () {
       if (!this.feeding) {
         this.feeding = true
+        setTimeout(() => {
+          this.hitted = true
+        }, 1500)
+        setTimeout(() => {
+          this.hitted = false
+        }, 2000)
         setTimeout(() => {
           this.feeding = false
         }, 1800)
@@ -438,6 +450,17 @@ export default {
 .back-btn {
   margin: 2vh;
   position: absolute;
+  background-color: rgba(0, 0, 0, 0.5);
+  min-width: 6vmax;
+  min-height: 6vmax;
+  border-radius: 5px;
+  text-align: center;
+  display: flex;
+}
+.back-btn > svg {
+  color: white;
+  font-size: 4vmax;
+  margin: auto;
 }
 .bg-unit {
   position: absolute;
@@ -653,5 +676,6 @@ export default {
     border: transparent;
     border-radius: 10px;
   }
+
 }
 </style>

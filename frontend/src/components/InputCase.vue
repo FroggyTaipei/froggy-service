@@ -1,7 +1,15 @@
 <template>
   <fieldset>
     <el-form label-position="top" :model="cases" label-width="80px" :rules="rules" ref="form">
-      <el-form-item :label="$store.state.typeText">
+      <el-form-item id="type-select">
+        您選擇的類別是
+        <el-select v-model="type" placeholder="請選擇">
+          <el-option
+            v-for="(item, index) in $store.state.types"
+            :key="index"
+            :value="item.id"
+            :label="item.name"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="案件主旨" prop="title">
         <el-input placeholder="請輸入案件主旨" v-model.trim="cases.title"></el-input>
@@ -51,6 +59,7 @@ export default {
     acceptFileType: '.jpg,.jpeg,.png,.mpg,.mpeg,.avi,.wmv,.mp3,.mp4,.zip,.rar,.7z',
     wrongFileType: false,
     fileOverSize: false,
+    type: '',
     upload_data: {
       case_uuid: ''
     },
@@ -87,6 +96,15 @@ export default {
       }]
     }
   }),
+  props: ['selectedType'],
+  watch: {
+    selectedType: function (value) {
+      this.type = value
+    },
+    type: function (value) {
+      this.$store.commit('setCase', { type: value })
+    }
+  },
   methods: {
     updateCSRFToken () {
       this.axios.get('api/csrftoken/')
@@ -111,17 +129,28 @@ export default {
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
-      this.axios.post('/api/cases', this.cases, { headers: this.$store.state.jwt })
-        .then(response => {
-          this.$router.push({ name: 'home', params: { success: true } })
-          setTimeout(() => {
-            loading.close()
-          }, 500)
-        })
-        .catch(e => {
-          console.log(e)
-          console.log(e.response)
-        })
+      this.postCases(this.cases).then(response => {
+        this.$router.push({ name: 'home', params: { success: true } })
+        setTimeout(() => {
+          loading.close()
+        }, 500)
+      }).catch(e => {
+        console.log(e)
+        console.log(e.response)
+        loading.close()
+        if (e.response.data.detail && e.response.data.detail.indexOf('expired') > -1) {
+          this.$alert('請重新進行手機驗證', '憑證過期', {
+            confirmButtonText: '確定',
+            type: 'error',
+            callback: action => {
+              this.$store.commit('setAuthenticated', false)
+            }
+          })
+        }
+      })
+    },
+    postCases (cases) {
+      return this.axios.post('/api/cases', cases, { headers: this.$store.state.jwt })
     },
     completeCaseData () {
       this.$refs.form.validate((valid) => {
@@ -186,10 +215,21 @@ export default {
     },
     handleError (err, file, fileList) {
       console.log(err.status)
-      this.$alert(err.message.slice(2, -2), '很抱歉', {
-        type: 'error'
-      }).then(
-      )
+      console.log(err.message)
+      var errMsg = ''
+      if (err.message.indexOf('expired') > -1) {
+        errMsg = '憑證過期，請重新進行手機驗證'
+      } else {
+        errMsg = err.message.slice(2, -2)
+      }
+      this.$alert(errMsg, '很抱歉', {
+        type: 'error',
+        callback: action => {
+          if (err.message.indexOf('expired') > -1) {
+            this.$store.commit('setAuthenticated', false)
+          }
+        }
+      })
     },
     validate () {
       return new Promise((resolve, reject) => {
