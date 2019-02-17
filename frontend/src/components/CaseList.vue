@@ -6,7 +6,7 @@ el-container.page2
         v-server-table(v-if="mounted" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
         //- v-server-table(v-if="mounted" url='http://localhost:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
-        el-dialog(title='', :visible.sync='dialogVisible' @closed="closeDialog")
+        el-dialog(title='' :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block
             .upper-block-bkg
               .case-content-type-header {{selectedCaseDetails.type}}
@@ -180,11 +180,18 @@ export default {
       })
       this.axios
         .get('/api/cases/' + caseId)
-        .then(response => (this.selectedCaseDetails = response.data))
-        .catch(e => console.log(e))
-        .finally(() => {
+        .then((response) => {
+          this.selectedCaseDetails = response.data
+          return true
+        })
+        .then(() => {
           this.dialogVisible = true
           loading.close()
+        })
+        .catch(e => console.log(e))
+        .finally(() => {
+          const t = document.getElementsByClassName('case-content')[0]
+          t.scrollTo(0, 0)
         }
         )
     },

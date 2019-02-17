@@ -130,7 +130,7 @@ export default {
   border: $dialog_border
   border-radius: 10px
   margin-right: 5px
-  padding: 10px 5px
+  padding: 5px 5px
   overflow: hidden
   flex: 3
   @media screen and (max-width: $break_small)
@@ -163,7 +163,7 @@ export default {
   position: absolute
   padding: 5px
   right: 15px
-  bottom: 5px
+  bottom: 0px
   color: $color_red
   animation: jump 0.7s infinite ease
   @media screen and (max-width: $break_small)
