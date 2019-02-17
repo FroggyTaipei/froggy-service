@@ -208,10 +208,10 @@ export default {
       this.images.FROGGY_BOTTOM = this.$store.state.storageDomain + 'dialog/category/froggy_bottom.png'
       this.images.FROGGY_HITTED = this.$store.state.storageDomain + 'froggy/hitted.png'
     }
-    if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
-      this.$store.dispatch('getRegionsList')
-      this.$store.dispatch('getTypeList')
-    }
+    // clear stroe
+    this.$store.commit('setCase', {})
+    this.$store.commit('setAuthenticated', false)
+    this.$store.commit('setJWT', {})
   },
   mounted () {
     if (this.$store.state.isMobile) {
@@ -675,6 +675,7 @@ export default {
     color: #fff;
     border: transparent;
     border-radius: 10px;
+    font-size: x-large;
   }
 
 }

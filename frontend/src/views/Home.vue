@@ -69,6 +69,11 @@ form
 .el-checkbox__input
   line-height: 24px !important
   white-space: unset !important
+.el-upload-list
+  max-width: 35vw
+.el-upload-list__item-name
+  overflow: hidden
+  text-overflow: ellipsis
 @media only screen and (max-width: 768px)
   .el-icon-success
     color: lightblue !important
@@ -77,6 +82,8 @@ form
   .el-message-box
     width: 98%!important
     max-width: 420px
+  .el-upload-list
+    max-width: 70vw
 #type-select
   color: #fff
   margin-bottom: 1vh

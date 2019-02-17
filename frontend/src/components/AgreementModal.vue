@@ -111,7 +111,12 @@ export default {
 
 @media only screen and (max-width: 768px) {
   .modal-container {
-    width: 80vw
+    width: 85vw;
+    padding: 16px;
+    max-height: 80vh;
+  }
+  .modal-body {
+    margin: 0;
   }
 }
 /*
