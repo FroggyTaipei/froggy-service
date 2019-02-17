@@ -1,5 +1,6 @@
 <style lang="scss" scoped>
 .v-marquee {
+  width: 100%;
   display: block;
   white-space: nowrap;
   overflow: hidden;
@@ -65,8 +66,8 @@ export default {
       return ['-webkit-', '-moz-', '-ms-', ''].map(el => `${el + key}:${value};`).join('')
     },
     keyframes () {
-      const from = this.prefix('transform', `translateX(${this.$el.offsetWidth - 1200}px)`)
-      const to = this.prefix('transform', `translateX(-${this.$el.firstChild.offsetWidth - 1500}px)`)
+      const from = this.prefix('transform', `translateX(${this.$el.offsetWidth + 50}px)`)
+      const to = this.prefix('transform', `translateX(-${this.$el.firstChild.offsetWidth + 50}px)`)
       const v = `@keyframes ${this.name} {
                 from { ${from} }
                 to { ${to} }
