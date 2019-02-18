@@ -4,7 +4,6 @@ el-container.page2
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22 style="max-width: 1024px")
         v-server-table(v-if="mounted" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
-        //- v-server-table(v-if="mounted" url='http://localhost:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='' :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block

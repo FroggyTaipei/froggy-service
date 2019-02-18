@@ -18,10 +18,14 @@ const store = new Vuex.Store({
     firstVisit: false,
     isLoadingTable: false,
     isMobile: null,
-    authentication: false
+    authentication: false,
+    browser: ''
   },
   getters: {},
   mutations: {
+    setBrowser (state, browser) {
+      state.browser = browser
+    },
     setIsMobile (state, isMobile) {
       state.isMobile = isMobile
     },

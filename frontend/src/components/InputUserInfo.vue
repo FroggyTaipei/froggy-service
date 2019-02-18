@@ -142,8 +142,9 @@ export default {
           state: response.state
         })
       } else {
-        this.$alert('請重新認證', '提示', {
-          type: 'warning'
+        this.$alert('請重新認證', '呱吉提示', {
+          type: 'warning',
+          confirmButtonText: '好！'
         })
       }
       this.authenticating = false
@@ -184,13 +185,15 @@ export default {
                 })
               this.$emit('next')
             } else {
-              this.$alert('請同意本系統個資使用', '提示', {
-                type: 'warning'
+              this.$alert('請同意本系統個資使用', '呱吉提示', {
+                type: 'warning',
+                confirmButtonText: '好！'
               })
             }
           } else {
-            this.$alert('請通過手機認證', '提示', {
-              type: 'warning'
+            this.$alert('請通過手機認證', '呱吉提示', {
+              type: 'warning',
+              confirmButtonText: '好！'
             })
           }
         } else {
