@@ -6,19 +6,19 @@
           .div {{ title[messageCount] }}
           font-awesome-icon.downAngle(icon="angle-double-down" :class="{blackArrow: lastLine}")
       .bottom-dialog-right
-        span.bottom-dialog-options(@click="toggleParentAnimation('create')")
+        span.bottom-dialog-options(@click="toggleParentAnimation('create')" :disabled="buttonDisabled")
           a 我需要服務
           .arrow-icon
             i.el-icon-caret-right(:class="{showArrow: showArrow[0]}")
-        span.bottom-dialog-options(@click="toggleParentAnimation('cases')")
+        span.bottom-dialog-options(@click="toggleParentAnimation('cases')" :disabled="buttonDisabled")
           a 呱吉做什麼
           .arrow-icon
             i.el-icon-caret-right(:class="{showArrow: showArrow[1]}")
-        span.bottom-dialog-options(@click="toggleParentAnimation('about')")
+        span.bottom-dialog-options(@click="toggleParentAnimation('about')" :disabled="buttonDisabled")
           a 關於魔鏡號
           .arrow-icon
             i.el-icon-caret-right(:class="{showArrow: showArrow[2]}")
-        span.bottom-dialog-options(@click="toggleParentAnimation('home')")
+        span.bottom-dialog-options(@click="toggleParentAnimation('')" :disabled="buttonDisabled")
           a 首頁
           .arrow-icon
             i.el-icon-caret-right(:class="{showArrow: showHomeArrow}")
@@ -44,7 +44,8 @@ export default {
       showSmallDialog: true,
       showArrow: [false, false, false],
       showHomeArrow: false,
-      lastLine: false
+      lastLine: false,
+      buttonDisabled: false
     }
   },
   methods: {
@@ -52,17 +53,24 @@ export default {
       let reservedUrl = ['/create', '/cases', '/about', '/home', '/success', '/home/success']
       let destination = '/' + to
       let currentPath = this.$route.fullPath
-      this.$store.commit('setRedirectDestination', destination)
-      if (destination === this.$route.fullPath) {
-        // console.log('redirect situation 1 : nothing')
-        return false
-      } else if (reservedUrl.includes(currentPath) === false) {
-        // console.log('redirect situation 2 : outer link')
-        this.$router.push({ name: 'home', params: { success: '#' } })
-        this.$router.push(destination)
+      if (this.buttonDisabled) {
+        if (destination === this.$route.fullPath) {
+          this.buttonDisabled = false
+        }
       } else {
-        // console.log('redirect situation 3 : redirect')
-        this.$parent.$parent.toggleLeaveAnimation(destination)
+        this.buttonDisabled = true
+        this.$store.commit('setRedirectDestination', destination)
+        if (destination === this.$route.fullPath) {
+          // console.log('redirect situation 1 : nothing')
+          return false
+        } else if (reservedUrl.includes(currentPath) === false) {
+          // console.log('redirect situation 2 : outer link')
+          this.$router.push({ name: 'home', params: { success: '#' } })
+          this.$router.push(destination)
+        } else {
+          // console.log('redirect situation 3 : redirect')
+          this.$parent.$parent.toggleLeaveAnimation(destination)
+        }
       }
     },
     changeText () {
