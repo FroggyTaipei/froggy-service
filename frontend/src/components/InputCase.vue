@@ -37,7 +37,8 @@
         :limit="5">
         <el-button slot="trigger" type="primary">上傳檔案</el-button>
         <div slot="tip" class="el-upload__tip">1.上傳單檔限制為10MB，最多5個檔案。</div>
-        <div slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png, mpg, mpeg, avi, wmv, mp3, mp4, zip, rar, 7z。</div>
+        <div v-if="!$store.state.isMobile" slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png, mpg, mpeg, avi, wmv, mp3, mp4, zip, rar, 7z, txt, doc, docx, ppt, pptx, pdf, odt, xls, xlsx, key, pages, numbers。</div>
+        <div v-if="$store.state.isMobile" slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png。</div>
       </el-upload>
     </el-form>
     <div class="form-footer-btn">
@@ -53,10 +54,13 @@ export default {
   created () {
     this.cases.uuid = this.$uuid.v1()
     this.upload_data.case_uuid = this.cases.uuid
+    if (!this.$store.state.isMobile) {
+      this.acceptFileType += ',.mpg,.mpeg,.avi,.wmv,.mp3,.mp4,.zip,.rar,.7z,.doc,.docx,.ppt,.pptx,.pdf,.odt,.xls,.xlsx,.key,.pages,.numbers,.txt'
+    }
   },
   data: () => ({
     caseCompletePopup: false,
-    acceptFileType: '.jpg,.jpeg,.png,.mpg,.mpeg,.avi,.wmv,.mp3,.mp4,.zip,.rar,.7z',
+    acceptFileType: '.jpg,.jpeg,.png',
     wrongFileType: false,
     fileOverSize: false,
     type: '',
@@ -166,7 +170,8 @@ export default {
     beforeUpload (file) {
       console.log('before upload')
       const fileLimit = 10485760
-      if (!/\.(jpg?|jpeg?|png?|mpg?|mpeg?|avi?|wmv?|mp3?|mp4?|zip?|rar?|7z?)$/i.test(file.name)) {
+      const fileRegExp = this.$store.state.isMobile ? /\.(jpg?|jpeg?|png?)$/i : /\.(jpg?|jpeg?|png?|mpg?|mpeg?|avi?|wmv?|mp3?|mp4?|zip?|rar?|7z?|doc?|docx?|ppt?|pptx?|pdf?|odt?|xls?|xlsx?|key?|pages?|numbers?|txt?)$/i
+      if (!fileRegExp.test(file.name)) {
         this.$refs.upload.abort()
         this.wrongFileType = true
         return false

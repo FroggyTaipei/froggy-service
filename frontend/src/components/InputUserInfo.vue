@@ -22,6 +22,9 @@
           <div class="mobile-number" v-show="$store.state.authentication">{{ applicant.mobile }}</div>
           <i class="el-icon-success" v-show="$store.state.authentication"></i>
         </el-row>
+        <div class="el-form-item__error" style="color: #fff !important;">
+          如果您的裝置未接收到驗證簡訊，請逕聯絡團隊為您服務！
+        </div>
       </el-form-item>
       <el-form-item label="身份別" prop="region">
         <el-select v-model="applicant.region" placeholder="請選擇">
@@ -52,7 +55,7 @@
       <el-button @click="$emit('previous')">上一頁</el-button>
       <el-button @click="nextPage">下一頁</el-button>
     </div>
-    <AgreementModal v-if="showAgreementModal" @close="showAgreementModal=false" @disagree="disagree">
+    <AgreementModal v-if="showAgreementModal" @close="disagree(true)" @disagree="disagree(false)">
     </AgreementModal>
   </fieldset>
 </template>
@@ -118,8 +121,8 @@ export default {
     }
   },
   methods: {
-    disagree () {
-      this.applicant.agreement = false
+    disagree (value) {
+      this.applicant.agreement = value
       this.showAgreementModal = false
     },
     login () {
