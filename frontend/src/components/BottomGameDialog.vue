@@ -33,7 +33,6 @@
         a.githubLink(href="https://github.com/FroggyTaipei/froggy-service" target="_blank")
           font-awesome-icon(:icon="['fab', 'github']")
           span 「選服魔鏡號」GitHub 專案
-
 </template>
 
 <script>
@@ -142,8 +141,8 @@ export default {
     margin: 0px 12px 10px 12px
     box-shadow: 3px 4px #a9a1a1
   .text-left
-    font-size: $dialog_left_font
-    letter-spacing: 1.5px
+    // font-size: $dialog_left_font
+    // letter-spacing: 1.5px
     height: 90%
     position: relative
     padding: 5px 5px 0px 10px
