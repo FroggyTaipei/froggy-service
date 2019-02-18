@@ -25,8 +25,9 @@
               <transition name="froggy-slide-fade">
                 <div v-show="category.avatar"  class="category-content-center">
                   <img class="category-content-froggy-bottom" :src="this.images.FROGGY_BOTTOM">
-                  <img class="category-content-froggy" v-show="!hitted" :class="{ flip:needFlip }" :src="this.images.FROGGY">
-                  <img class="category-content-froggy" v-show="hitted" :src="this.images.FROGGY_HITTED">
+                  <img class="category-content-froggy normal-froggy" v-show="!hitted&&!waving" :src="this.images.FROGGY">
+                  <img class="category-content-froggy flip" v-show="hitted" :src="this.images.FROGGY_HITTED">
+                  <img class="category-content-froggy" v-show="waving" src="https://storage.googleapis.com/froggy-service/frontend/assets/froggy_wave.gif">
                 </div>
               </transition>
               <transition name="froggy-slide-fade">
@@ -35,47 +36,57 @@
             </el-col>
         </el-row>
         <div class="bouncing-ball" :class="{ 'feeding-animation' : feeding }" v-show="feeding"></div>
+        <transition name="screen-slide-left" @after-leave="screenAfterLeave">
+          <div v-if="screenActive" class="screen screen1 hidden-xs-only"></div>
+        </transition>
+        <transition name="screen-slide-right">
+          <div v-if="screenActive" class="screen screen2 hidden-xs-only"></div>
+        </transition>
       </div>
       <!-- 下方 footer -->
       <transition name="person-slide-fade">
         <el-row v-show="category.interface" class="row-dialog category-footer hidden-xs-only" type="flex" align="middle" justify="center" style="height:100%">
-
           <el-col class="bottom-dialog-wrapper">
-            <div class="bottom-dialog-right left-actually" style="flex: 3;margin-right: 5px;">
-              <span class="bottom-dialog-options" @click="selectCaseType(item.id)" v-for="item in $store.state.types" :key="item.id">
-                <a>{{ item.name }}</a>
-                <div class="arrow-icon">
-                  <i class="el-icon-caret-right"></i>
-                </div>
-              </span>
-            </div>
-            <div class="bottom-dialog-right">
-              <span class="bottom-dialog-options">
-                <a>-</a>
-                <div class="arrow-icon">
-                  <i class="el-icon-caret-right" style="color: transparent;"></i>
-                </div>
-              </span>
-              <span class="bottom-dialog-options">
-                <a>-</a>
-                <div class="arrow-icon">
-                  <i class="el-icon-caret-right" style="color: transparent;"></i>
-                </div>
-              </span>
-              <span class="bottom-dialog-options" @click="feedFroggy">
-                <a class="normal-text">-</a>
-                <a class="color-egg" style="display: none;">餵食</a>
-                <div class="arrow-icon">
-                  <i class="el-icon-caret-right"></i>
-                </div>
-              </span>
-              <span class="bottom-dialog-options" @click="categoryOutAnimation(true)">
-                <a>回首頁</a>
-                <div class="arrow-icon">
-                  <i class="el-icon-caret-right"></i>
-                </div>
-              </span>
-            </div>
+            <transition name="fade">
+              <div v-show="category.footer" class="bottom-dialog-right left-actually">
+                  <span class="bottom-dialog-options" @click="selectCaseType(item.id)" v-for="item in $store.state.types" :key="item.id">
+                    <a>{{ item.name }}</a>
+                    <div class="arrow-icon">
+                      <i class="el-icon-caret-right"></i>
+                    </div>
+                  </span>
+              </div>
+            </transition>
+            <transition name="fade">
+              <div v-show="category.footer" class="bottom-dialog-right">
+                <span class="bottom-dialog-options">
+                  <a>-</a>
+                  <div class="arrow-icon">
+                    <i class="el-icon-caret-right" style="color: transparent;"></i>
+                  </div>
+                </span>
+                <span class="bottom-dialog-options" @mouseenter="froggyWave(true)" @mouseleave="froggyWave(false)">
+                  <a v-show="!waving">-</a>
+                  <a v-show="waving">High起來！</a>
+                  <div class="arrow-icon">
+                    <i class="el-icon-caret-right" style="color: transparent;"></i>
+                  </div>
+                </span>
+                <span class="bottom-dialog-options" @click="feedFroggy" id="feed">
+                  <a class="normal-text">-</a>
+                  <a class="color-egg" style="display: none;">餵食</a>
+                  <div class="arrow-icon">
+                    <i class="el-icon-caret-right"></i>
+                  </div>
+                </span>
+                <span class="bottom-dialog-options" @click="categoryOutAnimation(true)">
+                  <a>回首頁</a>
+                  <div class="arrow-icon">
+                    <i class="el-icon-caret-right"></i>
+                  </div>
+                </span>
+              </div>
+            </transition>
           </el-col>
           <el-col class="footer hidden-xs-only">
             <span>
@@ -83,7 +94,7 @@
              110 台北市信義區仁愛路四段507號 台北市議會 752研究室
             <br>
              02-27297708 分機 7152、7252 &nbsp;
-             <a href="mailto:servant@65535studio.com">servant@65535studio.com</a> &nbsp;&nbsp;
+             <a href="mailto:servant@65535studio.com">servant@65535studio.com</a> &nbsp;
              <a href="https://github.com/FroggyTaipei/froggy-service" class="githubLink" target="_blank">
               <font-awesome-icon :icon="['fab', 'github']"></font-awesome-icon>
               <span>「選服魔鏡號」GitHub 專案</span>
@@ -111,12 +122,6 @@
           </div>
         </div>
       </transition>
-      <transition name="screen-slide-left" @after-leave="screenAfterLeave">
-        <div v-if="screenActive" class="screen screen1 hidden-xs-only"></div>
-      </transition>
-      <transition name="screen-slide-right">
-        <div v-if="screenActive" class="screen screen2 hidden-xs-only"></div>
-      </transition>
     </el-row>
     <el-row type="flex" class="panel form-page" :gutter="10" v-show="step > 0">
       <div class="bg-unit bg-logo"></div>
@@ -124,7 +129,7 @@
         <el-container>
           <transition name="person-slide-fade" @after-leave="formAfterLeave">
             <div v-show="form.interface" class="form-footer">
-              <img style="width:90%" :class="{ 'validate-error-animation' : validateFail }" :src="this.images.FROGGY" >
+              <img style="width:55%;right:6vw;" :class="{ 'validate-error-animation' : validateFail }" :src="this.images.FROGGY" >
               <transition name="fade" mode="in-out">
                 <img key="33" v-if="progressState" class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress33.png" >
                 <img key="66" v-else class="progress-bar" src="https://storage.googleapis.com/froggy-service/frontend/images/dialog/input/progress66.png" >
@@ -176,8 +181,8 @@ export default {
   data: () => ({
     step: 0,
     hitted: false,
+    waving: false,
     isClose: false,
-    needFlip: false,
     validateFail: false,
     progressState: true,
     transitionState: false,
@@ -185,7 +190,8 @@ export default {
     category: {
       background: true,
       avatar: false,
-      interface: true
+      interface: true,
+      footer: false
     },
     form: {
       background: false,
@@ -196,7 +202,6 @@ export default {
       FROGGY_BOTTOM: '',
       FROGGY_HITTED: ''
     },
-    froggyImage: ['morning_2.png', 'noon_2.png', 'night_3.png'],
     screenActive: true,
     selectedType: ''
   }),
@@ -204,12 +209,9 @@ export default {
     if (this.$store.state.currentTime === '') {
       this.back()
     } else {
-      if (this.$store.state.currentTime === 1) {
-        this.needFlip = true
-      }
-      this.images.FROGGY = this.$store.state.storageDomain + 'froggy/' + this.froggyImage[this.$store.state.currentTime]
+      this.images.FROGGY = this.$store.state.storageDomain + 'froggy/froggyForm.png'
       this.images.FROGGY_BOTTOM = this.$store.state.storageDomain + 'dialog/category/froggy_bottom.png'
-      this.images.FROGGY_HITTED = this.$store.state.storageDomain + 'froggy/hitted.png'
+      this.images.FROGGY_HITTED = this.$store.state.storageDomain + 'froggy/froggyForm_hitted.png'
     }
     // clear stroe
     this.$store.commit('setCase', {})
@@ -224,8 +226,14 @@ export default {
         this.screenActive = false
       }, 500)
     }
+    this.category.footer = true
   },
   methods: {
+    froggyWave (value) {
+      if (!this.feeding) {
+        this.waving = value
+      }
+    },
     validateErrorAnimation () {
       this.validateFail = true
       setTimeout(() => {
@@ -361,8 +369,9 @@ export default {
   display: flex;
 }
 .screen {
-  position: absolute;
+  position: fixed;
   top: 0px;
+  left: 0px;
   height: 100%;
   width: 100%;
 }
@@ -437,11 +446,16 @@ export default {
 }
 
 .category-footer {
-    flex: 1;
+  flex: 1;
 }
 
 .left-actually > .bottom-dialog-options {
   flex-basis: calc(25%) !important;
+}
+
+.left-actually {
+  flex: 3;
+  margin-right: 5px;
 }
 
 .bottom-dialog-options:hover > a.normal-text {
@@ -451,6 +465,7 @@ export default {
   cursor: pointer;
   display: block !important;
 }
+
 .back-btn {
   margin: 2vh;
   position: absolute;
