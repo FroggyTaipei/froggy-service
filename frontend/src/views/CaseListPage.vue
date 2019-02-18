@@ -1,7 +1,5 @@
 <template>
-  <div class="container">
-    <CaseList id="cases"></CaseList>
-  </div>
+  <CaseList id="cases"></CaseList>
 </template>
 
 <script>
