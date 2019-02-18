@@ -24,19 +24,15 @@ export default {
       } else {
         this.$store.commit('setIsMobile', false)
       }
-      if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
-        this.$store.dispatch('getRegionsList')
-        this.$store.dispatch('getTypeList')
-      }
     } else {
       if (inapp.browser === 'line') {
         location.href = 'home?openExternalBrowser=1'
       }
-      if (inapp.browser === 'facebook' || inapp.browser === 'messenger') {
-        this.$alert('請使用外部瀏覽器已獲得最佳瀏覽體驗', '友情提示', {
-          type: 'warning'
-        })
-      }
+      this.$store.commit('setBrowser', inapp.browser)
+    }
+    if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
+      this.$store.dispatch('getRegionsList')
+      this.$store.dispatch('getTypeList')
     }
   }
 }

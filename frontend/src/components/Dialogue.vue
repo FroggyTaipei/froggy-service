@@ -71,6 +71,14 @@ export default {
     start: function () {
       this.isShowIntro = false
       setTimeout(() => this.$refs.marquee.start(), 1000)
+    },
+    autoInappAlert: function () {
+      if (this.$store.state.browser === 'facebook' || this.$store.state.browser === 'messenger') {
+        this.$alert('要使用手機瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
+          type: 'warning',
+          confirmButtonText: '好！'
+        })
+      }
     }
   },
   computed: {
@@ -128,6 +136,7 @@ export default {
         this.isShowIntroText = true
         setTimeout(() => {
           this.isShowIntro = false
+          this.autoInappAlert()
           setTimeout(() => this.$refs.marquee.start(), 1000)
         }, 1500)
       }, 1000)
