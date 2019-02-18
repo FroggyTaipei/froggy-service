@@ -4,7 +4,7 @@ el-container.page2
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22 style="max-width: 1024px")
         v-server-table(v-if="mounted" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
-        //- v-server-table(v-if="mounted" url='http://192.168.1.105:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
+        //- v-server-table(v-if="mounted" url='http://localhost:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='' :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block
@@ -26,10 +26,12 @@ el-container.page2
             div(v-if="selectedCaseDetails.state !== '不受理'")
               .arranges-title 案件處理進度：
               .case-content-arranges(v-for="arrange,index in reverseCaseProcess")
-                h4 處理回報（{{ reverseCaseProcess.length - index}}）
-                div.arrange-title {{ arrange.title }}
+                //- h4 處理回報（{{ reverseCaseProcess.length - index}}）
+                br
+                div.arrange-title 處理主旨： {{ arrange.title }}
+                div.arrange-time 處理時間： {{arrange.arrange_time}}
                 div.arrange-content(v-html="arrange.content") {{ arrange.content }}
-                div.arrange-time {{arrange.arrange_time}}
+                hr
               br
               br
             div(style="text-align: center; display:block") ---------- End ----------

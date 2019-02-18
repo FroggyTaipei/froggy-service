@@ -223,7 +223,7 @@ nav
     //   font-weight: normal
 .case-disapproved
   font-size: $fz_p
-  font-weight: normal
+  font-weight: bold
 .disapprove-info
   font-size: $fz_p_small
   font-weight: normal
@@ -232,7 +232,6 @@ nav
   width: 50% !important
   height: auto !important
   margin: 10px
-  float: right
   display: block
   @media screen and (max-width: $break_small)
     width: 100% !important
