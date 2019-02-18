@@ -13,6 +13,7 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
 import moment from 'moment'
+import VueLazyload from 'vue-lazyload'
 import { ServerTable } from 'vue-tables-2'
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faAngleDoubleDown, faHome, faVolumeUp, faVolumeOff } from '@fortawesome/free-solid-svg-icons'
@@ -34,6 +35,13 @@ Vue.use(UUID)
 Vue.use(ElementUI)
 Vue.use(ServerTable)
 locale.use(zh)
+
+Vue.use(VueLazyload, {
+  preLoad: 1.3,
+  // error: 'https://cdn0.iconfinder.com/data/icons/shift-free/32/Error-128.png',
+  loading: require('@/assets/images/preloader.gif'),
+  attempt: 1
+})
 
 // Sentry for logging frontend errors
 if (process.env.NODE_ENV === 'production' && process.env.VUE_APP_SENTRY_PUBLIC_DSN) {
