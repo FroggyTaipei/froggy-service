@@ -92,3 +92,8 @@ $ kubectl delete --all secrets --namespace=app
 ### Architecture
 
 ![Architecture diagram](architecture.png)
+
+
+### Licence
+* Copyright (C) 2019 - 2019 台北市議員邱威傑辦公室. All rights reserved.
+* Distributed under the GNU AGPL v3.0
