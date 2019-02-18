@@ -183,17 +183,19 @@ export default {
     },
     beforeRemove (file, fileList) {
       if (this.wrongFileType) {
-        this.$alert('請上傳符合格式的檔案', '提示', {
-          type: 'warning'
+        this.$alert('請上傳符合格式的檔案', '呱吉提示', {
+          type: 'warning',
+          confirmButtonText: '好！'
         })
         this.wrongFileType = false
       } else if (this.fileOverSize) {
-        this.$alert('請勿上傳超過 10MB 的檔案', '提示', {
-          type: 'warning'
+        this.$alert('請勿上傳超過 10MB 的檔案', '呱吉提示', {
+          type: 'warning',
+          confirmButtonText: '好！'
         })
         this.fileOverSize = false
       } else {
-        return this.$confirm(`確定要移除 ${file.name}？`, '提示', {
+        return this.$confirm(`確定要移除 ${file.name}？`, '呱吉提示', {
           confirmButtonText: '確定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -208,7 +210,7 @@ export default {
       }
     },
     handleExceed (files, fileList) {
-      return this.$alert('請勿上傳超過 5 個檔案', '提示', {
+      return this.$alert('請勿上傳超過 5 個檔案', '呱吉提示', {
         type: 'warning'
       })
     },

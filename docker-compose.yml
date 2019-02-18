@@ -2,6 +2,7 @@ version: '3.3'
 
 volumes:
     postgres_data: {}
+    node_modules_volume:
 
 services:
   backend:
@@ -22,6 +23,7 @@ services:
     volumes:
       - ./.env:/app/.env:ro
       - ./frontend:/app
+      - node_modules_volume:/app/node_modules
     working_dir: /app
     restart: on-failure
 
