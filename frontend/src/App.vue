@@ -29,7 +29,14 @@ export default {
         this.$store.dispatch('getTypeList')
       }
     } else {
-      location.href = 'home?openExternalBrowser=1'
+      if (inapp.browser === 'line') {
+        location.href = 'home?openExternalBrowser=1'
+      }
+      if (inapp.browser === 'facebook' || inapp.browser === 'messenger') {
+        this.$alert('請使用外部瀏覽器已獲得最佳瀏覽體驗', '友情提示', {
+          type: 'warning'
+        })
+      }
     }
   }
 }
