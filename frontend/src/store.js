@@ -16,6 +16,7 @@ const store = new Vuex.Store({
     storageDomain: 'https://storage.googleapis.com/froggy-service/frontend/images/',
     redirectTo: null,
     firstVisit: false,
+    isLoadingTable: false,
     isMobile: null,
     authentication: false
   },
@@ -44,6 +45,9 @@ const store = new Vuex.Store({
     },
     setVisited (state, visited) {
       state.firstVisit = visited
+    },
+    setIsLoadingTable (state, isLoadingTable) {
+      state.isLoadingTable = isLoadingTable
     },
     setAuthenticated (state, auth) {
       state.authentication = auth

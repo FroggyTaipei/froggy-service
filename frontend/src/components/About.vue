@@ -43,7 +43,7 @@ export default {
   data: function () {
     return {
       showMainContent: false,
-      aboutTitle: ['「選民魔鏡號，市民看得到！」－台北市議員邱威傑市民服務系統⋯⋯'],
+      aboutTitle: ['「選民魔鏡號，市民看得到！」－台北市議員邱威傑市民服務系統⋯⋯', '不要再點了，上面我說的話好好看！'],
       froggyservantUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_servant.png',
       froggyAboutUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png',
       froggySignUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign_s.png'
@@ -85,7 +85,6 @@ export default {
   z-index: 2
   height: 100%
   width: 100%
-  // background-image: linear-gradient(rgba(255,255,255,0),rgba(61,78,87,0.8),rgba(0,0,0,0.9), rgba(0,0,0,1),rgba(0,0,0,1))
   background-position: center
   background-size: contain
   background-repeat: no-repeat
@@ -107,7 +106,7 @@ export default {
   color: white
   font-size: 2em
   min-height: 100px
-  // margin: 0
+  font-weight: bold
   .about-title
     padding: 30px 0 0 0
 .about-content-wrapper

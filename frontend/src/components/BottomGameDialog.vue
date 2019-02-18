@@ -31,7 +31,7 @@
         a(href="mailto:servant@65535studio.com") servant@65535studio.com
         | &nbsp;&nbsp;
         a.githubLink(href="https://github.com/FroggyTaipei/froggy-service" target="_blank")
-          font-awesome-icon(:icon="['fab', 'github']" href="https://github.com/FroggyTaipei/froggy-service")
+          font-awesome-icon(:icon="['fab', 'github']")
           span 「選服魔鏡號」GitHub 專案
 
 </template>
