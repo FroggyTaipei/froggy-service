@@ -1,7 +1,5 @@
 <template>
-  <div class="container">
-    <Dialogue id="dialogue"></Dialogue>
-  </div>
+  <Dialogue id="dialogue"></Dialogue>
 </template>
 
 <script>

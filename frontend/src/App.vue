@@ -1,16 +1,23 @@
 <template lang="html">
-  <!-- <div> -->
-  <router-view/>
-  <!-- </div> -->
+  <div class="container">
+    <ThemeSong v-if="!ismobile"/>
+    <router-view/>
+  </div>
 </template>
 
 <script>
 import InApp from 'detect-inapp'
+import ThemeSong from '@/components/ThemeSong.vue'
 
 export default {
   name: 'App',
+  components: { ThemeSong },
+  data: () => ({
+    ismobile: false
+  }),
   created () {
     const inapp = new InApp(navigator.userAgent || navigator.vendor || window.opera)
+    this.ismobile = inapp.isMobile
     if (inapp.isInApp === false) {
       if (inapp.isMobile) {
         this.$store.commit('setIsMobile', true)
