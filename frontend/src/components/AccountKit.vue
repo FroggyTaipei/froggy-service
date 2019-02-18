@@ -21,7 +21,8 @@ export default {
       fbAppEventsEnabled: true,
       loginType: 'PHONE',
       language: 'zh_TW',
-      autoInit: true
+      autoInit: true,
+      display: 'modal'
     }
   },
   props: {
@@ -79,12 +80,15 @@ export default {
      * @see https://developers.facebook.com/docs/accountkit/webjs/reference
      */
     onLoad () {
-      const { appId, state, version, fbAppEventsEnabled } = this.$data
+      const { appId, state, version, fbAppEventsEnabled, display } = this.$data
+      console.log(this.$data)
+      
       window.AccountKit.init({
         appId,
         state,
         version,
-        fbAppEventsEnabled
+        fbAppEventsEnabled,
+        display
       })
     },
     /** console.log
