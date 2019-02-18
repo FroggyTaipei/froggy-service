@@ -4,7 +4,7 @@ el-container.page2
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
       el-col(:span=22 style="max-width: 1024px")
         v-server-table(v-if="mounted" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
-        //- v-server-table(v-if="mounted" url='http://localhost:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
+        //- v-server-table(v-if="mounted" url='http://192.168.1.105:8000/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='' :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block
@@ -77,7 +77,7 @@ export default {
         ],
         'disapprove_info': '拒絕理由'
       },
-      dialogTitle: ['在這裡，你可以看到對呱吉來說最重要的事情⋯⋯'],
+      dialogTitle: ['在這裡，你可以看到對呱吉來說最重要的事情⋯⋯', '事情好多⋯⋯，但是我還是會努力做完的！'],
       columns: ['id', 'type', 'create_time', 'title', 'state'],
       options: {
         headings: {
@@ -88,7 +88,7 @@ export default {
           state: '處理進度'
         },
         texts: {
-          // count: '顯示 {count} 比資料中的第 {from} 到 {to} 筆資料 | 共有 {count} 筆資料 | One record',
+          // count: '顯示 {count} 筆資料中的第 {from} 到 {to} 筆資料 | 共有 {count} 筆資料 | One record',
           count: ' |  | ',
           filter: '搜尋：',
           filterPlaceholder: '輸入編號或內容',
@@ -107,9 +107,9 @@ export default {
             { id: '處理中', text: '處理中' }
           ]
         },
-        // filterByColumn: true,
         perPage: 15,
         perPageValues: [10],
+        debounce: 800,
         requestAdapter (data) {
           return {
             limit: this.perPage,
@@ -148,19 +148,33 @@ export default {
     if (this.$store.state.isMobile === true) {
       this.options.perPage = 10
     }
-    Event.$off(['vue-tables.loading', 'vue-tables.loaded'])
-    Event.$on('vue-tables.loading', function () {
-      this.loading = this.$loading({
-        lock: true,
-        text: '案件資料讀取中',
-        target: '.row-table',
-        spinner: 'el-icon-loading',
-        background: 'rgba(0, 0, 0, 0.7)'
-      })
+    const _this = this
+    Event.$off(['vue-tables.pagination', 'vue-tables.loaded', 'vue-tables.filter'])
+    Event.$on('vue-tables.pagination', function () {
+      if (_this.$store.state.isLoadingTable === false) {
+        _this.$store.commit('setIsLoadingTable', true)
+        this.loading = this.$loading({
+          lock: true,
+          text: '案件資料讀取中',
+          target: '.row-table',
+          spinner: 'el-icon-loading',
+          background: 'rgba(0, 0, 0, 0.7)'
+        })
+      }
     })
-
     Event.$on('vue-tables.loaded', function () {
-      this.loading.close()
+      if (_this.$store.state.isLoadingTable === true) {
+        _this.$store.commit('setIsLoadingTable', false)
+        this.loading.close()
+
+        const inputField = document.getElementsByClassName('form-control')[0]
+        inputField.disabled = false
+        inputField.focus()
+      }
+    })
+    Event.$on('vue-tables.filter', function () {
+      const inputField = document.getElementsByClassName('form-control')[0]
+      inputField.disabled = true
     })
   },
   mounted () {
