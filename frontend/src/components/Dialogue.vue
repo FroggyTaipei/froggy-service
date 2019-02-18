@@ -9,6 +9,7 @@ el-container.page1
       img.bkg-logo-img(:src="logoUrl")
       VTextMarquee(ref="marquee" :speed="70") {{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}
       img.froggyImage(:src="froggyImageUrl")
+      //- img.froggyImage(src="https://storage.googleapis.com/froggy-service/frontend/images/froggy/noon_3.png")
   BottomGameDialog(:title="dialogMessage" v-show="isShowMainContent || isShowBtnBar")
 </template>
 
@@ -219,6 +220,7 @@ export default {
   .froggyImage
     width: 100%
     max-width: 500px
+    // max-height: 500px
     transform: translateY(1000px)
     animation: flyin 1.5s forwards
     @media screen and (max-width: $break_small)
