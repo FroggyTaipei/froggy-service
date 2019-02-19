@@ -36,8 +36,6 @@ export default {
       }
     },
     playToggle () {
-      console.log('play toggled')
-
       this.play = !this.play
       if (this.play) {
         this.audio.play()

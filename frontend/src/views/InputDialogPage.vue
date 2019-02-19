@@ -91,8 +91,7 @@
           <el-col class="footer hidden-xs-only">
             <span>
             「選服魔鏡號」台北市議員邱威傑市民服務系統
-             110 台北市信義區仁愛路四段507號 台北市議會 752研究室
-            <br>
+             110 台北市信義區仁愛路四段507號 台北市議會 752研究室<br>
              02-27297708 分機 7152、7252&nbsp;
              <a href="mailto:servant@65535studio.com">servant@65535studio.com</a>&nbsp;
              <a href="https://github.com/FroggyTaipei/froggy-service" class="githubLink" target="_blank">

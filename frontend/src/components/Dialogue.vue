@@ -118,20 +118,15 @@ export default {
   },
   created: function () {},
   mounted: function () {
-    // console.log('params: ')
-    // console.log(this.$route.params)
     let visited = this.$store.state.firstVisit
     if (visited) {
-      // console.log('visited')
       this.isShowMainContent = true
       this.isShowBtnBar = true
       this.$refs.marquee.start()
       return false
     } else {
-      // console.log('not visited')
       this.$store.commit('setVisited', true)
       this.isShowIntro = true
-      // setTimeout(() => { this.isShowIntroText = true }, 1000)
       setTimeout(() => {
         this.isShowIntroText = true
         setTimeout(() => {
