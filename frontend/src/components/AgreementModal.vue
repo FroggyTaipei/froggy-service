@@ -144,7 +144,7 @@ export default {
 /* IE10+ CSS styles go here */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   .modal-body {
-    max-height: 70vh;
+    max-height: 60vh;
   }
 }
 </style>

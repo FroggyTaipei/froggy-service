@@ -28,7 +28,7 @@ el-container(style="align-items: center;").page3
                 br
             img.signImg(:src="froggySignUrl")
           el-col.hidden-xs-only(:span=8 :offset=1)
-            img.froggyServantImg( v-lazy="froggyAboutUrl" )
+            img.froggyServantImg( :src="froggyAboutUrl" )
   BottomGameDialog(:title="aboutTitle")
 </template>
 
