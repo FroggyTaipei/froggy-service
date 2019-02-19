@@ -25,6 +25,9 @@ export default {
       display: 'modal'
     }
   },
+  created () {
+    this.display = this.$store.state.browser === 'ie' ? 'popup' : 'modal'
+  },
   props: {
     redirect: {
       type: String,

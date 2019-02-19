@@ -81,7 +81,7 @@ export default {
 }
 
 .modal-container {
-  width: 50%;
+  width: 50vw;
   max-height: 90vh;
   margin: 0px auto;
   padding: 20px 30px;
@@ -140,5 +140,11 @@ export default {
 .modal-leave-active .modal-container {
   -webkit-transform: scale(0.9);
   transform: scale(0.9);
+}
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .modal-body {
+    max-height: 70vh;
+  }
 }
 </style>

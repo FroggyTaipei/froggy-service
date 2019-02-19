@@ -19,6 +19,13 @@ export default {
   created () {
     const inapp = new InApp(navigator.userAgent || navigator.vendor || window.opera)
     this.ismobile = inapp.isMobile
+    if (inapp.ua.indexOf('Edge') > -1) {
+      this.$store.commit('setBrowser', 'edge')
+    } else if (inapp.ua.indexOf('Trident') > -1 || inapp.ua.indexOf('MSIE') > -1) {
+      this.$store.commit('setBrowser', 'ie')
+    } else {
+      this.$store.commit('setBrowser', inapp.browser)
+    }
     if (inapp.isMobile) {
       this.$store.commit('setIsMobile', true)
       if (inapp.isInApp === true) {
@@ -26,7 +33,6 @@ export default {
           location.href = 'home?openExternalBrowser=1'
           this.inLineApp = true
         }
-        this.$store.commit('setBrowser', inapp.browser)
       }
     } else {
       this.$store.commit('setIsMobile', false)

@@ -71,6 +71,12 @@ export default {
       setTimeout(() => this.$refs.marquee.start(), 800)
     },
     autoInappAlert: function () {
+      if (this.$store.state.browser === 'edge' || this.$store.state.browser === 'ie') {
+        this.$alert('要使用 Chrome 瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
+          type: 'warning',
+          confirmButtonText: '好！'
+        })
+      }
       if (this.$store.state.browser === 'facebook' || this.$store.state.browser === 'messenger') {
         this.$alert('要使用手機瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
           type: 'warning',
@@ -167,6 +173,8 @@ export default {
   max-width: 1024px
   position: absolute
   top: 10vh
+  left: 50%
+  transform: translateX(-50%)
   margin: auto
   opacity: 0.5
 
@@ -201,6 +209,8 @@ export default {
   overflow: hidden
   border-style: double
   letter-spacing: 3px
+  left: 50%
+  transform: translateX(-50%)
   top: 30px
   height: 2em
   line-height: 2em
@@ -210,6 +220,8 @@ export default {
   @media screen and (max-width: $break_small)
     font-size: calc(1.5em)
     border-width: 5px
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active)
+    display: none
 
 .forggyImage-wrapper
   flex: $flex_mainContentPart
@@ -223,6 +235,7 @@ export default {
     animation: flyin 1.5s forwards
     @media screen and (max-width: $break_small)
       animation: flyin-mobile 1.5s forwards
+      -webkit-animation: flyin-mobile 1.5s forwards
 
 .row-dialog
   flex: $flex_dialogPart
@@ -261,7 +274,7 @@ export default {
 
 @keyframes flyin-mobile
   100%
-    transform: translateY(calc(30vh))
+    transform: translateY(30vh)
 
 .introIn-enter-active
   animation: intro-in 2s

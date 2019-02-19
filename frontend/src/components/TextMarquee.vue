@@ -69,9 +69,9 @@ export default {
       const from = this.prefix('transform', `translateX(${this.$el.offsetWidth + 50}px)`)
       const to = this.prefix('transform', `translateX(-${this.$el.firstChild.offsetWidth + 50}px)`)
       const v = `@keyframes ${this.name} {
-                from { ${from} }
-                to { ${to} }
-            }`
+                  from { ${from} }
+                  to { ${to} }
+                }`
       this.styleEl.innerHTML = v
 
       document.head.appendChild(this.styleEl)

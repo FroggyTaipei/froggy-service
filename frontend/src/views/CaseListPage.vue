@@ -263,6 +263,7 @@ nav
       align-items: center
       justify-content: center
       height: 80%
+      min-width: 200px
       border: solid 3px #606266 !important
       color: #606266
       right: 25px!important
