@@ -9,7 +9,6 @@ el-container.page1
       img.bkg-logo-img(:src="logoUrl")
       VTextMarquee(ref="marquee" :speed="70") {{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}
       img.froggyImage(:src="froggyImageUrl")
-      //- img.froggyImage(src="https://storage.googleapis.com/froggy-service/frontend/images/froggy/noon_3.png")
   BottomGameDialog(:title="dialogMessage" v-show="isShowMainContent || isShowBtnBar")
 </template>
 
@@ -52,8 +51,7 @@ export default {
         '［中獎］恭喜 一直抓頭的台北市民 獲得邱威傑 認真的市政質詢套裝！',
         '［活動］現在充值 台灣價值 就可以獲得 執政機率黃金加成！',
         '［系統］有什麼問題，就問魔鏡號就對了啦！'
-      ],
-      space: '&nbsp&nbsp'
+      ]
     }
   },
   methods: {
@@ -70,7 +68,7 @@ export default {
     },
     start: function () {
       this.isShowIntro = false
-      setTimeout(() => this.$refs.marquee.start(), 1000)
+      setTimeout(() => this.$refs.marquee.start(), 800)
     },
     autoInappAlert: function () {
       if (this.$store.state.browser === 'facebook' || this.$store.state.browser === 'messenger') {
@@ -132,7 +130,7 @@ export default {
         setTimeout(() => {
           this.isShowIntro = false
           this.autoInappAlert()
-          setTimeout(() => this.$refs.marquee.start(), 1000)
+          setTimeout(() => this.$refs.marquee.start(), 1600)
         }, 1500)
       }, 1000)
     }
@@ -152,9 +150,6 @@ export default {
 
 .page1
   background-image: linear-gradient(#EFCACD, #DE8F95, #C480A2, #B69FC6, #A2CEE5, #FFFFFF)
-  // background: #12c2e9
-  // background: -webkit-linear-gradient(#f64f59, #c471ed, #12c2e9)
-  // background: linear-gradient(#f64f59, #c471ed, #12c2e9)
   background-position: center
   background-size: contain
   background-repeat: no-repeat
@@ -192,7 +187,6 @@ export default {
     font-weight: bold
     position: absolute
     bottom: 25vh
-    // animation: blinker-in 1.5s forwards
     animation: blinker 1s linear infinite
     &:hover
       cursor: pointer
