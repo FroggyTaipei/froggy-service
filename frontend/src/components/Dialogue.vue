@@ -173,6 +173,8 @@ export default {
   max-width: 1024px
   position: absolute
   top: 10vh
+  left: 50%
+  transform: translateX(-50%)
   margin: auto
   opacity: 0.5
 
@@ -207,6 +209,8 @@ export default {
   overflow: hidden
   border-style: double
   letter-spacing: 3px
+  left: 50%
+  transform: translateX(-50%)
   top: 30px
   height: 2em
   line-height: 2em
@@ -216,6 +220,8 @@ export default {
   @media screen and (max-width: $break_small)
     font-size: calc(1.5em)
     border-width: 5px
+  @media all and (-ms-high-contrast: none), (-ms-high-contrast: active)
+    display: none
 
 .forggyImage-wrapper
   flex: $flex_mainContentPart
@@ -229,6 +235,7 @@ export default {
     animation: flyin 1.5s forwards
     @media screen and (max-width: $break_small)
       animation: flyin-mobile 1.5s forwards
+      -webkit-animation: flyin-mobile 1.5s forwards
 
 .row-dialog
   flex: $flex_dialogPart
@@ -267,7 +274,7 @@ export default {
 
 @keyframes flyin-mobile
   100%
-    transform: translateY(calc(30vh))
+    transform: translateY(30vh)
 
 .introIn-enter-active
   animation: intro-in 2s
