@@ -24,9 +24,9 @@
             <el-col :xs="24" :sm="12">
               <transition name="froggy-slide-fade">
                 <div v-show="category.avatar"  class="category-content-center">
-                  <img class="category-content-froggy-bottom" v-lazy="this.images.FROGGY_BOTTOM">
-                  <img class="category-content-froggy normal-froggy" v-show="!hitted&&!waving" v-lazy="this.images.FROGGY">
-                  <img class="category-content-froggy flip" v-show="hitted" v-lazy="this.images.FROGGY_HITTED">
+                  <img class="category-content-froggy-bottom" :src="this.images.FROGGY_BOTTOM">
+                  <img class="category-content-froggy normal-froggy" v-show="!hitted&&!waving" :src="this.images.FROGGY">
+                  <img class="category-content-froggy flip" v-show="hitted" :src="this.images.FROGGY_HITTED">
                   <img class="category-content-froggy" v-show="waving" src="https://storage.googleapis.com/froggy-service/frontend/assets/froggy_wave.gif">
                 </div>
               </transition>

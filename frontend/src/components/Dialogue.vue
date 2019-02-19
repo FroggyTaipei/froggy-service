@@ -8,7 +8,7 @@ el-container.page1
     el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="isShowMainContent")
       img.bkg-logo-img(:src="logoUrl")
       VTextMarquee(ref="marquee" :speed="70") {{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}
-      img.froggyImage(v-lazy="froggyImageUrl")
+      img.froggyImage(:src="froggyImageUrl")
   BottomGameDialog(:title="dialogMessage" v-show="isShowMainContent || isShowBtnBar")
 </template>
 
@@ -36,8 +36,8 @@ export default {
           froggyImage: ['morning_1.png', 'morning_2.png', 'morning_3.png']
         }, {
           showTime: [12, 21],
-          textContent: ['哈囉，午安！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
-          textContent_mobile: ['哈囉，午安！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。', '我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
+          textContent: ['哈囉！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
+          textContent_mobile: ['哈囉！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。', '我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
           froggyImage: ['noon_1.png', 'noon_2.png', 'noon_3.png']
         }, {
           showTime: [21, 5],
