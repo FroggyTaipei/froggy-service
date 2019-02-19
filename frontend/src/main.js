@@ -37,7 +37,7 @@ Vue.use(ElementUI, { locale })
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   // error: 'https://cdn0.iconfinder.com/data/icons/shift-free/32/Error-128.png',
-  loading: require('@/assets/images/preloader.gif'),
+  loading: require('@/assets/images/loading.gif'),
   attempt: 1
 })
 
