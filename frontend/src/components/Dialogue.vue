@@ -8,7 +8,7 @@ el-container.page1
     el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="isShowMainContent")
       img.bkg-logo-img(:src="logoUrl")
       VTextMarquee(ref="marquee" :speed="70") {{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}
-      img.froggyImage(:src="froggyImageUrl")
+      img.froggyImage(v-lazy="froggyImageUrl")
   BottomGameDialog(:title="dialogMessage" v-show="isShowMainContent || isShowBtnBar")
 </template>
 
