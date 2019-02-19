@@ -53,10 +53,11 @@ export default {
       let reservedUrl = ['/create', '/cases', '/about', '/home', '/success', '/home/success']
       let destination = '/' + to
       let currentPath = this.$route.fullPath
+
       if (this.buttonDisabled) {
-        if (destination === this.$route.fullPath) {
+        setTimeout(() => {
           this.buttonDisabled = false
-        }
+        }, 800)
       } else {
         this.buttonDisabled = true
         this.$store.commit('setRedirectDestination', destination)
@@ -151,7 +152,6 @@ export default {
     position: relative
     padding: 5px 5px 0px 10px
     font-weight: 600
-    // margin: 5px
     overflow: hidden
     @media screen and (max-width: $break_small)
       font-size: $dialog_left_font_small
@@ -223,7 +223,6 @@ export default {
       @media screen and (max-width: $break_small)
         font-size: $dialog_right_font_small
 
-//更好的寫法？
 .showArrow
   color: $color_black !important
 
