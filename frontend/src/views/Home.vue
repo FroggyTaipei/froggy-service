@@ -12,11 +12,8 @@ export default {
     }
   },
   created: function () {
-    // console.log('home init')
-    // console.log(this.$route)
   },
   mounted: function () {
-    // console.log('home mounted')
   },
   components: { Dialogue }
 }

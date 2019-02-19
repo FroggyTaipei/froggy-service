@@ -61,14 +61,11 @@ export default {
         this.buttonDisabled = true
         this.$store.commit('setRedirectDestination', destination)
         if (destination === this.$route.fullPath) {
-          // console.log('redirect situation 1 : nothing')
           return false
         } else if (reservedUrl.includes(currentPath) === false) {
-          // console.log('redirect situation 2 : outer link')
           this.$router.push({ name: 'home', params: { success: '#' } })
           this.$router.push(destination)
         } else {
-          // console.log('redirect situation 3 : redirect')
           this.$parent.$parent.toggleLeaveAnimation(destination)
         }
       }
@@ -88,7 +85,6 @@ export default {
     }
   },
   mounted () {
-    // console.log(this.$route.fullPath)
     if (this.$route.fullPath.includes('about') || this.$route.fullPath.includes('cases')) {
       this.showSmallDialog = false
     }

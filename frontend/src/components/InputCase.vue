@@ -24,10 +24,8 @@
         class="upload-demo"
         ref="upload"
         action="/api/files/temp/ "
-        :on-change="handleChange"
         :on-remove="handleRemove"
         :on-exceed="handleExceed"
-        :on-success="handleSuccess"
         :on-error="handleError"
         :before-upload="beforeUpload"
         :before-remove="beforeRemove"
@@ -113,23 +111,20 @@ export default {
     updateCSRFToken () {
       this.axios.get('api/csrftoken/')
         .then(response => {
-          console.log('get new CSRF token', response.data['token'])
           this.axios.defaults.headers.common['X-CSRFToken'] = response.data['token']
         })
         .catch(e => { console.log(e) })
     },
     removeFile (id) {
-      console.log('remove cloud file', id)
       this.axios.delete('/api/files/temp/' + id, { headers: this.$store.state.jwt })
         .then(response => {
-          console.log(response)
         })
         .catch(e => { console.log(e) })
     },
     submitCase () {
       const loading = this.$loading({
         lock: true,
-        text: '拼命送出中',
+        text: '努力上傳中',
         spinner: 'el-icon-loading',
         background: 'rgba(0, 0, 0, 0.7)'
       })
@@ -139,8 +134,6 @@ export default {
           loading.close()
         }, 500)
       }).catch(e => {
-        console.log(e)
-        console.log(e.response)
         loading.close()
         if (e.response.data.detail && e.response.data.detail.indexOf('expired') > -1) {
           this.$alert('請重新進行手機驗證', '憑證過期', {
@@ -162,13 +155,11 @@ export default {
           this.cases = Object.assign(this.cases, this.$store.state.case)
           this.submitCase()
         } else {
-          console.log('Correct the errors!')
           this.$emit('validateFail')
         }
       })
     },
     beforeUpload (file) {
-      console.log('before upload')
       const fileLimit = 10485760
       const fileRegExp = this.$store.state.isMobile ? /\.(jpg?|jpeg?|png?)$/i : /\.(jpg?|jpeg?|png?|mpg?|mpeg?|avi?|wmv?|mp3?|mp4?|zip?|rar?|7z?|doc?|docx?|ppt?|pptx?|pdf?|odt?|xls?|xlsx?|key?|pages?|numbers?|txt?)$/i
       if (!fileRegExp.test(file.name)) {
@@ -204,7 +195,6 @@ export default {
       }
     },
     handleRemove (file, fileList) {
-      console.log('remove', file)
       if (file.response) {
         this.removeFile(file.response.id)
       }
@@ -214,15 +204,7 @@ export default {
         type: 'warning'
       })
     },
-    handleChange (file, fileList) {
-      console.log('change', fileList)
-    },
-    handleSuccess (response, file, fileList) {
-      console.log(response)
-    },
     handleError (err, file, fileList) {
-      console.log(err.status)
-      console.log(err.message)
       var errMsg = ''
       if (err.message.indexOf('expired') > -1) {
         errMsg = '憑證過期，請重新進行手機驗證'

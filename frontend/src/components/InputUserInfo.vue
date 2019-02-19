@@ -150,10 +150,8 @@ export default {
       this.authenticating = false
     },
     getAccountKitToken (accountKitResp) {
-      console.log(accountKitResp)
       this.axios.post('/api/users/accountkit_get_token/', accountKitResp)
         .then(response => {
-          console.log(response)
           this.mobileText = '手機號碼'
           this.applicant.mobile = response.data.mobile
           let jwt = { Authorization: 'JWT ' + response.data.jwt }
@@ -161,8 +159,6 @@ export default {
           this.$store.commit('setJWT', jwt)
         })
         .catch(e => {
-          console.log(e)
-          console.log(e.response)
           let title = e.response.status + ' ' + e.response.statusText
           let content = e.response.data.detail ? e.response.data.detail : e.response.data[0]
           this.$alert(content, title, {
@@ -175,7 +171,6 @@ export default {
         if (valid) {
           if (this.$store.state.authentication) {
             if (this.applicant.agreement) {
-              console.log('form pass')
               this.$store.commit('setCase',
                 {
                   username: this.applicant.username,
@@ -197,7 +192,6 @@ export default {
             })
           }
         } else {
-          console.log('error submit!!')
           this.$emit('validateFail')
           return false
         }
