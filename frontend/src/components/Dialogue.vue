@@ -71,6 +71,12 @@ export default {
       setTimeout(() => this.$refs.marquee.start(), 800)
     },
     autoInappAlert: function () {
+      if (this.$store.state.browser === 'edge' || this.$store.state.browser === 'ie') {
+        this.$alert('要使用 Chrome 瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
+          type: 'warning',
+          confirmButtonText: '好！'
+        })
+      }
       if (this.$store.state.browser === 'facebook' || this.$store.state.browser === 'messenger') {
         this.$alert('要使用手機瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
           type: 'warning',
