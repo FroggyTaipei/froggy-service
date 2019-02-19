@@ -695,6 +695,29 @@ export default {
     border-radius: 10px;
     font-size: x-large;
   }
-
+}
+/* IE10+ CSS styles go here */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  .category-content-froggy {
+    bottom: 50vh !important;
+  }
+  .panel {
+    width: 100%;
+  }
+  .input-dialog {
+    height: 80vh;
+  }
+}
+/* IE Edge 12+ CSS styles go here */
+@supports (-ms-ime-align:auto) {
+  .category-content-froggy {
+    bottom: 50vh !important;
+  }
+  .panel {
+    width: 100%;
+  }
+  .input-dialog {
+    height: 80vh;
+  }
 }
 </style>
