@@ -44,13 +44,6 @@ export default {
   },
 
   methods: {
-    updateCSRFToken () {
-      this.axios.delete('/api/types/1')
-        .then(response => {
-          console.log(response)
-        })
-        .catch(e => { console.log(e) })
-    },
     getCSRFToken () {
       return this.axios.get('api/csrftoken/')
         .then(response => {
@@ -81,8 +74,6 @@ export default {
      */
     onLoad () {
       const { appId, state, version, fbAppEventsEnabled, display } = this.$data
-      console.log(this.$data)
-      
       window.AccountKit.init({
         appId,
         state,
@@ -91,7 +82,7 @@ export default {
         display
       })
     },
-    /** console.log
+    /**
      * @param {*} loginParams @see https://developers.facebook.com/docs/accountkit/webjs/reference
      */
     login (loginParams, callback) {

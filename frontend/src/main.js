@@ -7,8 +7,7 @@ import UUID from 'vue-uuid'
 import VueAnalytics from 'vue-analytics'
 import VueRaven from 'vue-raven'
 import ElementUI from 'element-ui'
-import zh from 'element-ui/lib/locale/lang/zh-TW'
-import locale from 'element-ui/lib/locale'
+import locale from 'element-ui/lib/locale/lang/zh-TW'
 import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css'
 import App from '@/App.vue'
@@ -32,9 +31,8 @@ Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 Vue.use(VueAxios, axios)
 Vue.use(UUID)
-Vue.use(ElementUI)
 Vue.use(ServerTable)
-locale.use(zh)
+Vue.use(ElementUI, { locale })
 
 Vue.use(VueLazyload, {
   preLoad: 1.3,

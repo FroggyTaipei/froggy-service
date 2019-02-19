@@ -1,5 +1,5 @@
 <template lang="html">
-  <div class="container">
+  <div class="container" v-if="!inLineApp">
     <ThemeSong v-if="!ismobile"/>
     <router-view/>
   </div>
@@ -13,23 +13,25 @@ export default {
   name: 'App',
   components: { ThemeSong },
   data: () => ({
-    ismobile: false
+    ismobile: false,
+    inLineApp: false
   }),
   created () {
     const inapp = new InApp(navigator.userAgent || navigator.vendor || window.opera)
     this.ismobile = inapp.isMobile
-    if (inapp.isInApp === false) {
-      if (inapp.isMobile) {
-        this.$store.commit('setIsMobile', true)
-      } else {
-        this.$store.commit('setIsMobile', false)
+    if (inapp.isMobile) {
+      this.$store.commit('setIsMobile', true)
+      if (inapp.isInApp === true) {
+        if (inapp.browser === 'line') {
+          location.href = 'home?openExternalBrowser=1'
+          this.inLineApp = true
+        }
+        this.$store.commit('setBrowser', inapp.browser)
       }
     } else {
-      if (inapp.browser === 'line') {
-        location.href = 'home?openExternalBrowser=1'
-      }
-      this.$store.commit('setBrowser', inapp.browser)
+      this.$store.commit('setIsMobile', false)
     }
+
     if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
       this.$store.dispatch('getRegionsList')
       this.$store.dispatch('getTypeList')
