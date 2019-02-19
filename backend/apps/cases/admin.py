@@ -34,7 +34,7 @@ class ArrangeInlineForm(ModelForm):
     def clean(self):
         case_state = self.instance.case.state
         new_state = self.cleaned_data['state']
-        arrange_time = self.cleaned_data['arrange_time']
+        arrange_time = self.cleaned_data.get('arrange_time', None)
 
         if new_state == 'published':
             if case_state == 'draft':
