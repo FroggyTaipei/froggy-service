@@ -17,7 +17,7 @@ export default {
     return {
       appId: '',
       version: '',
-      state: 'somecrsf',
+      state: 'somecsrf',
       fbAppEventsEnabled: true,
       loginType: 'PHONE',
       language: 'zh_TW',
