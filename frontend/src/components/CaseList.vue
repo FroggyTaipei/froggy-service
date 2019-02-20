@@ -2,8 +2,10 @@
 el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
+      //- el-input(ref="searchbar" v-model="query" size="small" clearable=true placeholder="請輸入編號或內容")
+      //- el-button(type="primary" @click="search(query)") 搜尋
       el-col(:span=22 style="max-width: 1024px")
-        v-server-table(v-if="mounted" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
+        v-server-table(v-if="mounted" ref="dataTable" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
         el-dialog(title='' :visible.sync='dialogVisible' @closed="closeDialog")
           .upper-block
@@ -50,6 +52,7 @@ export default {
   components: { BottomGameDialog },
   data: function () {
     return {
+      query: '',
       showMainContent: false,
       dialogVisible: false,
       isDetailLoaded: false,
@@ -170,7 +173,9 @@ export default {
 
         const inputField = document.getElementsByClassName('form-control')[0]
         inputField.disabled = false
-        inputField.focus()
+        if (!_this.$store.state.isMobile) {
+          inputField.focus()
+        }
       }
     })
     Event.$on('vue-tables.filter', function () {
@@ -231,6 +236,11 @@ export default {
     redirect: function () {
       let direction = this.$store.state.redirectTo
       this.$router.push(direction)
+    },
+    search: function (query) {
+      this.$refs.dataTable.setFilter(query)
+      this.$refs.dataTable.getData()
+      this.$refs.dataTable.refresh()
     }
   },
   computed: {
