@@ -28,11 +28,11 @@ export default {
       document.removeEventListener('click', this.startSound)
     },
     volumeIncrease () {
-      if (this.audio.volume < 0.5) {
+      if (this.audio.volume < 0.1) {
         setTimeout(() => {
           this.audio.volume += 0.01
           this.volumeIncrease()
-        }, 500)
+        }, 1000)
       }
     },
     playToggle () {
