@@ -1,5 +1,6 @@
 import uuid
 import datetime
+import imghdr
 
 from django.db import models
 from django.db.models.signals import pre_delete
@@ -154,7 +155,7 @@ class CaseFile(models.Model):
     def preview(self):
         if not self.file_name:
             return '-'
-        if any(map(lambda x: x in self.file_name, ['.jpg', '.png', '.gif'])):
+        if imghdr.what(self.file):
             return mark_safe(f"""
                 <a target="_blank" href="{self.file.url}"><img src="{self.file.url}" style="max-width: 200px"/></a>
             """)
