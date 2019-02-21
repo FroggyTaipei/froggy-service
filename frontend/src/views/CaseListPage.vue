@@ -68,7 +68,6 @@ table
     margin-bottom: 100px
     &::-webkit-scrollbar
       width: 0 !important
-    // height: 80%
 
 .VueTables__search-field
   color: $color_white
@@ -124,8 +123,6 @@ nav
   width: 100%
   color: $color_white
 
-// dialog-content
-
 .el-dialog
   width: 60% !important
   max-height: 50%
@@ -148,37 +145,14 @@ nav
     display: none
 
 .el-dialog__header
-  // background: linear-gradient(#004BE0, #9eaeca 0.05, #004BE0 0.1)
-  // background-color: #787ce4
   background-image: linear-gradient(to right, #63B8B7, #3FA8BC, #5676AC, #7F5596, #BB4577)
-  // padding-top: 30px !important
   border-radius: 5px 5px 0 0
-  // .el-dialog__title
-  //   &:before
-  //     background-image: url('https://storage.googleapis.com/froggy-service/frontend/images/cases/disk_icon.png')
-  //     background-size: auto 100%
-  //     background-repeat: no-repeat
-  //     position: absolute
-  //     width: 200px
-  //     height: 20px
-  //     top: 15px
-  //     left: 12px
-  //     font-size: 12px
-  //     color: $color_white
-  //     content: "\00a0\00a0\00a0\00a0\00a0\00a0 C:\\邱威傑議員研究室"
 
   .el-dialog__headerbtn
-    // top: 10px
     top: 0px
     right: 8px
   .el-icon-close
-    // border: white 1px solid
-    // border-radius: 3px
-    // background-color: #DC4C2C
-    // background-color: $color_white
     color: white !important
-    // width: 20px
-    // height: 20px
     &:before
       vertical-align: -15%
       font-weight: 700
@@ -203,30 +177,27 @@ nav
   box-sizing: border-box !important
   border-width: 5px 5px 0px 5px
   padding: 0 !important
-  // border-style: solid
-  // border-color: #004BE0
-  // border-color: #787ce4
-  // background-color: #EEECE0
   background-color: $color_white
   .case-content
     padding: 20px 20px 5px 20px !important
     max-height: 50vh !important
     overflow: scroll
+    white-space: pre-line
     &::-webkit-scrollbar
       width: 0 !important
     .case-content-title, .case-content-date, .case-content-location, .case-content-details, .arranges-title
       font-size: $fz_sub_header_small
       font-weight: 700
       margin-top: 5px
-    // .case-content-date
-    //   font-size: $fz_p_small
-    //   font-weight: normal
+
 .case-disapproved
   font-size: $fz_p
   font-weight: bold
 .disapprove-info
-  font-size: $fz_p_small
   font-weight: normal
+
+.arrange-content
+  white-space: normal
 
 .arrange-content>p>img, .arrange-content img
   width: 50% !important
@@ -241,12 +212,7 @@ nav
   align-items: center
   display: flex !important
   box-sizing: border-box !important
-  // border-width: 0px 5px 5px 5px
-  // border-style: solid
   border-radius: 0px 0px 5px 5px
-  // border-color: #004BE0
-  // border-color: #787ce4
-  // background-color: #EEECE0
   background-color: $color_white
   padding: 5px 10px 10px 10px !important
   @media screen and (max-width: $break_small)
