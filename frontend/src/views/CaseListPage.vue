@@ -19,6 +19,20 @@ export default {
 
 <style lang="sass">
 @import '@/assets/css/style.sass'
+
+.searchField
+  height: auto !important
+  margin-top: 20px
+  .searchInput
+    width: auto !important
+    margin-right: 20px
+  .el-input__inner:focus
+    border-color: $color_gray !important
+  .searchButton
+    background-color: $color_gray !important
+    border-color: $color_gray !important
+    color: $color_white
+
 table
   width: 100%
   color: white
@@ -70,6 +84,7 @@ table
       width: 0 !important
 
 .VueTables__search-field
+  display: none
   color: $color_white
   margin-top: 50px
   @media screen and (max-width: $break_small)
