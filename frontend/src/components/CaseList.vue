@@ -2,8 +2,9 @@
 el-container.page2
   transition(name="fade" @after-leave="redirect")
     el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
-      //- el-input(ref="searchbar" v-model="query" size="small" clearable=true placeholder="請輸入編號或內容")
-      //- el-button(type="primary" @click="search(query)") 搜尋
+      el-col.searchField(:span=22 style="max-width: 1024px")
+        el-input.searchInput(v-model="query" size="small"  @keyup.enter.native="search(query)" clearable=true placeholder="請輸入編號或內容")
+        el-button.searchButton(type="primary" size="small"  @click="search(query)") 搜尋
       el-col(:span=22 style="max-width: 1024px")
         v-server-table(v-if="mounted" ref="dataTable" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
 
@@ -100,7 +101,6 @@ export default {
         },
         perPage: 15,
         perPageValues: [10],
-        debounce: 800,
         requestAdapter (data) {
           return {
             limit: this.perPage,
@@ -140,7 +140,7 @@ export default {
       this.options.perPage = 10
     }
     const _this = this
-    Event.$off(['vue-tables.pagination', 'vue-tables.loaded', 'vue-tables.filter'])
+    Event.$off(['vue-tables.pagination', 'vue-tables.loaded'])
     Event.$on('vue-tables.pagination', function () {
       if (_this.$store.state.isLoadingTable === false) {
         _this.$store.commit('setIsLoadingTable', true)
@@ -157,17 +157,7 @@ export default {
       if (_this.$store.state.isLoadingTable === true) {
         _this.$store.commit('setIsLoadingTable', false)
         this.loading.close()
-
-        const inputField = document.getElementsByClassName('form-control')[0]
-        inputField.disabled = false
-        if (!_this.$store.state.isMobile) {
-          inputField.focus()
-        }
       }
-    })
-    Event.$on('vue-tables.filter', function () {
-      const inputField = document.getElementsByClassName('form-control')[0]
-      inputField.disabled = true
     })
   },
   mounted () {
@@ -189,7 +179,6 @@ export default {
         .get('/api/cases/' + caseId)
         .then((response) => {
           this.selectedCaseDetails = response.data
-          // this.selectedCaseDetails = this.selectedCaseDetails
           return true
         })
         .then(() => {
@@ -226,8 +215,7 @@ export default {
       this.$router.push(direction)
     },
     search: function (query) {
-      this.$refs.dataTable.setFilter(query)
-      this.$refs.dataTable.getData()
+      this.$refs.dataTable.query = query
       this.$refs.dataTable.refresh()
     }
   },
