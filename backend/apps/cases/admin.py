@@ -220,7 +220,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
                 | Q(number__icontains=search_term)
                 | Q(disapprove_info__icontains=search_term)
                 | Q(note__icontains=search_term),
-            )
+            ).distinct()
 
         return queryset, use_distinct
 
