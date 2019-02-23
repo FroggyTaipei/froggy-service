@@ -91,7 +91,7 @@ export default {
           id: 'min_tabletL',
           create_time: 'min_tabletL'
         },
-        sortable: ['id'],
+        sortable: ['id', 'state', 'type', 'create_time'],
         filterable: ['id', 'title', 'state'],
         listColumns: {
           state: [

@@ -60,7 +60,7 @@ $ kubectl create namespace app
 
 Create secrets
 ```
-$ kubectl create secret generic environs --from-env-file .env.example --namespace app
+$ kubectl create secret generic environs --from-env-file .env --namespace app
 ```
 
 Run the following command to create the deployments and services objects:
