@@ -13,6 +13,7 @@ from .serializers import (
     CaseRetrieveSerializer,
     TypeSerializer,
     RegionSerializer,
+    VuetableParamsExpectations,
 )
 from apps.arranges.models import Arrange
 from .models import (
@@ -63,18 +64,29 @@ class CaseViewSet(ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def vuetable(self, request):
+        """配合前端vuetable-2 server side render
+        * query: 搜尋參數
+        * limit: 單頁筆數
+        * sort: 排序欄位
+        * ascending: 順逆排
+        * page： 第幾頁
+        """
         queryset = self.queryset
-        kwargs = self.request.query_params
 
-        limit = int(kwargs.get('limit', None) or 5)
-        # by_column = int(kwargs.get('byColumn', None) or 0)
-        page = int(kwargs.get('page', None) or 1) - 1
-        ascending = kwargs.get('ascending', None) or 'desc'
-        query = kwargs.get('query', None) or ''
-        order_by = kwargs.get('orderBy', None) or 'id'
+        qpe = VuetableParamsExpectations(data=request.query_params)
+        if not qpe.is_valid():
+            return Response(
+                data=qpe.errors,
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        query = qpe.validated_data['query']
+        ascending = qpe.validated_data['ascending']
+        sort = qpe.validated_data['sort']
+        page = qpe.validated_data['page'] - 1
+        limit = qpe.validated_data['limit']
 
         if ascending == 'desc':
-            order_by = '-' + order_by
+            sort = '-' + sort
 
         for state, title in State.CHOICES:
             if query == title:
@@ -96,7 +108,7 @@ class CaseViewSet(ModelViewSet):
 
         count = queryset.count()
         start = limit * page
-        queryset = queryset.order_by(order_by)[start:start+limit]
+        queryset = queryset.order_by(sort)[start:start+limit]
 
         serializer = self.serializer_class(queryset, many=True)
         result = {
