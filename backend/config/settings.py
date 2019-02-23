@@ -10,8 +10,9 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 import environ
 import datetime
 
-from google.oauth2 import service_account
 from django.utils.translation import ugettext_lazy as _
+
+from google.oauth2 import service_account
 
 ROOT_DIR = environ.Path(__file__) - 2
 
@@ -394,7 +395,7 @@ if USE_GCS:
 # ------------------------------------------------------------------------------
 SUIT_CONFIG = {
     'ADMIN_NAME': _("Froggy's Service"),
-    'SEARCH_URL': '/admin/cases/case/',
+    'SEARCH_URL': 'admin:cases_case_changelist',
     'HEADER_DATE_FORMAT': 'l, Y F j',
     'HEADER_TIME_FORMAT': 'H:i',
     'LIST_PER_PAGE': 30,
