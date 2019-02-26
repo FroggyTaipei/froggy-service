@@ -17,7 +17,8 @@ const store = new Vuex.Store({
     redirectTo: null,
     firstVisit: false,
     isLoadingTable: false,
-    isMobile: null,
+    isMobile: false,
+    isInApp: false,
     authentication: false,
     browser: ''
   },
@@ -25,6 +26,9 @@ const store = new Vuex.Store({
   mutations: {
     setBrowser (state, browser) {
       state.browser = browser
+    },
+    setIsInApp (state, isinapp) {
+      state.isInApp = isinapp
     },
     setIsMobile (state, isMobile) {
       state.isMobile = isMobile
