@@ -58,8 +58,8 @@ class CaseRetrieveSerializer(CaseSerializer):
 
 
 class VuetableParamsExpectations(serializers.Serializer):
-    page = serializers.IntegerField(min_value=1, default=10)
-    limit = serializers.IntegerField(min_value=1, default=1)
+    page = serializers.IntegerField(min_value=1, default=1)
+    limit = serializers.IntegerField(min_value=1, default=10)
     ascending = serializers.ChoiceField(choices=('desc', 'asc'), default='desc')
     sort = serializers.ChoiceField(choices=('id', 'state', 'type', 'create_time'), default='id')
     query = serializers.CharField(default='')
