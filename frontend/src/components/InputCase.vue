@@ -34,6 +34,7 @@
         :accept="acceptFileType"
         :limit="5">
         <el-button slot="trigger" type="primary">上傳檔案</el-button>
+        <div v-if="$store.state.isInApp" slot="tip" class="el-upload__tip" style="color: #ff944d !important;">特定手機的應用程式內瀏覽器（InAppBrowser），可能無法上傳檔案，請使用手機原生瀏覽器。</div>
         <div slot="tip" class="el-upload__tip">1.上傳單檔限制為10MB，最多5個檔案。</div>
         <div v-if="!$store.state.isMobile" slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png, mpg, mpeg, avi, wmv, mp3, mp4, zip, rar, 7z, txt, doc, docx, ppt, pptx, pdf, odt, xls, xlsx, key, pages, numbers。</div>
         <div v-if="$store.state.isMobile" slot="tip" class="el-upload__tip">2.可上傳的檔案類型為jpg, jpeg, png。</div>
