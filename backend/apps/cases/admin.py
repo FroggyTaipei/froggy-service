@@ -9,6 +9,7 @@ from django.forms import TextInput, ModelForm, CharField
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 
+import tagulous
 from suit_ckeditor.widgets import CKEditorWidget
 from fsm_admin.mixins import FSMTransitionMixin
 from date_range_filter import DateRangeFilter
@@ -220,7 +221,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
                 | Q(number__icontains=search_term)
                 | Q(disapprove_info__icontains=search_term)
                 | Q(note__icontains=search_term),
-            )
+            ).distinct()
 
         return queryset, use_distinct
 
@@ -258,3 +259,4 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
 
 
 admin.site.register(Case, CaseAdmin)
+tagulous.admin.register(Case.tags.tag_model)
