@@ -33,6 +33,7 @@ export default {
           location.href = 'home?openExternalBrowser=1'
           this.inLineApp = true
         }
+        this.$store.commit('setIsInApp', true)
       }
     } else {
       this.$store.commit('setIsMobile', false)

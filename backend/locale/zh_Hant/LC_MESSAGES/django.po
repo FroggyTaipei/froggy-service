@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-02-26 11:39+0800\n"
+"POT-Creation-Date: 2019-02-26 14:41+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -149,7 +149,7 @@ msgid "Case Notes"
 msgstr "內部備註"
 
 #: apps/cases/models.py:133
-msgid "Case Tags"
+msgid "Tags"
 msgstr "標籤"
 
 #: apps/cases/models.py:139
