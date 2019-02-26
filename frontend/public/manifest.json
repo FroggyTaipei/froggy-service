@@ -1,6 +1,6 @@
 {
-  "name": "website",
-  "short_name": "website",
+  "name": "選服魔鏡號",
+  "short_name": "選服魔鏡號",
   "icons": [
     {
       "src": "/img/icons/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "start_url": "",
+  "start_url": "https://service.froggychiu.com",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#4DBA87"

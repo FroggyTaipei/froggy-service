@@ -106,8 +106,6 @@ if USE_SENDGRID:
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#admins
 ADMINS = [
     ('ssivart', 'travishen.tw@gmail.com'),
-    ('matt', 'fought123@gmail.com'),
-    ('kai', 'ankycheng@gmail.com'),
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
