@@ -93,6 +93,7 @@ export default {
         },
         sortable: ['id', 'state', 'type', 'create_time'],
         filterable: ['id', 'title', 'state'],
+        sortIcon: { base: 'fas', up: 'fa-sort-up', down: 'fa-sort-down', is: 'fa-sort' },
         listColumns: {
           state: [
             { id: '已結案', text: '已結案' },
