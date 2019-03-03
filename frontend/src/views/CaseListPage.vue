@@ -19,6 +19,7 @@ export default {
 
 <style lang="sass">
 @import '@/assets/css/style.sass'
+@import url('https://use.fontawesome.com/releases/v5.7.2/css/all.css')
 
 .searchField
   height: auto !important
@@ -82,6 +83,9 @@ table
     margin-bottom: 100px
     &::-webkit-scrollbar
       width: 0 !important
+
+.VueTables__sort-icon
+  margin-left: 5px
 
 .VueTables__search-field
   display: none
