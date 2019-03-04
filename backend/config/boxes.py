@@ -23,7 +23,7 @@ class CaseRegionPieBox(Box):
 
 
 class CaseRegionLineBox(Box):
-    title = '每個月處理了多少案件（按類別）？'
+    title = '每個月處理了多少案件？（按選區）'
     description = ''
     widgets = [CaseRegionLineMonthly()]
 
@@ -35,12 +35,12 @@ class CaseTypePieBox(Box):
 
 
 class CaseTypeLineBox(Box):
-    title = '每個月處理了多少案件（按選區）'
+    title = '每個月處理了多少案件？（按類別）'
     description = ''
     widgets = [CaseTypeLineMonthly()]
 
 
 class CaseContentWordCloudBox(Box):
-    title = '大家到底是在靠北什麼？'
+    title = '最常出現的關鍵字'
     description = ''
     widgets = [CaseContentWordCloud()]
