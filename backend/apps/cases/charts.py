@@ -1,7 +1,6 @@
 import time
 import re
 import jieba
-from jieba import analyse
 from collections import Counter
 from _datetime import datetime
 from dateutil.rrule import rrule, MONTHLY
@@ -112,7 +111,7 @@ def case_region_line_monthly():
     qs = Case.objects.annotate(
         year=TruncYear('create_time'),
         month=TruncMonth('create_time'),
-    ).values('month', 'type').annotate(
+    ).values('month', 'region').annotate(
         count=Count('id'),
     ).values('month', 'region__name', 'count').order_by('month')
 
@@ -134,14 +133,24 @@ def case_content_wordcloud():
         content += case.first_history.content
         content += case.first_history.title
 
-    jieba.set_dictionary(str(settings.ROOT_DIR('static/dict.txt')))
+    jieba.set_dictionary(str(settings.ROOT_DIR('static/jieba/dict.txt')))
+    stop = []
+    with open(str(settings.ROOT_DIR('static/jieba/stop.txt')), 'r', encoding='UTF-8') as file:
+        for data in file.readlines():
+            data = data.strip()
+            stop.append(data)
 
     pattern = re.compile('[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？“”、~@#￥%……&*（）(\d+)]+')
     content = pattern.sub("", content)
 
-    words = [word for word in jieba.cut_for_search(content) if len(word) > 2]
-    counter = Counter(words)
-    data = [{'name': word, 'weight': weight} for word, weight in counter.most_common(20)]
+    words_2 = [word for word in jieba.cut_for_search(content) if len(word) == 2 and word not in stop]
+    counter_2 = Counter(words_2)
+
+    words_3 = [word for word in jieba.cut_for_search(content) if len(word) > 2 and word not in stop]
+    counter_3 = Counter(words_3)
+
+    data = [{'name': word, 'weight': weight} for word, weight in counter_2.most_common(50)] + \
+           [{'name': word, 'weight': weight} for word, weight in counter_3.most_common(50)]
 
     chart = get_highchart_word_cloud(data=data)
 

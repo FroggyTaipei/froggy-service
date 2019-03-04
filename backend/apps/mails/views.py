@@ -11,6 +11,7 @@ class MailViewSet(ModelViewSet):
     queryset = SendGridMail.objects.all()
     serializer_class = SendGridMailSerializer
     permission_classes = [IsAdminUser]
+    http_method_names = ['get', 'post', 'retrieve']
 
     @action(methods=['GET'], detail=True)
     def resend(self, request, pk=None):
