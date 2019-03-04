@@ -1,7 +1,6 @@
 import time
 import re
 import jieba
-from jieba import analyse
 from collections import Counter
 from _datetime import datetime
 from dateutil.rrule import rrule, MONTHLY
@@ -134,12 +133,17 @@ def case_content_wordcloud():
         content += case.first_history.content
         content += case.first_history.title
 
-    jieba.set_dictionary(str(settings.ROOT_DIR('static/dict.txt')))
+    jieba.set_dictionary(str(settings.ROOT_DIR('static/jieba/dict.txt')))
+    stop = []
+    with open(str(settings.ROOT_DIR('static/jieba/stop.txt')), 'r', encoding='UTF-8') as file:
+        for data in file.readlines():
+            data = data.strip()
+            stop.append(data)
 
     pattern = re.compile('[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？“”、~@#￥%……&*（）(\d+)]+')
     content = pattern.sub("", content)
 
-    words = [word for word in jieba.cut_for_search(content) if len(word) > 2]
+    words = [word for word in jieba.cut_for_search(content) if len(word) > 2 and word not in stop]
     counter = Counter(words)
     data = [{'name': word, 'weight': weight} for word, weight in counter.most_common(20)]
 
