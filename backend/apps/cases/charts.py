@@ -143,9 +143,14 @@ def case_content_wordcloud():
     pattern = re.compile('[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？“”、~@#￥%……&*（）(\d+)]+')
     content = pattern.sub("", content)
 
-    words = [word for word in jieba.cut_for_search(content) if len(word) > 2 and word not in stop]
-    counter = Counter(words)
-    data = [{'name': word, 'weight': weight} for word, weight in counter.most_common(20)]
+    words_2 = [word for word in jieba.cut_for_search(content) if len(word) == 2 and word not in stop]
+    counter_2 = Counter(words_2)
+
+    words_3 = [word for word in jieba.cut_for_search(content) if len(word) > 2 and word not in stop]
+    counter_3 = Counter(words_3)
+
+    data = [{'name': word, 'weight': weight} for word, weight in counter_2.most_common(50)] + \
+           [{'name': word, 'weight': weight} for word, weight in counter_3.most_common(50)]
 
     chart = get_highchart_word_cloud(data=data)
 
