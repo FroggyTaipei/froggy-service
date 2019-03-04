@@ -112,7 +112,7 @@ def case_region_line_monthly():
     qs = Case.objects.annotate(
         year=TruncYear('create_time'),
         month=TruncMonth('create_time'),
-    ).values('month', 'type').annotate(
+    ).values('month', 'region').annotate(
         count=Count('id'),
     ).values('month', 'region__name', 'count').order_by('month')
 
