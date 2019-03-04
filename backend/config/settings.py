@@ -371,6 +371,7 @@ FIXTURE_DIRS = (
 
 # Cloud Storage
 # ------------------------------------------------------------------------------
+# See: https://django-storages.readthedocs.io/en/latest/
 USE_GCS = env.bool('USE_GCS', default=False)
 if USE_GCS:
     STATICFILES_STORAGE = 'apps.files.storages.GoogleCloudStaticStorage'
@@ -388,9 +389,15 @@ if USE_GCS:
         f"{ROOT_DIR}/{env.str('GS_CREDENTIALS')}",
     )
 
+FILE_LIMIT_CASE = 5
+FILE_LIMIT_PER_FILE = 10485760
+FILE_LIMIT_PER_CASE = FILE_LIMIT_PER_FILE * FILE_LIMIT_CASE
+FILE_LIMIT_PER_DAY = FILE_LIMIT_PER_CASE * 10
+
 
 # DJANGO SUIT
 # ------------------------------------------------------------------------------
+# See: https://django-suit.readthedocs.io/en/develop/configuration.html#customization
 SUIT_CONFIG = {
     'ADMIN_NAME': _("Froggy's Service"),
     'SEARCH_URL': 'admin:cases_case_changelist',
@@ -401,15 +408,24 @@ SUIT_CONFIG = {
     'MENU_EXCLUDE': ('sites',),
 }
 
-# FILES LIMIT
-# ------------------------------------------------------------------------------
-FILE_LIMIT_CASE = 5
-FILE_LIMIT_PER_FILE = 10485760
-FILE_LIMIT_PER_CASE = 52428800
-FILE_LIMIT_PER_DAY = 524288000
-
 # JWT
 # ------------------------------------------------------------------------------
+# See: http://getblimp.github.io/django-rest-framework-jwt/#additional-settings
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=1800),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*30),
+}
+
+
+# SWAGGER
+# ------------------------------------------------------------------------------
+# See: https://marcgibbons.com/django-rest-swagger/settings/
+SWAGGER_SETTINGS = {
+    'USE_SESSION_AUTH': False,
+    'SECURITY_DEFINITIONS': {
+        'basic': {
+          'type': 'apiKey',
+          'name': 'API Key',
+          'in': 'header',
+        },
+    },
 }

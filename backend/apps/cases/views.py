@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from apps.users.authentication import AccountKitUserAuthentication
-
+from apps.arranges.models import Arrange
 from .serializers import (
     CaseWriteSerializer,
     CaseSerializer,
@@ -15,13 +15,13 @@ from .serializers import (
     RegionSerializer,
     VuetableParamsExpectations,
 )
-from apps.arranges.models import Arrange
 from .models import (
     Type,
     Region,
     Case,
     State,
 )
+from .schemas import vuetable_schema
 
 
 class RegionViewSet(ReadOnlyModelViewSet):
@@ -62,15 +62,8 @@ class CaseViewSet(ModelViewSet):
         serializer.validated_data['mobile'] = user.mobile
         serializer.save()
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['GET'], detail=False, schema=vuetable_schema)
     def vuetable(self, request):
-        """配合前端vuetable-2 server side render
-        * query: 搜尋參數
-        * limit: 單頁筆數
-        * sort: 排序欄位
-        * ascending: 順逆排
-        * page： 第幾頁
-        """
         queryset = self.queryset
 
         qpe = VuetableParamsExpectations(data=request.query_params)

@@ -37,6 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
+    http_method_names = ['get', 'post', 'put', 'retrieve']
 
     def get_serializer_class(self):
         if self.action in ['list', 'retrieve']:
