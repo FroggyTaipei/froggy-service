@@ -14,7 +14,7 @@ def get_highchart_pie(data, title=''):
             'data': data,
         }],
         'tooltip': {
-            'pointFormat': '{series.name}: <b>{point.percentage:.1f}%</b>',
+            'pointFormat': '<b>{point.percentage:.1f}%</b>',
         },
         'plotOptions': {
             'pie': {
