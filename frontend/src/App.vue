@@ -39,7 +39,7 @@ export default {
       this.$store.commit('setIsMobile', false)
     }
 
-    if (this.$store.state.types.length === 0 && this.$store.state.regions.length === 0) {
+    if (this.$store.state.types.length === 0 || this.$store.state.regions.length === 0) {
       this.$store.dispatch('getRegionsList')
       this.$store.dispatch('getTypeList')
     }
