@@ -79,18 +79,16 @@ class CaseViewSet(ModelViewSet):
                 data=qpe.errors,
                 status=status.HTTP_400_BAD_REQUEST,
             )
-        query = qpe.validated_data['query']
         ascending = qpe.validated_data['ascending']
         sort = qpe.validated_data['sort']
         page = qpe.validated_data['page'] - 1
         limit = qpe.validated_data['limit']
+        query = qpe.validated_data.get('query')
+        state = qpe.validated_data.get('state')
+        _type = qpe.validated_data.get('type')
 
         if ascending == 'desc':
             sort = '-' + sort
-
-        for state, title in State.CHOICES:
-            if query == title:
-                query = state
 
         if query:
             arrange_ids = Arrange.objects.filter(Q(title__icontains=query)
@@ -100,10 +98,14 @@ class CaseViewSet(ModelViewSet):
                                        | Q(title__icontains=query)
                                        | Q(content__icontains=query)
                                        | Q(location__icontains=query)
-                                       | Q(type__name__icontains=query)
-                                       | Q(state__icontains=query)
                                        | Q(disapprove_info__icontains=query)
                                        | Q(arranges__id__in=arrange_ids)).distinct()
+
+        if state:
+            queryset = queryset.filter(state=state)
+
+        if _type:
+            queryset = queryset.filter(type__id=_type)
 
         count = queryset.count()
         start = limit * page
