@@ -1,5 +1,11 @@
 # Froggy's service
+![travis-ci](https://travis-ci.org/FroggyTaipei/froggy-service.svg?branch=master)
+
 Project setup using [cookiecutter-django-vue](https://github.com/vchaptsev/cookiecutter-django-vue)
+
+### Contribution
+
+See our [contributing guide](CONTRIBUTING.md).
 
 ### Development
 
@@ -20,13 +26,13 @@ $ docker-compose down -v
 
 Run production:
 ```
-$ docker-compose -f docker-compose-prod.yml up --build
-$ docker-compose -f docker-compose-prod.yml down -v
+$ docker-compose -f docker-compose-prod.yml up
+$ docker-compose -f docker-compose-prod.yml down
 ```
 
 Base on your operating system, **missing bindings** might happen:
 ```
-$ docker-compose up --build
+$ docker-compose up
 ...
 Node Sass could not find a binding for your current environment: Linux/musl 64-bit with Node.js 10.x
 ```
@@ -88,12 +94,18 @@ $ kubectl delete --all deployments --namespace=app
 $ kubectl delete --all secrets --namespace=app
 ```
 
-
 ### Architecture
 
 ![Architecture diagram](architecture.png)
 
 
-### Licence
+### Licenses
 * Copyright (C) 2019 - 2019 台北市議員邱威傑辦公室. All rights reserved.
 * Distributed under the GNU AGPL v3.0
+
+Media
+* Distributed under the CC0 1.0 Universal
+
+Data
+* Try our API via [Swagger](https://service.froggychiu.com/api/swagger/)
+* Distributed under the CC BY 4.0
