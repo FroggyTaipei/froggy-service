@@ -62,4 +62,6 @@ class VuetableParamsExpectations(serializers.Serializer):
     limit = serializers.IntegerField(min_value=1, default=10)
     ascending = serializers.ChoiceField(choices=('desc', 'asc'), default='desc')
     sort = serializers.ChoiceField(choices=('id', 'state', 'type', 'create_time'), default='id')
-    query = serializers.CharField(default='')
+    query = serializers.CharField(required=False)
+    type = serializers.IntegerField(required=False)
+    state = serializers.ChoiceField(required=False, choices=('disapproved', 'arranged', 'closed'))
