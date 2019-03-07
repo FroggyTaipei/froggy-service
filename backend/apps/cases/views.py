@@ -2,6 +2,8 @@ from django.db.models import Q
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.pagination import LimitOffsetPagination
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
@@ -43,6 +45,11 @@ class CaseViewSet(ModelViewSet):
     serializer_class = CaseSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
     http_method_names = ['get', 'post', 'retrieve']
+    pagination_class = LimitOffsetPagination
+    filter_backends = (OrderingFilter, SearchFilter)
+    search_fields = ('id', 'number', 'type__name', 'location', 'title', 'content',
+                     'disapprove_info', 'arranges__title', 'arranges__content')
+    ordering_fields = ('id', 'number', 'type')
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -94,7 +101,6 @@ class CaseViewSet(ModelViewSet):
                                        | Q(content__icontains=query)
                                        | Q(location__icontains=query)
                                        | Q(type__name__icontains=query)
-                                       | Q(region__name__icontains=query)
                                        | Q(state__icontains=query)
                                        | Q(disapprove_info__icontains=query)
                                        | Q(arranges__id__in=arrange_ids)).distinct()
