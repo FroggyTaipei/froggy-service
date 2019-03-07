@@ -30,11 +30,11 @@ el-container.page2
               .arranges-title 案件處理進度：
               br
               .case-content-arranges(v-for="arrange,index in reverseCaseProcess")
+                hr(v-if="index > 0")
                 div.arrange-title 處理主旨： {{ arrange.title }}
                 div.arrange-time 處理時間： {{arrange.arrange_time}}
                 div.arrange-content(v-html="arrange.content")
-                hr
-            div(style="text-align: center; display:block") ---------- End ----------
+            div(style="text-align: center; display:block")
           .dialog-footer(slot='footer')
             .footer-block
               .content-status 處理進度：{{ selectedCaseDetails.state }}
