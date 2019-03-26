@@ -18,6 +18,7 @@ from django.db.models import (
     QuerySet,
     SET_NULL,
     UUIDField,
+    IntegerField,
 )
 
 from django_fsm import FSMField, transition
@@ -79,6 +80,23 @@ class State(object):
     )
 
 
+class Priority(object):
+    """案件優先程度"""
+    LOWEST = 1
+    LOW = 2
+    NORMAL = 3
+    HIGH = 4
+    HIGHEST = 5
+
+    CHOICES = (
+        (LOWEST, '最低'),
+        (LOW, '低'),
+        (NORMAL, '普通'),
+        (HIGH, '高'),
+        (HIGHEST, '最高'),
+    )
+
+
 class CaseQuerySet(QuerySet):
     """
     為了觸發post_save和pre_save，複寫Queryset的update函式，使用情境例如：
@@ -111,6 +129,7 @@ class Case(Model):
     * update_time: 上次更新時間
     """
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES)
+    priority = IntegerField(default=Priority.NORMAL, verbose_name=_('Case Priority'), choices=Priority.CHOICES)
     uuid = UUIDField(default=uuid.uuid4, verbose_name=_('UUID'), unique=True)
     number = CharField(max_length=6, default='-', null=True, blank=True, verbose_name=_('Case Number'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='cases', verbose_name=_('Case Type'))
@@ -166,6 +185,7 @@ class Case(Model):
             'mobile': self.mobile,
             'email': self.email,
             'address': self.address,
+            'priority': self.priority,
         }
 
     def move_file(self):
@@ -308,6 +328,7 @@ class CaseHistory(Model):
                         verbose_name=_('Editor'))
     case = ForeignKey('cases.Case', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case'))
     state = FSMField(default=State.DRAFT, verbose_name=_('Case State'), choices=State.CHOICES, protected=True)
+    priority = IntegerField(default=Priority.NORMAL, verbose_name=_('Case Priority'), choices=Priority.CHOICES)
     title = CharField(max_length=255, verbose_name=_('Case Title'))
     type = ForeignKey('cases.Type', on_delete=CASCADE, related_name='case_histories', verbose_name=_('Case Type'))
     region = ForeignKey('cases.Region', on_delete=CASCADE, related_name='case_histories', verbose_name=_('User Region'))
