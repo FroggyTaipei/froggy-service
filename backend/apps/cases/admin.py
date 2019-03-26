@@ -124,10 +124,12 @@ class CaseForm(ModelForm):
 
 class CaseAdmin(FSMTransitionMixin, ModelAdmin):
     form = CaseForm
-    list_display = ('number', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
+    list_display = ('number', 'priority', 'state', 'type', 'region', 'title', 'open_time', 'close_time')
     list_filter = (
         'type',
         'region',
+        'state',
+        'priority',
         ('open_time', DateRangeFilter),
         ('close_time', DateRangeFilter),
     )
@@ -140,7 +142,7 @@ class CaseAdmin(FSMTransitionMixin, ModelAdmin):
         ('案件', {
             'classes': ('suit-tab suit-tab-general',),
             'description': '成案時間與結案時間在案件狀態更新時（已排程、已結案）自動紀錄',
-            'fields': ['number', 'state', 'create_time', 'open_time', 'close_time'],
+            'fields': ['number', 'priority', 'state', 'create_time', 'open_time', 'close_time'],
         }),
         ('案件資訊', {
             'classes': ('suit-tab suit-tab-general',),
