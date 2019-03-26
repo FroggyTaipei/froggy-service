@@ -192,7 +192,7 @@ export default {
   },
   created() {
     if (this.$store.state.isMobile === true) {
-      this.options.perPage = 10;
+      this.options.perPage = 8;
     }
     const _this = this;
     Event.$off(["vue-tables.pagination", "vue-tables.loaded"]);
