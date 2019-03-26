@@ -34,6 +34,40 @@ export default {
     border-color: $color_gray !important
     color: $color_white
 
+.filterTags
+  margin-top: 15px
+  height: auto !important
+  flex-wrap: wrap !important
+
+.typeTag, .stateTag
+  cursor: pointer
+  font-size: 12px
+  color: white
+  border: white 1px solid
+  margin: 3px 5px
+  border-radius: 3px
+  padding: 3px 5px
+
+.clearTag
+  cursor: pointer
+  font-size: 12px
+  color: white
+  // border: white 1px solid
+  // border-radius: 3px
+  margin: 3px 5px
+  padding: 3px 5px
+
+.tagSelected
+  background-color: gray
+
+
+.break
+  display: inline-block
+  flex-basis: 100%
+  width: 0px
+  height: 0px
+  overflow: hidden
+
 table
   width: 100%
   color: white
@@ -71,6 +105,7 @@ table
 .VueTables.VueTables--server
   height: 100%
   display: flex
+  // margin-top: 50px
   flex-direction: column
   align-items: center
   justify-content: flex-start
@@ -260,7 +295,7 @@ nav
       @media screen and (max-width: $break_small)
         font-size: calc(12px + 1.5vw)
         border-radius: 15px 5px
-      .content-status
+      .content-state
         flex: 1
         padding: 0px 20px 0px 20px
         text-align: right
