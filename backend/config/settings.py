@@ -403,7 +403,7 @@ SUIT_CONFIG = {
     'SEARCH_URL': 'admin:cases_case_changelist',
     'HEADER_DATE_FORMAT': 'l, Y F j',
     'HEADER_TIME_FORMAT': 'H:i',
-    'LIST_PER_PAGE': 30,
+    'LIST_PER_PAGE': 50,
     'CONFIRM_UNSAVED_CHANGES': True,
     'MENU_EXCLUDE': ('sites',),
 }
@@ -429,3 +429,8 @@ SWAGGER_SETTINGS = {
         },
     },
 }
+
+# SESSIONS
+# ------------------------------------------------------------------------------
+# See: https://docs.djangoproject.com/en/dev/ref/settings/#sessions
+SESSION_COOKIE_AGE = 120 * 60
