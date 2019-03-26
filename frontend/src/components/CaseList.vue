@@ -148,7 +148,7 @@ export default {
             }
           }
         ],
-        perPage: 15,
+        perPage: 13,
         perPageValues: [10],
         selectedType: null,
         selectedState: null,
@@ -178,7 +178,7 @@ export default {
             return dateFormatted;
           },
           title(h, row) {
-            let showLimit = 10;
+            let showLimit = this.$store.state.isMobile ? 10 : 18;
             let title = row.title;
             if (title.length > showLimit) {
               return title.substring(0, showLimit) + "...";
