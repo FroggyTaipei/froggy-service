@@ -106,30 +106,3 @@ class CaseCrudTestCase(TestCase):
         self.case.delete()
         qs = CaseHistory.objects.filter(case=self.case)
         self.assertEqual(qs.count(), 0)
-
-    # @tag('api')
-    # def test_serializer(self):
-    #     from apps.cases.serializers import CaseWriteSerializer
-    #     data = {
-    #         'uuid': '54eaa9c1-d4de-4717-8738-40991a6cef06',
-    #         'title': '上班時段計程車過多',
-    #         'content': 'test',
-    #         'username': '王大明',
-    #         'type': 1,
-    #         'region': 1,
-    #     }
-    #
-    #     serializer = CaseWriteSerializer(data=data)
-    #     self.assertTrue(serializer.is_valid())
-    #
-    #     with self.assertRaises(ValidationError):
-    #         Case.objects.create(**serializer.validated_data)
-    #
-    #     with self.assertRaises(ValidationError):
-    #         serializer.save()
-    #
-    #     mobile = '0912345678'
-    #     serializer.validated_data['mobile'] = mobile
-    #     case = serializer.save()
-    #
-    #     self.assertEqual(case.mobile, mobile)

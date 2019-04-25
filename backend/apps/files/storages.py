@@ -58,17 +58,17 @@ class CleanStorage(object):
             else:
                 self.storage.delete(f'{path}/{i}')
 
-    def clean_dir(self, path, dir):
-        storage_list = self.storage.listdir(f'{path}{dir}/')
-        self.clean_file(f'{path}{dir}/', storage_list[1])
+    def clean_dir(self, path, directory):
+        storage_list = self.storage.listdir(f'{path}{directory}/')
+        self.clean_file(f'{path}{directory}/', storage_list[1])
         for i in storage_list[0]:
-            self.clean_dir(f'{path}{dir}/', i)
+            self.clean_dir(f'{path}{directory}/', i)
         if path[-1:] is '/':
-            if self.storage.exists(f'{path}{dir}'):
-                self.storage.delete(f'{path}{dir}')
+            if self.storage.exists(f'{path}{directory}'):
+                self.storage.delete(f'{path}{directory}')
         else:
-            if self.storage.exists(f'{path}{dir}/'):
-                self.storage.delete(f'{path}{dir}/')
+            if self.storage.exists(f'{path}{directory}/'):
+                self.storage.delete(f'{path}{directory}/')
 
     def clean_storage(self, storage):
         path = ''
