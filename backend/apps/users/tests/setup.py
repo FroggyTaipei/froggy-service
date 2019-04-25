@@ -12,12 +12,14 @@ def create_superuser():
     """Initial fake superuser only for testing. Use in docker-compose."""
     email = 'test@test.test'
     password = '123456'
-    mobile = '0912345678'
-    if not User.objects.filter(email=email).exists():
-        user = User.objects.create_superuser(email=email, password=password,
-                                             full_name='Test Superuser', mobile=mobile)
+
+    superuser = User.objects.filter(email=email).first()
+
+    if not superuser:
+        superuser = User.objects.create_superuser(email=email, password=password,
+                                                  full_name='Test Superuser')
         payload = {
-            'id': user.pk,
+            'id': superuser.pk,
             'exp': datetime(year=2030, month=1, day=1),
         }
         token = jwt_encode_handler(payload)
@@ -33,3 +35,4 @@ Use this token for jwt testing, expired in 2030/01/01:
     Authorization: JWT {token}
 
 """)
+    return superuser
