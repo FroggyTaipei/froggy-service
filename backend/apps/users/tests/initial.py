@@ -13,10 +13,9 @@ def create_superuser():
     email = 'test@test.test'
     password = '123456'
     mobile = '0912345678'
-    if not User.objects.count():
-        user = User.objects.create_user(email=email, password=password,
-                                        full_name='Test Superuser', mobile=mobile,
-                                        is_staff=True, is_superuser=True)
+    if not User.objects.filter(email=email).exists():
+        user = User.objects.create_superuser(email=email, password=password,
+                                             full_name='Test Superuser', mobile=mobile)
         payload = {
             'id': user.pk,
             'exp': datetime(year=2030, month=1, day=1),
@@ -34,6 +33,3 @@ Use this token for jwt testing, expired in 2030/01/01:
     Authorization: JWT {token}
 
 """)
-
-
-create_superuser()
