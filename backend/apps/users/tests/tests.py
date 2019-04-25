@@ -7,9 +7,10 @@ from apps.users.models import User
 class UserModelTestCase(TransactionTestCase):
     def test_create_superuser_by_script(self):
         """Load superuser"""
-        from apps.users.tests import initial
-        self.superuser = User.objects.first()
-        self.assertIsNotNone(self.superuser)
+        from apps.users.tests.setup import create_superuser
+        user = create_superuser()
+        self.assertTrue(user.is_superuser)
+        self.assertTrue(user.is_staff)
 
     def test_create_normal_user(self):
         user = User.objects.create_user(email='normal@mail.com', password='123456', is_staff=True, is_superuser=True)
@@ -34,4 +35,4 @@ class UserModelTestCase(TransactionTestCase):
             User.objects.create_accountkit_user(mobile=None, email=None)
 
         with self.assertRaises(ValidationError):
-            user = User.objects.create_accountkit_user(mobile='0912345679', is_staff=True, is_superuser=True)
+            User.objects.create_accountkit_user(mobile='0912345679', is_staff=True, is_superuser=True)
