@@ -23,8 +23,8 @@ def months(start_month, start_year, end_month, end_year):
     return [(d.month, d.year) for d in rrule(MONTHLY, dtstart=start, until=end)]
 
 
-def to_unix(datetime):
-    return int(time.mktime(datetime.timetuple()) * 1000)
+def to_unix(dt):
+    return int(time.mktime(dt.timetuple()) * 1000)
 
 
 def case_state_pie():
