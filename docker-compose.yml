@@ -5,6 +5,7 @@ volumes:
 
 services:
   backend:
+    container_name: backend
     build:
       context: ./backend
     depends_on:
@@ -17,6 +18,7 @@ services:
     env_file: .env
 
   frontend:
+    container_name: frontend
     image: node:10-alpine
     command: npm run serve
     volumes:
@@ -26,19 +28,14 @@ services:
     restart: on-failure
 
   postgres:
+    container_name: postgres
     image: postgres:10-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file: .env
 
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - "8025:8025"
-    logging:
-      driver: none
-
   nginx:
+    container_name: proxy
     image: nginx:alpine
     ports:
       - "8000:80"
