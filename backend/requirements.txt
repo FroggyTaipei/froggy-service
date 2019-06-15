@@ -1,4 +1,4 @@
-Django==2.2
+Django==2.2.2
 django-environ==0.4.5
 django-extensions==2.1.6
 flake8==3.5.0
@@ -8,8 +8,8 @@ Pillow==5.0.0
 psycopg2-binary==2.7.5
 requests==2.20.0
 raven==6.9.0
-PyYAML>=5.1
-djangorestframework==3.8.2
+PyYAML==5.1.1
+djangorestframework==3.9.4
 django-ckeditor==5.6.1
 django-storages==1.7.1
 boto3==1.9.71
@@ -20,7 +20,7 @@ django-fsm-admin==1.2.4
 sendgrid==5.6.0
 django-sendgrid-v5==0.7.0
 beautifulsoup4==4.7.1
-django-rest-swagger==2.2.0
+drf-yasg==1.16.0
 djangorestframework-jwt==1.11.0
 django-admin-lightweight-date-hierarchy==0.3.0
 django-suit-daterange-filter==0.0.6
