@@ -40,7 +40,7 @@ THIRD_PARTY_APPS = [
     'storages',
     'suit_ckeditor',
     'fsm_admin',
-    'rest_framework_swagger',
+    'drf_yasg',
     'rest_framework_jwt',
     'django_admin_lightweight_date_hierarchy',
     'date_range_filter',
@@ -418,7 +418,7 @@ JWT_AUTH = {
 
 # SWAGGER
 # ------------------------------------------------------------------------------
-# See: https://marcgibbons.com/django-rest-swagger/settings/
+# See: https://drf-yasg.readthedocs.io/en/stable/settings.html
 SWAGGER_SETTINGS = {
     'USE_SESSION_AUTH': False,
     'SECURITY_DEFINITIONS': {
@@ -428,7 +428,18 @@ SWAGGER_SETTINGS = {
           'in': 'header',
         },
     },
+    'DEFAULT_FIELD_INSPECTORS': [
+        'drf_yasg.inspectors.CamelCaseJSONFilter',
+        'drf_yasg.inspectors.InlineSerializerInspector',
+        'drf_yasg.inspectors.RelatedFieldInspector',
+        'drf_yasg.inspectors.ChoiceFieldInspector',
+        'drf_yasg.inspectors.FileFieldInspector',
+        'drf_yasg.inspectors.DictFieldInspector',
+        'drf_yasg.inspectors.SimpleFieldInspector',
+        'drf_yasg.inspectors.StringDefaultFieldInspector',
+    ],
 }
+
 
 # SESSIONS
 # ------------------------------------------------------------------------------
