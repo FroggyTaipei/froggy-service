@@ -149,8 +149,8 @@ def case_content_wordcloud():
     words_3 = [word for word in jieba.cut_for_search(content) if len(word) > 2 and word not in stop]
     counter_3 = Counter(words_3)
 
-    data = [{'name': word, 'weight': weight} for word, weight in counter_2.most_common(50)] + \
-           [{'name': word, 'weight': weight} for word, weight in counter_3.most_common(50)]
+    data = [{'name': word, 'weight': weight*1} for word, weight in counter_2.most_common(20)] + \
+           [{'name': word, 'weight': weight*1.5} for word, weight in counter_3.most_common(30)]
 
     chart = get_highchart_word_cloud(data=data)
 
