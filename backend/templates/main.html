@@ -6,19 +6,7 @@
 {% trans "Froggy's Service" %}
 {% endblock %}
 
-{% block dashboard_css %}
-  {% if not suit %}
-    <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'bower_components/bootstrap/dist/css/bootstrap-theme.min.css' %}" rel="stylesheet">
-    {# JQuery must be loaded first! #}
-    <script src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
-  {% endif %}
-{% endblock %}
-
 {% block dashboard_js %}
-  {% if not suit %}
-    <script src="{% static 'bower_components/bootstrap/dist/js/bootstrap.min.js' %}"></script>
-  {% endif %}
-  <script src="{% static 'bower_components/highcharts/highcharts.js' %}"></script>
-  <script src="{% static 'bower_components/highcharts/modules/wordcloud.js' %}"></script>
+  <script src="{% static 'highcharts/highcharts.js' %}"></script>
+  <script src="{% static 'highcharts/wordcloud.js' %}"></script>
 {% endblock %}

@@ -101,7 +101,7 @@ $ kubectl delete --all secrets --namespace=app
 
 ### Licenses
 * Copyright (C) 2019 - 2019 台北市議員邱威傑辦公室. All rights reserved.
-* Distributed under the GNU AGPL v3.0
+* Distributed under the MIT
 
 Media
 * Distributed under the CC0 1.0 Universal

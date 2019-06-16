@@ -23,8 +23,8 @@ def months(start_month, start_year, end_month, end_year):
     return [(d.month, d.year) for d in rrule(MONTHLY, dtstart=start, until=end)]
 
 
-def to_unix(datetime):
-    return int(time.mktime(datetime.timetuple()) * 1000)
+def to_unix(dt):
+    return int(time.mktime(dt.timetuple()) * 1000)
 
 
 def case_state_pie():
@@ -149,8 +149,8 @@ def case_content_wordcloud():
     words_3 = [word for word in jieba.cut_for_search(content) if len(word) > 2 and word not in stop]
     counter_3 = Counter(words_3)
 
-    data = [{'name': word, 'weight': weight} for word, weight in counter_2.most_common(50)] + \
-           [{'name': word, 'weight': weight} for word, weight in counter_3.most_common(50)]
+    data = [{'name': word, 'weight': weight*1} for word, weight in counter_2.most_common(20)] + \
+           [{'name': word, 'weight': weight*1.5} for word, weight in counter_3.most_common(30)]
 
     chart = get_highchart_word_cloud(data=data)
 

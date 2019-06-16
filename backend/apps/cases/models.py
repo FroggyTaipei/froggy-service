@@ -347,7 +347,7 @@ class CaseHistory(Model):
 
     @property
     def number(self):
-        self.case.number
+        return self.case.number
 
     def __str__(self):
         return self.case.number

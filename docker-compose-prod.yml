@@ -6,6 +6,7 @@ volumes:
 
 services:
   backend:
+    container_name: backend
     build:
       context: ./backend
     depends_on:
@@ -18,12 +19,14 @@ services:
     env_file: .env
 
   postgres:
+    container_name: postgres
     image: postgres:10-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data
     env_file: .env
 
   nginx:
+    container_name: frontend
     build:
       context: .
       dockerfile: nginx/base.Dockerfile
