@@ -1,4 +1,5 @@
 ## K8S
+production-k8s-specifications
 stage-k8s-specifications
 
 ### NPM
@@ -7,8 +8,6 @@ frontend/package-lock.json
 
 ### ENV
 .env
-.env.stage
-.env.prod
 .env.travis
 gs_credential.json
 secrets.tar

@@ -9,66 +9,57 @@ STAGE_API=gcr.io/${GOOGLE_PROJECT_ID}/${STAGE_API_IMAGE}
 PUBLIC_NGINX=${DOCKER_ORG}/${NGINX_IMAGE}
 PUBLIC_API=${DOCKER_ORG}/${API_IMAGE}
 
-if [ "$TRAVIS_BRANCH" == "release" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    # Use Credential file to access google cloud
-    gcloud auth activate-service-account --key-file gs_credential.json
+function access_gke_cluster(){
+    gcloud auth activate-service-account --key-file $1
     gcloud auth configure-docker
+    gcloud --quiet config set project ${GOOGLE_PROJECT_ID}
+    gcloud --quiet config set container/cluster ${CLUSTER}
+    gcloud --quiet config set compute/zone ${ZONE}
+    gcloud --quiet container clusters get-credentials ${CLUSTER}
+}
 
-    # Build and push images
-    sudo cp .env.prod .env
-    docker image build -t $RELEASE_API:$TRAVIS_COMMIT ./backend;
-    docker image build -t $RELEASE_NGINX:$TRAVIS_COMMIT -f nginx/k8s.Dockerfile .;
-    docker image tag $RELEASE_API:$TRAVIS_COMMIT $RELEASE_API:latest;
-    docker image tag $RELEASE_NGINX:$TRAVIS_COMMIT $RELEASE_NGINX:latest;
-    docker push $RELEASE_NGINX;
-    docker push $RELEASE_API;
+function build_and_push_image(){
+  # Use latest image as cache
+  docker pull $1:latest || exit 0;
+  docker image build -t $1:$2 -f $3 --cache-from $1:latest $4;
+  docker image tag $1:$2 $1:latest;
+  docker push $1;
+}
 
+if [ "$TRAVIS_BRANCH" == "release" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     # Access cluster
-    gcloud --quiet config set project $GOOGLE_PROJECT_ID
-    gcloud --quiet config set container/cluster $CLUSTER
-    gcloud --quiet config set compute/zone $ZONE
-    gcloud --quiet container clusters get-credentials $CLUSTER
+    access_gke_cluster gs_credential.json
+
+    # Build and push to GCR
+    sudo cp .env.prod .env
+    build_and_push_image ${RELEASE_API} ${TRAVIS_COMMIT} Dockerfile ./backend
+    build_and_push_image ${RELEASE_NGINX} ${TRAVIS_COMMIT} nginx/k8s.Dockerfile .
 
     # Release deployment update
-    kubectl set image deployment/${API_DEPLOYMENT} ${API_CONTAINER}=$RELEASE_API:$TRAVIS_COMMIT;
-    kubectl set image deployment/${NGINX_DEPLOYMENT} ${NGINX_CONTAINER}=$RELEASE_NGINX:$TRAVIS_COMMIT;
+    kubectl set image deployment/${API_DEPLOYMENT} ${API_CONTAINER}=${RELEASE_API}:${TRAVIS_COMMIT};
+    kubectl set image deployment/${NGINX_DEPLOYMENT} ${NGINX_CONTAINER}=${RELEASE_NGINX}:${TRAVIS_COMMIT};
 fi
 
 if [ "$TRAVIS_BRANCH" == "staging" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    # Use Credential file to access google cloud
-    gcloud auth activate-service-account --key-file gs_credential.json
-    gcloud auth configure-docker
-
-    # Build and push images
-    sudo cp .env.stage .env
-    docker image build -t $STAGE_API:$TRAVIS_COMMIT ./backend;
-    docker image build -t $STAGE_NGINX:$TRAVIS_COMMIT -f nginx/k8s.Dockerfile .;
-    docker image tag $STAGE_API:$TRAVIS_COMMIT $STAGE_API:latest;
-    docker image tag $STAGE_NGINX:$TRAVIS_COMMIT $STAGE_NGINX:latest;
-    docker push $STAGE_NGINX;
-    docker push $STAGE_API;
-
     # Access cluster
-    gcloud --quiet config set project $GOOGLE_PROJECT_ID
-    gcloud --quiet config set container/cluster $CLUSTER
-    gcloud --quiet config set compute/zone $ZONE
-    gcloud --quiet container clusters get-credentials $CLUSTER
+    access_gke_cluster gs_credential.json
+
+    # Build and push to GCR
+    sudo cp .env.stage .env
+    build_and_push_image ${STAGE_API} ${TRAVIS_COMMIT} Dockerfile ./backend
+    build_and_push_image ${STAGE_NGINX} ${TRAVIS_COMMIT} nginx/k8s.Dockerfile .
 
     # Deploy
-    kubectl set image deployment/${API_DEPLOYMENT} --namespace=stage ${API_CONTAINER}=$STAGE_API:$TRAVIS_COMMIT;
-    kubectl set image deployment/${NGINX_DEPLOYMENT} --namespace=stage ${NGINX_CONTAINER}=$STAGE_NGINX:$TRAVIS_COMMIT;
+    kubectl set image deployment/${API_DEPLOYMENT} --namespace=stage ${API_CONTAINER}=${STAGE_API}:${TRAVIS_COMMIT};
+    kubectl set image deployment/${NGINX_DEPLOYMENT} --namespace=stage ${NGINX_CONTAINER}=${STAGE_NGINX}:${TRAVIS_COMMIT};
 fi
 
 if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
     sudo cp .env.example .env
     sudo rm backend/gs_credential.json
 
-    # Build both and push to docker hub
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker image build -t $PUBLIC_API:$TRAVIS_COMMIT ./backend;
-    docker image build -t $PUBLIC_NGINX:$TRAVIS_COMMIT -f nginx/k8s.Dockerfile .;
-    docker image tag $PUBLIC_API:$TRAVIS_COMMIT $PUBLIC_API:latest;
-    docker image tag $PUBLIC_NGINX:$TRAVIS_COMMIT $PUBLIC_NGINX:latest;
-    docker push $PUBLIC_NGINX;
-    docker push $PUBLIC_API;
+    # Build and push to DockerHub
+    docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
+    build_and_push_image ${PUBLIC_API} ${TRAVIS_COMMIT} Dockerfile ./backend
+    build_and_push_image ${PUBLIC_NGINX} ${TRAVIS_COMMIT} nginx/k8s.Dockerfile .
 fi
