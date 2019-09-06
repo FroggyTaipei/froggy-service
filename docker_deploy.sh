@@ -32,7 +32,7 @@ if [ "$TRAVIS_BRANCH" == "release" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; t
 
     # Build and push to GCR
     sudo cp .env.prod .env
-    build_and_push_image ${RELEASE_API} ${TRAVIS_COMMIT} Dockerfile ./backend
+    build_and_push_image ${RELEASE_API} ${TRAVIS_COMMIT} backend/Dockerfile ./backend
     build_and_push_image ${RELEASE_NGINX} ${TRAVIS_COMMIT} nginx/k8s.Dockerfile .
 
     # Release deployment update
@@ -46,7 +46,7 @@ if [ "$TRAVIS_BRANCH" == "staging" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; t
 
     # Build and push to GCR
     sudo cp .env.stage .env
-    build_and_push_image ${STAGE_API} ${TRAVIS_COMMIT} Dockerfile ./backend
+    build_and_push_image ${STAGE_API} ${TRAVIS_COMMIT} backend/Dockerfile ./backend
     build_and_push_image ${STAGE_NGINX} ${TRAVIS_COMMIT} nginx/k8s.Dockerfile .
 
     # Deploy
@@ -60,6 +60,6 @@ if [ "$TRAVIS_BRANCH" == "master" ] && [ "$TRAVIS_PULL_REQUEST" == "false" ]; th
 
     # Build and push to DockerHub
     docker login -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}";
-    build_and_push_image ${PUBLIC_API} ${TRAVIS_COMMIT} Dockerfile ./backend
+    build_and_push_image ${PUBLIC_API} ${TRAVIS_COMMIT} backend/Dockerfile ./backend
     build_and_push_image ${PUBLIC_NGINX} ${TRAVIS_COMMIT} nginx/k8s.Dockerfile .
 fi
