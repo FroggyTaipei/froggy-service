@@ -74,11 +74,9 @@ Run the following command to create the deployments and services objects:
 $ kubectl create -f k8s-specifications/
 ```
 ```
-ingress.extensions/admin-ingress created
+ingress.extensions/ingress created
 deployment.extensions/api created
 service/api-service created
-ingress.extensions/fs-ingress created
-backendconfig.cloud.google.com/froggy-service-backendconfig created
 deployment.extensions/postgres created
 service/postgres created
 deployment.extensions/nginx created
@@ -87,11 +85,7 @@ service/nginx-service created
 
 Clean up
 ```
-$ kubectl delete --all ing --namespace=app
-$ kubectl delete --all backendconfig --namespace=app
-$ kubectl delete --all services --namespace=app
-$ kubectl delete --all deployments --namespace=app
-$ kubectl delete --all secrets --namespace=app
+$ kubectl delete -f k8s-specifications/
 ```
 
 ### Architecture
