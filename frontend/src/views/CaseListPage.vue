@@ -47,6 +47,9 @@ export default {
   margin: 3px 5px
   border-radius: 3px
   padding: 3px 5px
+  transition: background-color 0.3s linear, border 0.3s linear
+  &:hover
+    background-color: rgba(255, 255, 255, 0.3)
 
 .clearTag
   cursor: pointer
@@ -57,8 +60,12 @@ export default {
   margin: 3px 5px
   padding: 3px 5px
 
+$tag_selected_color: #dc5f84
 .tagSelected
-  background-color: gray
+  background-color: $tag_selected_color
+  border-color: $tag_selected_color
+  &:hover
+    background-color: $tag_selected_color
 
 
 .break

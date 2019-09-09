@@ -17,3 +17,7 @@ spec:
           serviceName: api-service
           servicePort: 8000
         path: /api/*
+      - backend:
+          serviceName: api-service
+          servicePort: 8000
+        path: /admin/*

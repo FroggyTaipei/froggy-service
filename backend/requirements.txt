@@ -1,4 +1,4 @@
-Django==2.2.2
+Django==2.2.4
 django-environ==0.4.5
 django-extensions==2.1.6
 flake8==3.5.0
