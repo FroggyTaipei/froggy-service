@@ -12,7 +12,7 @@ env:
     - DOCKER_ORG=froggytaipei
     - GOOGLE_APPLICATION_CREDENTIALS=gs_credential.json
     - CLUSTER=froggy-service
-    - ZONE=asia-east1-a
+    - ZONE=asia-east1-b
     - NGINX_IMAGE=froggy-service-nginx
     - API_IMAGE=froggy-service-api
     - STAGE_NGINX_IMAGE=stage-froggy-service-nginx
