@@ -24,49 +24,15 @@ Use `-v` to clean volume while stop containers:
 $ docker-compose down -v
 ```
 
-Run production:
-```
-$ docker-compose -f docker-compose-prod.yml up
-$ docker-compose -f docker-compose-prod.yml down
-```
-
-Base on your operating system, **missing bindings** might happen:
-```
-$ docker-compose up
-...
-Node Sass could not find a binding for your current environment: Linux/musl 64-bit with Node.js 10.x
-```
-Try mounting container's node_module to volume with a different name, 
-e.g. changing `docker-compose.yml`:
-```yaml
-volumes:
-  node_modules_volume:
-
-frontend:
-  image: node:10-alpine
-  command: npm run serve
-  volumes:
-    - ./.env:/app/.env:ro
-    - ./frontend:/app
-    - node_modules_volume:/usr/src/app/node_modules
-  working_dir: /app
-  restart: on-failure
-```
-See: [Docker ALPINE Linux throws node-sass missing binding error](https://github.com/sass/node-sass/issues/2165) 
-
 ### Deploy
 
 Run the app in Kubernetes
-The folder k8s-specifications contains the yaml specifications of the App's services.
-
-First create the app namespace
-```
-$ kubectl create namespace app
-```
+The folder k8s-specifications contains the yaml specifications, this is for demo purpose, note the persistent volume
+is not set for database.
 
 Create secrets
 ```
-$ kubectl create secret generic environs --from-env-file .env --namespace app
+$ kubectl create secret generic environs --from-env-file .env
 ```
 
 Run the following command to create the deployments and services objects:
