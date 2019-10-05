@@ -1,3 +1,16 @@
+<template>
+  <div class="v-marquee" @click="$emit('click',$event)">
+    <div
+      :style="{'animation-duration':time,'animation-name':name, 'visibility': visibility}"
+      :class="animate?'running':'pause'"
+    >
+      <slot>
+        <div v-html="content"></div>
+      </slot>
+    </div>
+  </div>
+</template>
+
 <style lang="scss" scoped>
 .v-marquee {
   width: 100%;
@@ -7,7 +20,7 @@
   > div {
     display: inline-block;
     animation: marquee linear infinite;
-    transition: 0.5s
+    transition: 0.5s;
   }
   .pause {
     animation-play-state: paused;
@@ -18,19 +31,9 @@
 }
 </style>
 
-<template>
-    <div class="v-marquee" @click="$emit('click',$event)">
-        <div :style="{'animation-duration':time,'animation-name':name, 'visibility': visibility}" :class="animate?'running':'pause'">
-            <slot>
-                <div v-html="content"></div>
-            </slot>
-        </div>
-    </div>
-</template>
-
 <script>
 export default {
-  name: 'VTextMarquee',
+  name: "VTextMarquee",
   props: {
     speed: {
       type: Number,
@@ -42,53 +45,65 @@ export default {
       default: true
     }
   },
-  data () {
+  data() {
     return {
       time: 0,
-      name: 'marquee',
-      styleEl: document.createElement('style'),
-      visibility: 'hidden'
-    }
+      name: "marquee",
+      styleEl: document.createElement("style"),
+      visibility: "hidden"
+    };
   },
   watch: {
-    content () {
-      this.start()
+    content() {
+      this.start();
     },
-    speed () {
-      this.start()
+    speed() {
+      this.start();
     }
   },
   methods: {
-    getTime () {
-      return Math.max(this.$el.firstChild.offsetWidth, this.$el.offsetWidth) / this.speed + 's'
+    getTime() {
+      return (
+        Math.max(this.$el.firstChild.offsetWidth, this.$el.offsetWidth) /
+          this.speed +
+        "s"
+      );
     },
-    prefix (key, value) {
-      return ['-webkit-', '-moz-', '-ms-', ''].map(el => `${el + key}:${value};`).join('')
+    prefix(key, value) {
+      return ["-webkit-", "-moz-", "-ms-", ""]
+        .map(el => `${el + key}:${value};`)
+        .join("");
     },
-    keyframes () {
-      const from = this.prefix('transform', `translateX(${this.$el.offsetWidth + 50}px)`)
-      const to = this.prefix('transform', `translateX(-${this.$el.firstChild.offsetWidth + 50}px)`)
+    keyframes() {
+      const from = this.prefix(
+        "transform",
+        `translateX(${this.$el.offsetWidth + 50}px)`
+      );
+      const to = this.prefix(
+        "transform",
+        `translateX(-${this.$el.firstChild.offsetWidth + 50}px)`
+      );
       const v = `@keyframes ${this.name} {
                   from { ${from} }
                   to { ${to} }
-                }`
-      this.styleEl.innerHTML = v
+                }`;
+      this.styleEl.innerHTML = v;
 
-      document.head.appendChild(this.styleEl)
+      document.head.appendChild(this.styleEl);
     },
-    start () {
+    start() {
       this.$nextTick(() => {
-        this.visibility = 'inherit'
-        this.time = this.getTime()
-        this.keyframes()
-      })
+        this.visibility = "inherit";
+        this.time = this.getTime();
+        this.keyframes();
+      });
     }
   },
-  mounted () {
-    const marq = this
-    window.onresize = function () {
-      marq.start()
-    }
+  mounted() {
+    const marq = this;
+    window.onresize = function() {
+      marq.start();
+    };
   }
-}
+};
 </script>
