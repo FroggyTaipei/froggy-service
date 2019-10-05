@@ -2,7 +2,6 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: fs-ingress
-  namespace: app
   annotations:
     kubernetes.io/ingress.global-static-ip-name: "app-ingress"
 spec:

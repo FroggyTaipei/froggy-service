@@ -4,7 +4,6 @@ metadata:
   labels:
     app: nginx
   name: nginx-service
-  namespace: app
 spec:
   externalTrafficPolicy: Cluster
   ports:

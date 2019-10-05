@@ -24,6 +24,7 @@ services:
     volumes:
       - ./.env:/app/.env:ro
       - ./frontend:/app
+      - /app/node_modules
     working_dir: /app
     restart: on-failure
 
