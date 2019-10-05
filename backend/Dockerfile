@@ -11,8 +11,10 @@ ENV PYTHONFAULTHANDLER=1 \
 RUN apt-get update \
     && apt-get install -y gettext libgettextpo-dev
 
-COPY . /app
-
 WORKDIR /app
 
-RUN pip install -r ./requirements.txt
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt
+
+COPY . .

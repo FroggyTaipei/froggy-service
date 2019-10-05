@@ -4,7 +4,6 @@ metadata:
   labels:
     app: api
   name: api-service
-  namespace: app
 spec:
   externalTrafficPolicy: Cluster
   ports:
