@@ -1,44 +1,83 @@
-<template lang="pug">
-  el-row.row-dialog(type="flex" align="middle" justify="center" style="height:100%")
-    el-col.bottom-dialog-wrapper
-      .bottom-dialog-left(:class="{hideDialog: !showSmallDialog}")
-        .text-left(@click="changeText")
-          .div {{ title[messageCount] }}
-          font-awesome-icon.downAngle(icon="angle-double-down" :class="{blackArrow: lastLine}")
-      .bottom-dialog-right
-        span.bottom-dialog-options(@click="toggleParentAnimation('create')" :disabled="buttonDisabled")
-          a 我需要服務
-          .arrow-icon
-            i.el-icon-caret-right(:class="{showArrow: showArrow[0]}")
-        span.bottom-dialog-options(@click="toggleParentAnimation('cases')" :disabled="buttonDisabled")
-          a 呱吉做什麼
-          .arrow-icon
-            i.el-icon-caret-right(:class="{showArrow: showArrow[1]}")
-        span.bottom-dialog-options(@click="toggleParentAnimation('about')" :disabled="buttonDisabled")
-          a 關於魔鏡號
-          .arrow-icon
-            i.el-icon-caret-right(:class="{showArrow: showArrow[2]}")
-        span.bottom-dialog-options(@click="toggleParentAnimation('')" :disabled="buttonDisabled")
-          a 首頁
-          .arrow-icon
-            i.el-icon-caret-right(:class="{showArrow: showHomeArrow}")
-    el-col.hidden-xs-only.footer
-      span
-        |「選服魔鏡號」台北市議員邱威傑市民服務系統
-        | 110 台北市信義區仁愛路四段507號 台北市議會 752研究室
-        br
-        | 02-27297708 分機 7152、7252 &nbsp;
-        a(href="mailto:servant@65535studio.com") servant@65535studio.com
-        | &nbsp;&nbsp;
-        a.githubLink(href="https://github.com/FroggyTaipei/froggy-service" target="_blank")
-          font-awesome-icon(:icon="['fab', 'github']")
-          span 「選服魔鏡號」GitHub 專案
+<template>
+  <el-row class="row-dialog" type="flex" align="middle" justify="center" style="height:100%;">
+    <el-col class="bottom-dialog-wrapper">
+      <div class="bottom-dialog-left" :class="{hideDialog: !showSmallDialog}">
+        <div class="text-left" @click="changeText">
+          <div class="div">{{ title[messageCount] }}</div>
+          <font-awesome-icon
+            class="downAngle"
+            icon="angle-double-down"
+            :class="{blackArrow: lastLine}"
+          ></font-awesome-icon>
+        </div>
+      </div>
+      <div class="bottom-dialog-right">
+        <span
+          class="bottom-dialog-options"
+          @click="toggleParentAnimation('create')"
+          :disabled="buttonDisabled"
+        >
+          <a>我需要服務</a>
+          <div class="arrow-icon">
+            <i class="el-icon-caret-right" :class="{showArrow: showArrow[0]}"></i>
+          </div>
+        </span>
+        <span
+          class="bottom-dialog-options"
+          @click="toggleParentAnimation('cases')"
+          :disabled="buttonDisabled"
+        >
+          <a>呱吉做什麼</a>
+          <div class="arrow-icon">
+            <i class="el-icon-caret-right" :class="{showArrow: showArrow[1]}"></i>
+          </div>
+        </span>
+        <span
+          class="bottom-dialog-options"
+          @click="toggleParentAnimation('about')"
+          :disabled="buttonDisabled"
+        >
+          <a>關於魔鏡號</a>
+          <div class="arrow-icon">
+            <i class="el-icon-caret-right" :class="{showArrow: showArrow[2]}"></i>
+          </div>
+        </span>
+        <span
+          class="bottom-dialog-options"
+          @click="toggleParentAnimation('')"
+          :disabled="buttonDisabled"
+        >
+          <a>首頁</a>
+          <div class="arrow-icon">
+            <i class="el-icon-caret-right" :class="{showArrow: showHomeArrow}"></i>
+          </div>
+        </span>
+      </div>
+    </el-col>
+    <el-col class="hidden-xs-only footer">
+      <span>
+        「選服魔鏡號」台北市議員邱威傑市民服務系統 110 台北市信義區仁愛路四段507號 台北市議會 752研究室
+        <br />02-27297708 分機 7152、7252 &nbsp;
+        <a
+          href="mailto:servant@65535studio.com"
+        >servant@65535studio.com</a>&nbsp;&nbsp;
+        <a
+          class="githubLink"
+          href="https://github.com/FroggyTaipei/froggy-service"
+          target="_blank"
+        >
+          <font-awesome-icon :icon="['fab', 'github']"></font-awesome-icon>
+          <span>「選服魔鏡號」GitHub 專案</span>
+        </a>
+      </span>
+    </el-col>
+  </el-row>
 </template>
 
 <script>
 export default {
-  name: 'BottomGameDialog',
-  data: function () {
+  name: "BottomGameDialog",
+  data: function() {
     return {
       messageCount: 0,
       showSmallDialog: true,
@@ -46,67 +85,77 @@ export default {
       showHomeArrow: false,
       lastLine: false,
       buttonDisabled: false
-    }
+    };
   },
   methods: {
-    toggleParentAnimation (to) {
-      let reservedUrl = ['/create', '/cases', '/about', '/home', '/success', '/home/success']
-      let destination = '/' + to
-      let currentPath = this.$route.fullPath
+    toggleParentAnimation(to) {
+      let reservedUrl = [
+        "/create",
+        "/cases",
+        "/about",
+        "/home",
+        "/success",
+        "/home/success"
+      ];
+      let destination = "/" + to;
+      let currentPath = this.$route.fullPath;
 
       if (this.buttonDisabled) {
         setTimeout(() => {
-          this.buttonDisabled = false
-        }, 800)
+          this.buttonDisabled = false;
+        }, 800);
       } else {
-        this.buttonDisabled = true
-        this.$store.commit('setRedirectDestination', destination)
+        this.buttonDisabled = true;
+        this.$store.commit("setRedirectDestination", destination);
         if (destination === this.$route.fullPath) {
-          return false
+          return false;
         } else if (reservedUrl.includes(currentPath) === false) {
-          this.$router.push({ name: 'home', params: { success: '#' } })
-          this.$router.push(destination)
+          this.$router.push({ name: "home", params: { success: "#" } });
+          this.$router.push(destination);
         } else {
-          this.$parent.$parent.toggleLeaveAnimation(destination)
+          this.$parent.$parent.toggleLeaveAnimation(destination);
         }
       }
     },
-    changeText () {
-      let contentLength = this.title.length
+    changeText() {
+      let contentLength = this.title.length;
       if (this.messageCount === contentLength - 1) {
-        this.messageCount = 0
+        this.messageCount = 0;
       } else {
-        this.messageCount += 1
+        this.messageCount += 1;
       }
       if (this.messageCount === contentLength - 1) {
-        this.lastLine = true
+        this.lastLine = true;
       } else {
-        this.lastLine = false
+        this.lastLine = false;
       }
     }
   },
-  mounted () {
-    if (this.$route.fullPath.includes('about') || this.$route.fullPath.includes('cases')) {
-      this.showSmallDialog = false
+  mounted() {
+    if (
+      this.$route.fullPath.includes("about") ||
+      this.$route.fullPath.includes("cases")
+    ) {
+      this.showSmallDialog = false;
     }
 
-    if (this.$route.fullPath.includes('create')) {
-      this.showArrow[0] = true
-    } else if (this.$route.fullPath.includes('cases')) {
-      this.showArrow[1] = true
-    } else if (this.$route.fullPath.includes('about')) {
-      this.showArrow[2] = true
+    if (this.$route.fullPath.includes("create")) {
+      this.showArrow[0] = true;
+    } else if (this.$route.fullPath.includes("cases")) {
+      this.showArrow[1] = true;
+    } else if (this.$route.fullPath.includes("about")) {
+      this.showArrow[2] = true;
     } else {
-      this.showHomeArrow = true
+      this.showHomeArrow = true;
     }
 
-    let contentLength = this.title.length
+    let contentLength = this.title.length;
     if (this.messageCount === contentLength - 1) {
-      this.lastLine = true
+      this.lastLine = true;
     }
   },
-  props: ['title']
-}
+  props: ["title"]
+};
 </script>
 
 <style lang="sass">

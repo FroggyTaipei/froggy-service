@@ -1,53 +1,115 @@
-<template lang='pug'>
-el-container.page2
-  transition(name="fade" @after-leave="redirect")
-    el-row.row-table(type='flex' align='middle',justify='center' v-show="showMainContent")
-      el-col.searchField(:span=22 style="max-width: 1024px")
-        el-input.searchInput(v-model="query" size="small"  @keyup.enter.native="search(query)" clearable=true placeholder="請輸入編號或內容")
-        el-button.searchButton(type="primary" size="small"  @click="search(query)") 搜尋
-      el-col.filterTags(:span=22 style="max-width: 1024px")
-        .typeTag(v-for="t in types" size="mini" @click="selectType(t.id)" :class="{tagSelected: t.id === options.selectedType}") {{t.text}}
-        .clearTag(size="mini" @click="selectType()")
-          i(class="fas fa-times-circle")
-        .break
-        .stateTag(v-for="s in states" size="mini" @click="selectState(s.id)" :class="{tagSelected: s.id === options.selectedState}") {{s.text}}
-        .clearTag(size="mini" @click="selectState()")
-          i(class="fas fa-times-circle")
-      el-col(:span=22 style="max-width: 1024px")
-        v-server-table(v-if="mounted" ref="dataTable" url='/api/cases/vuetable', :columns='columns', :options='options' @row-click="click")
-
-        el-dialog(title='' :visible.sync='dialogVisible' @closed="closeDialog")
-          .upper-block
-            .upper-block-bkg
-              .case-content-type-header {{selectedCaseDetails.type}}
-          .case-content
-            .case-content-type-body 案件類別：{{selectedCaseDetails.type}}
-            .case-content-title 案件標題：{{selectedCaseDetails.title}}
-            .case-content-date 時間：{{selectedCaseDetails.create_time.split('-')[0]}} 年 {{selectedCaseDetails.create_time.split('-')[1]}} 月 {{selectedCaseDetails.create_time.split('-')[2]}} 日
-            .case-content-location(v-if="selectedCaseDetails.location !== null") 地點：{{selectedCaseDetails.location}}
-            hr
-            .case-content-details 案件內容：
-            br
-            div(v-html="selectedCaseDetails.content")
-            hr
-            div(v-if="selectedCaseDetails.state === '不受理' && selectedCaseDetails.disapprove_info !== ''")
-              .case-disapproved 案件不受理原因：
-              br
-              .disapprove-info {{selectedCaseDetails.disapprove_info}}
-            div(v-if="selectedCaseDetails.state !== '不受理' && selectedCaseDetails.arranges.length !== 0")
-              .arranges-title 案件處理進度：
-              br
-              .case-content-arranges(v-for="arrange,index in reverseCaseProcess")
-                hr(v-if="index > 0")
-                div.arrange-title 處理主旨： {{ arrange.title }}
-                div.arrange-time 處理時間： {{arrange.arrange_time}}
-                div.arrange-content(v-html="arrange.content")
-            div(style="text-align: center; display:block")
-          .dialog-footer(slot='footer')
-            .footer-block
-              .content-state 處理進度：{{ selectedCaseDetails.state }}
-
-  BottomGameDialog(:title='dialogTitle')
+<template>
+  <el-container class="page2">
+    <transition name="fade" @after-leave="redirect">
+      <el-row
+        class="row-table"
+        type="flex"
+        align="middle"
+        justify="center"
+        v-show="showMainContent"
+      >
+        <el-col class="searchField" :span="22" style="max-width: 1024px;">
+          <el-input
+            class="searchInput"
+            v-model="query"
+            size="small"
+            @keyup.enter.native="search(query)"
+            clearable="clearable"
+            placeholder="請輸入編號或內容"
+          ></el-input>
+          <el-button class="searchButton" type="primary" size="small" @click="search(query)">搜尋</el-button>
+        </el-col>
+        <el-col class="filterTags" :span="22" style="max-width: 1024px;">
+          <div
+            class="typeTag"
+            v-for="(t,index) in types"
+            size="mini"
+            @click="selectType(t.id)"
+            :class="{tagSelected: t.id === options.selectedType}"
+            :key="index"
+          >{{t.text}}</div>
+          <div class="clearTag" size="mini" @click="selectType()">
+            <i class="fas fa-times-circle"></i>
+          </div>
+          <div class="break"></div>
+          <div
+            class="stateTag"
+            v-for="(s,index) in states"
+            size="mini"
+            @click="selectState(s.id)"
+            :class="{tagSelected: s.id === options.selectedState}"
+            :key="index"
+          >{{s.text}}</div>
+          <div class="clearTag" size="mini" @click="selectState()">
+            <i class="fas fa-times-circle"></i>
+          </div>
+        </el-col>
+        <el-col :span="22" style="max-width: 1024px;">
+          <v-server-table
+            v-if="mounted"
+            ref="dataTable"
+            url="/api/cases/vuetable"
+            :columns="columns"
+            :options="options"
+            @row-click="click"
+          ></v-server-table>
+          <el-dialog title :visible.sync="dialogVisible" @closed="closeDialog">
+            <div class="upper-block">
+              <div class="upper-block-bkg">
+                <div class="case-content-type-header">{{selectedCaseDetails.type}}</div>
+              </div>
+            </div>
+            <div class="case-content">
+              <div class="case-content-type-body">案件類別：{{selectedCaseDetails.type}}</div>
+              <div class="case-content-title">案件標題：{{selectedCaseDetails.title}}</div>
+              <div
+                class="case-content-date"
+              >時間：{{selectedCaseDetails.create_time.split('-')[0]}} 年 {{selectedCaseDetails.create_time.split('-')[1]}} 月 {{selectedCaseDetails.create_time.split('-')[2]}} 日</div>
+              <div
+                class="case-content-location"
+                v-if="selectedCaseDetails.location !== null"
+              >地點：{{selectedCaseDetails.location}}</div>
+              <hr />
+              <div class="case-content-details">案件內容：</div>
+              <br />
+              <div v-html="selectedCaseDetails.content"></div>
+              <hr />
+              <div
+                v-if="selectedCaseDetails.state === '不受理' &amp;&amp; selectedCaseDetails.disapprove_info !== ''"
+              >
+                <div class="case-disapproved">案件不受理原因：</div>
+                <br />
+                <div class="disapprove-info">{{selectedCaseDetails.disapprove_info}}</div>
+              </div>
+              <div
+                v-if="selectedCaseDetails.state !== '不受理' &amp;&amp; selectedCaseDetails.arranges.length !== 0"
+              >
+                <div class="arranges-title">案件處理進度：</div>
+                <br />
+                <div
+                  class="case-content-arranges"
+                  v-for="(arrange,index) in reverseCaseProcess"
+                  :key="index"
+                >
+                  <hr v-if="index &gt; 0" />
+                  <div class="arrange-title">處理主旨： {{ arrange.title }}</div>
+                  <div class="arrange-time">處理時間： {{arrange.arrange_time}}</div>
+                  <div class="arrange-content" v-html="arrange.content"></div>
+                </div>
+              </div>
+              <div style="text-align: center; display:block;"></div>
+            </div>
+            <div class="dialog-footer" slot="footer">
+              <div class="footer-block">
+                <div class="content-state">處理進度：{{ selectedCaseDetails.state }}</div>
+              </div>
+            </div>
+          </el-dialog>
+        </el-col>
+      </el-row>
+    </transition>
+    <BottomGameDialog :title="dialogTitle"></BottomGameDialog>
+  </el-container>
 </template>
 
 <script>
