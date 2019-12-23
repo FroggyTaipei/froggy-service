@@ -24,7 +24,7 @@
         <VTextMarquee
           ref="marquee"
           :speed="70"
-        >{{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}</VTextMarquee>
+        >{{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}} {{marqueeMessage[4]}}</VTextMarquee>
         <img class="froggyImage" :src="froggyImageUrl" />
       </el-row>
     </transition>
@@ -102,10 +102,11 @@ export default {
         }
       ],
       marqueeMessage: [
-        "［系統］呱吉祝大家新年快樂，「豬多糧足農家富、子孝孫賢親壽高」，總之諸事大吉就對了啦！",
-        "［中獎］恭喜 一直抓頭的台北市民 獲得邱威傑 認真的市政質詢套裝！",
-        "［活動］現在充值 台灣價值 就可以獲得 執政機率黃金加成！",
-        "［系統］有什麼問題，就問魔鏡號就對了啦！"
+        "［系統］就職一週年啦！趕快點「呱吉做什麼」，看看我們有沒有做好、做滿！",
+        "［活動］Merry Christmas！你要金卡片還是銀卡片，平安夜香堤廣場見！",
+        "［中獎］恭喜您成功儲值 台灣價值，贈送您防滲透盔甲套裝（7日）！",
+        "［拜票］2022台北市長候選人邱威傑，需要您的每一份支持！",
+        "［告捷］歡樂無法黨攻得一席首都議員，榮譽總書記柚子表示欣慰！"
       ]
     };
   },
