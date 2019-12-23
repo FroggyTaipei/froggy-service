@@ -45,8 +45,6 @@
     "babel-jest": "^23.4.2",
     "compression-webpack-plugin": "^2.0.0",
     "node-sass": "^4.9.3",
-    "pug": "^2.0.3",
-    "pug-plain-loader": "^1.0.0",
     "sass-loader": "^7.1.0",
     "vue-template-compiler": "^2.5.17"
   },

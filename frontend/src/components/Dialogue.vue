@@ -1,148 +1,227 @@
-<template lang="pug">
-el-container.page1
-  transition(name="introIn" @after-leave="showMainContent")
-    el-row.intro-wrapper(type="flex" justify="center" align="middle" v-show="isShowIntro")
-      img.intro-img(:src="logoUrl")
-      .intro-text(v-show="isShowIntroText" @click="start") START
-  transition(name="fade" @after-leave="redirect")
-    el-row.forggyImage-wrapper(type="flex" align="bottom" justify="center" v-show="isShowMainContent")
-      img.bkg-logo-img(:src="logoUrl")
-      VTextMarquee(ref="marquee" :speed="70") {{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}}
-      img.froggyImage(:src="froggyImageUrl")
-  BottomGameDialog(:title="dialogMessage" v-show="isShowMainContent || isShowBtnBar")
+<template>
+  <el-container class="page1">
+    <transition name="introIn" @after-leave="showMainContent">
+      <el-row
+        class="intro-wrapper"
+        type="flex"
+        justify="center"
+        align="middle"
+        v-show="isShowIntro"
+      >
+        <img class="intro-img" :src="logoUrl" />
+        <div class="intro-text" v-show="isShowIntroText" @click="start">START</div>
+      </el-row>
+    </transition>
+    <transition name="fade" @after-leave="redirect">
+      <el-row
+        class="forggyImage-wrapper"
+        type="flex"
+        align="bottom"
+        justify="center"
+        v-show="isShowMainContent"
+      >
+        <img class="bkg-logo-img" :src="logoUrl" />
+        <VTextMarquee
+          ref="marquee"
+          :speed="70"
+        >{{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}} {{marqueeMessage[4]}}</VTextMarquee>
+        <img class="froggyImage" :src="froggyImageUrl" />
+      </el-row>
+    </transition>
+    <BottomGameDialog :title="dialogMessage" v-show="isShowMainContent || isShowBtnBar"></BottomGameDialog>
+  </el-container>
 </template>
 
 <script>
-import BottomGameDialog from '@/components/BottomGameDialog.vue'
-import VTextMarquee from '@/components/TextMarquee.vue'
+import BottomGameDialog from "@/components/BottomGameDialog.vue";
+import VTextMarquee from "@/components/TextMarquee.vue";
 
 export default {
-  name: 'Dialogue',
+  name: "Dialogue",
   components: { BottomGameDialog, VTextMarquee },
-  data: function () {
+  data: function() {
     return {
       isShowIntro: false,
       isShowMainContent: false,
       isShowIntroText: false,
       isShowBtnBar: false,
-      froggyImageStorageUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/froggy/',
-      logoUrl: 'https://storage.googleapis.com/froggy-service/frontend/images/intro.png',
-      successMessage: ['好的，沒問題！我已經發了一封確認信到你的Email裡，然後我們會用最快的速度為你服務！'],
+      froggyImageStorageUrl:
+        "https://storage.googleapis.com/froggy-service/frontend/images/froggy/",
+      logoUrl:
+        "https://storage.googleapis.com/froggy-service/frontend/images/intro.png",
+      successMessage: [
+        "好的，沒問題！我已經發了一封確認信到你的Email裡，然後我們會用最快的速度為你服務！"
+      ],
       dialogue: [
         {
           showTime: [5, 12],
-          textContent: ['早安，平安喜樂，迎接新的一天。', '我是Youtuber呱吉，也是台北市議員邱威傑。我這個人最不喜歡的就是浪費時間，所以你若需要幫助，不囉唆，我們直接處理。', '有什麼我能協助你的嗎？'],
-          textContent_mobile: ['早安，平安喜樂，迎接新的一天。', '我是Youtuber呱吉，也是台北市議員邱威傑。', '我這個人最不喜歡的就是浪費時間，所以你若需要幫助，不囉唆，我們直接處理。', '有什麼我能協助你的嗎？'],
-          froggyImage: ['morning_1.png', 'morning_2.png', 'morning_3.png']
-        }, {
+          textContent: [
+            "早安，平安喜樂，迎接新的一天。",
+            "我是Youtuber呱吉，也是台北市議員邱威傑。我這個人最不喜歡的就是浪費時間，所以你若需要幫助，不囉唆，我們直接處理。",
+            "有什麼我能協助你的嗎？"
+          ],
+          textContent_mobile: [
+            "早安，平安喜樂，迎接新的一天。",
+            "我是Youtuber呱吉，也是台北市議員邱威傑。",
+            "我這個人最不喜歡的就是浪費時間，所以你若需要幫助，不囉唆，我們直接處理。",
+            "有什麼我能協助你的嗎？"
+          ],
+          froggyImage: ["morning_1.png", "morning_2.png", "morning_3.png"]
+        },
+        {
           showTime: [12, 21],
-          textContent: ['哈囉！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
-          textContent_mobile: ['哈囉！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。', '我是台北市議員邱威傑，也就是你們認識的呱吉。', '以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？', '但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。', '直接說吧，我能幫上什麼忙？'],
-          froggyImage: ['noon_1.png', 'noon_2.png', 'noon_3.png']
-        }, {
+          textContent: [
+            "哈囉！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。我是台北市議員邱威傑，也就是你們認識的呱吉。",
+            "以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？",
+            "但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。",
+            "直接說吧，我能幫上什麼忙？"
+          ],
+          textContent_mobile: [
+            "哈囉！鋤禾日當午，汗滴禾下土，為選民服務，是我的任務。",
+            "我是台北市議員邱威傑，也就是你們認識的呱吉。",
+            "以前常有人拜託我一些雞毛蒜皮的小事，我都會說「干我什麼事」？",
+            "但當選議員之後，任何的我過去認為的小事也許是市民們心中的大事。",
+            "直接說吧，我能幫上什麼忙？"
+          ],
+          froggyImage: ["noon_1.png", "noon_2.png", "noon_3.png"]
+        },
+        {
           showTime: [21, 5],
-          textContent: ['晚安，食飽未（tsia̍h-pá-buē）？ 現在時候已經不早了，但我的服務還沒有打烊。', '你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？', '來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。'],
-          textContent_mobile: ['晚安，食飽未（tsia̍h-pá-buē）？', '現在時候已經不早了，但我的服務還沒有打烊。', '你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？', '來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。'],
-          froggyImage: ['night_1.png', 'night_2.png', 'night_3.png']
+          textContent: [
+            "晚安，食飽未（tsia̍h-pá-buē）？ 現在時候已經不早了，但我的服務還沒有打烊。",
+            "你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？",
+            "來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。"
+          ],
+          textContent_mobile: [
+            "晚安，食飽未（tsia̍h-pá-buē）？",
+            "現在時候已經不早了，但我的服務還沒有打烊。",
+            "你會來找我，除了是想和我約會之外，一定是對台北市政還有所期許吧？",
+            "來吧，快告訴我，讓這個夜晚充滿想像與可能（附註：僅限市政問題）。"
+          ],
+          froggyImage: ["night_1.png", "night_2.png", "night_3.png"]
         }
       ],
       marqueeMessage: [
-        '［系統］呱吉祝大家新年快樂，「豬多糧足農家富、子孝孫賢親壽高」，總之諸事大吉就對了啦！',
-        '［中獎］恭喜 一直抓頭的台北市民 獲得邱威傑 認真的市政質詢套裝！',
-        '［活動］現在充值 台灣價值 就可以獲得 執政機率黃金加成！',
-        '［系統］有什麼問題，就問魔鏡號就對了啦！'
+        "［系統］就職一週年啦！趕快點「呱吉做什麼」，看看我們有沒有做好、做滿！",
+        "［活動］Merry Christmas！你要金卡片還是銀卡片，平安夜香堤廣場見！",
+        "［中獎］恭喜您成功儲值 台灣價值，贈送您防滲透盔甲套裝（7日）！",
+        "［拜票］2022台北市長候選人邱威傑，需要您的每一份支持！",
+        "［告捷］歡樂無法黨攻得一席首都議員，榮譽總書記柚子表示欣慰！"
       ]
-    }
+    };
   },
   methods: {
-    toggleLeaveAnimation: function (destination) {
-      this.isShowMainContent = false
+    toggleLeaveAnimation: function(destination) {
+      this.isShowMainContent = false;
     },
-    showMainContent: function () {
-      this.isShowMainContent = true
-      this.isShowBtnBar = true
+    showMainContent: function() {
+      this.isShowMainContent = true;
+      this.isShowBtnBar = true;
     },
-    redirect: function () {
-      let direction = this.$store.state.redirectTo
-      this.$router.push(direction)
+    redirect: function() {
+      let direction = this.$store.state.redirectTo;
+      this.$router.push(direction);
     },
-    start: function () {
-      this.isShowIntro = false
-      setTimeout(() => this.$refs.marquee.start(), 800)
+    start: function() {
+      this.isShowIntro = false;
+      setTimeout(() => this.$refs.marquee.start(), 800);
     },
-    autoInappAlert: function () {
-      if (this.$store.state.browser === 'edge' || this.$store.state.browser === 'ie') {
-        this.$alert('要使用 Chrome 瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
-          type: 'warning',
-          confirmButtonText: '好！'
-        })
+    autoInappAlert: function() {
+      if (
+        this.$store.state.browser === "edge" ||
+        this.$store.state.browser === "ie"
+      ) {
+        this.$alert(
+          "要使用 Chrome 瀏覽器開啟才能獲得最佳瀏覽體驗喔！",
+          "呱吉提示",
+          {
+            type: "warning",
+            confirmButtonText: "好！"
+          }
+        );
       }
-      if (this.$store.state.browser === 'facebook' || this.$store.state.browser === 'messenger') {
-        this.$alert('要使用手機瀏覽器開啟才能獲得最佳瀏覽體驗喔！', '呱吉提示', {
-          type: 'warning',
-          confirmButtonText: '好！'
-        })
+      if (
+        this.$store.state.browser === "facebook" ||
+        this.$store.state.browser === "messenger"
+      ) {
+        this.$alert(
+          "要使用手機瀏覽器開啟才能獲得最佳瀏覽體驗喔！",
+          "呱吉提示",
+          {
+            type: "warning",
+            confirmButtonText: "好！"
+          }
+        );
       }
     }
   },
   computed: {
-    sceneCount: function () {
-      let now = new Date()
-      let hour = now.getHours()
+    sceneCount: function() {
+      let now = new Date();
+      let hour = now.getHours();
       switch (true) {
-        case (this.dialogue[0].showTime[0] <= hour && hour < this.dialogue[0].showTime[1]):
-          this.$store.commit('setTime', 0)
-          return 0
-        case (this.dialogue[1].showTime[0] <= hour && hour < this.dialogue[1].showTime[1]):
-          this.$store.commit('setTime', 1)
-          return 1
-        case (this.dialogue[2].showTime[0] <= hour || hour < this.dialogue[2].showTime[1]):
-          this.$store.commit('setTime', 2)
-          return 2
+        case this.dialogue[0].showTime[0] <= hour &&
+          hour < this.dialogue[0].showTime[1]:
+          this.$store.commit("setTime", 0);
+          return 0;
+        case this.dialogue[1].showTime[0] <= hour &&
+          hour < this.dialogue[1].showTime[1]:
+          this.$store.commit("setTime", 1);
+          return 1;
+        case this.dialogue[2].showTime[0] <= hour ||
+          hour < this.dialogue[2].showTime[1]:
+          this.$store.commit("setTime", 2);
+          return 2;
         default:
-          break
+          break;
       }
     },
-    froggyImageUrl: function () {
+    froggyImageUrl: function() {
       if (this.$route.params.success === true) {
-        return this.froggyImageStorageUrl + this.dialogue[this.sceneCount].froggyImage[2]
+        return (
+          this.froggyImageStorageUrl +
+          this.dialogue[this.sceneCount].froggyImage[2]
+        );
       } else {
-        return this.froggyImageStorageUrl + this.dialogue[this.sceneCount].froggyImage[0]
+        return (
+          this.froggyImageStorageUrl +
+          this.dialogue[this.sceneCount].froggyImage[0]
+        );
       }
     },
-    dialogMessage: function () {
+    dialogMessage: function() {
       if (this.$route.params.success === true) {
-        return this.successMessage
+        return this.successMessage;
       } else {
         if (this.$store.state.isMobile === true) {
-          return this.dialogue[this.sceneCount].textContent_mobile
-        } else return this.dialogue[this.sceneCount].textContent
+          return this.dialogue[this.sceneCount].textContent_mobile;
+        } else return this.dialogue[this.sceneCount].textContent;
       }
     }
   },
-  created: function () {},
-  mounted: function () {
-    let visited = this.$store.state.firstVisit
+  created: function() {},
+  mounted: function() {
+    let visited = this.$store.state.firstVisit;
     if (visited) {
-      this.isShowMainContent = true
-      this.isShowBtnBar = true
-      this.$refs.marquee.start()
-      return false
+      this.isShowMainContent = true;
+      this.isShowBtnBar = true;
+      this.$refs.marquee.start();
+      return false;
     } else {
-      this.$store.commit('setVisited', true)
-      this.isShowIntro = true
+      this.$store.commit("setVisited", true);
+      this.isShowIntro = true;
       setTimeout(() => {
-        this.isShowIntroText = true
+        this.isShowIntroText = true;
         setTimeout(() => {
-          this.isShowIntro = false
-          this.autoInappAlert()
-          setTimeout(() => this.$refs.marquee.start(), 1600)
-        }, 1500)
-      }, 1000)
+          this.isShowIntro = false;
+          this.autoInappAlert();
+          setTimeout(() => this.$refs.marquee.start(), 1600);
+        }, 1500);
+      }, 1000);
     }
   },
   props: []
-}
+};
 </script>
 
 <style lang="sass" scoped>
