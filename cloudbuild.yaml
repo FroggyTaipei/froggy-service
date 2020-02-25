@@ -1,0 +1,65 @@
+steps:
+- id: copy_env_file
+  name: "ubuntu"
+  entrypoint: "bash"
+  args: ["-c", "cp .env.example .env"]
+  waitFor: ['-']
+
+- id: pull_backend_cache
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_BACKEND_IMAGE}:${_CACHE_TAG}']
+  waitFor: ['-']
+
+- id: pull_frontend_cache
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_FRONTEND_IMAGE}:${_CACHE_TAG}']
+  waitFor: ['-']
+
+- id: build_backend
+  name: 'docker/compose:1.24.1'
+  args: ['build', 'backend']
+  env:
+  - 'BACKEND_CACHE_IMAGE=${_BACKEND_IMAGE}:${_CACHE_TAG}'
+  waitFor: ['copy_env_file', 'pull_backend_cache']
+
+- id: build_frontend
+  name: 'docker/compose:1.24.1'
+  args: ['build', 'frontend']
+  env:
+  - 'FRONTEND_CACHE_IMAGE=${_FRONTEND_IMAGE}:${_CACHE_TAG}'
+  waitFor: ['copy_env_file', 'pull_frontend_cache']
+
+- id: run_containers
+  name: 'docker/compose:1.24.1'
+  args: ['up', '--no-build', '--scale', 'proxy=0', '-d']
+  env:
+  - 'COMPOSE_HTTP_TIMEOUT=200'
+  waitFor: ['build_backend', 'build_frontend']
+
+- id: wait_for_backend
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    until [ "$(docker inspect -f {{.State.Health.Status}} backend)" == "healthy" ]; do
+        echo "Wait for backend health check ..."
+        sleep 5
+    done
+  waitFor: ['run_containers']
+  timeout: 300s
+
+- id: test_code_style
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['exec', 'backend', 'flake8', '--exclude=migrations', '--ignore=E121,E226,E402,E501,F401,W503', './']
+  waitFor: ['wait_for_backend']
+
+- id: test_backend
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['exec', 'backend', 'python', 'manage.py', 'test', '--exclude-tag=mail']
+  waitFor: ['wait_for_backend']
+
+substitutions:
+  _BACKEND_IMAGE: froggytaipei/froggy-service-backend:latest
+  _FRONTEND_IMAGE: froggytaipei/froggy-service-frontend:latest
+  _CACHE_TAG: latest
