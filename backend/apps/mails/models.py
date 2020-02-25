@@ -1,4 +1,3 @@
-import environ
 import json
 import sendgrid
 from python_http_client.exceptions import HTTPError
@@ -19,8 +18,8 @@ from django.db.models import (
 
 from .utils import sendgrid_system_mail
 
-env = environ.Env()
-sg = sendgrid.SendGridAPIClient(apikey=env.str('SENDGRID_API_KEY', default=''))
+
+sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
 
 
 class SendGridMailTemplate(Model):
