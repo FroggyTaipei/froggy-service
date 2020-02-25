@@ -7,7 +7,10 @@ COPY frontend/package.json frontend/package-lock.json /app/
 RUN npm install
 
 COPY frontend /app/
-COPY .env /app/.env
+
+ARG ENV_PATH
+COPY $ENV_PATH ./.env
+
 RUN npm run build
 
 # Stage 2 - nginx & frontend dist
