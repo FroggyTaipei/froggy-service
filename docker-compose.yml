@@ -36,12 +36,6 @@ services:
       - /app/node_modules
     working_dir: /app
     restart: on-failure
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080"]
-      interval: 15s
-      timeout: 5s
-      retries: 5
-      start_period: 15s
     ports:
       - "8080:8080"
 

@@ -1,12 +1,10 @@
 import uuid
 from django.utils.translation import ugettext_lazy as _
-from django.utils import timezone
-from django.conf import settings
-from django.utils import formats
+from django.utils import timezone, formats
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.urls import reverse
-from django.core.files.storage import FileSystemStorage
+from django.core.files.base import ContentFile
 from django.db.models import (
     Model,
     CASCADE,
@@ -27,14 +25,7 @@ from tagulous.models import TagField
 from apps.cases.slack import new_case_notify
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from apps.files.models import TempFile, CaseFile
-from storages.backends.gcloud import GoogleCloudStorage
-
-
-if settings.USE_GCS:
-    TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
-    TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
-else:
-    TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/tempfile', base_url=f'{settings.MEDIA_URL}tempfile/')
+from apps.files.storages import TempStorage
 
 
 class Type(Model):
@@ -165,7 +156,7 @@ class Case(Model):
         if created:
             self.number = str(self.pk).zfill(6)
             self.save()
-            self.move_file()  # 搬移暫存檔案
+            self.migrate_files_from_temp_storage()  # 搬移暫存檔案
             self.confirm(template_name='收件通知')  # 發送確認信
             new_case_notify(self)  # 發送slack通知
 
@@ -188,15 +179,10 @@ class Case(Model):
             'priority': self.priority,
         }
 
-    def move_file(self):
-        case = Case.objects.get(uuid=self.uuid)
-        objs = TempFile.objects.filter(case_uuid=self.uuid)
-        for i in objs:
-            file = TEMP_STORAGE.open(i.file.name)
-            case_file = CaseFile()
-            case_file.case = case
-            case_file.file = file
-            case_file.save()
+    def migrate_files_from_temp_storage(self):
+        temp_files = TempFile.objects.filter(case_uuid=self.uuid)
+        for temp_file in temp_files:
+            temp_file.migrate_to_case(self)
 
     @property
     def first_history(self):
