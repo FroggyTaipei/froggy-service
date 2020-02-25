@@ -1,0 +1,21 @@
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ template "froggy-service.backend" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "froggy-service.backend" . }}
+    helm.sh/chart: {{ include "froggy-service.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  maxReplicas: {{ .Values.backend.podAutoscaler.max }}
+  minReplicas: {{ .Values.backend.podAutoscaler.min }}
+  scaleTargetRef:
+    apiVersion: apps/v1beta2
+    kind: Deployment
+    name: {{ template "froggy-service.backend" . }}
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: {{ .Values.backend.podAutoscaler.cpuPercentage }}

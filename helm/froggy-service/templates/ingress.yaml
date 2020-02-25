@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ template "froggy-service.ingress" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "froggy-service.ingress" . }}
+    helm.sh/chart: {{ include "froggy-service.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: {{ .Values.ingress.staticIPName }}
+spec:
+  rules:
+  {{- range .Values.ingress.rules }}
+  - host: {{ .host }}
+    http:
+      paths:
+        {{- range .backends }}
+        - path: {{ .path }}
+          backend:
+            serviceName: {{ .name }}
+            servicePort: {{ .port }}
+        {{- end }}
+  {{- end }}
