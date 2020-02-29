@@ -1,0 +1,47 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "froggy-service.frontend" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "froggy-service.frontend" . }}
+    helm.sh/chart: {{ include "froggy-service.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "froggy-service.frontend" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "froggy-service.frontend" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      {{- if .Values.frontend.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.frontend.nodeSelector | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ template "froggy-service.frontend" . }}
+          image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.frontend.service.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: {{ .Values.frontend.livenessPath }}
+              port: {{ .Values.frontend.service.targetPort }}
+            timeoutSeconds: 3
+          readinessProbe:
+            exec:
+              command:
+              - curl
+              - {{ template "froggy-service.frontend.readinessPath" . }}
+            timeoutSeconds: 10
+            periodSeconds: 30
+            failureThreshold: 30

@@ -1,16 +1,19 @@
-## K8S
-production-k8s-specifications
-stage-k8s-specifications
+## Local Storage
+staticfiles
+media
 
-### NPM
-package-lock.json
-frontend/package-lock.json
+## Helm Chart
+values.prod.yaml
+values.staging.yaml
+
+### Service Account
+default-sa.json
+firebase-sa.json
 
 ### ENV
 .env
-.env.travis
-gs_credential.json
-secrets.tar
+.env.prod
+.env.staging
 
 ### OSX ###
 .DS_Store

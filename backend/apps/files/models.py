@@ -4,25 +4,25 @@ import imghdr
 
 from django.db import models
 from django.db.models.signals import pre_delete
+from django.core.files.base import ContentFile
 from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
-from django.core.files.storage import FileSystemStorage
 from django.utils.safestring import mark_safe
 
 from rest_framework.exceptions import ValidationError
 
-from storages.backends.gcloud import GoogleCloudStorage
+from .storages import CaseStorage, TempStorage
 
 
-if settings.USE_GCS:
-    TEMP_BUCKET = f'{settings.GS_BUCKET_NAME}-temp'
-    CASE_BUCKET = f'{settings.GS_BUCKET_NAME}-case'
-    TEMP_STORAGE = GoogleCloudStorage(bucket_name=TEMP_BUCKET)
-    CASE_STORAGE = GoogleCloudStorage(bucket_name=CASE_BUCKET)
-else:
-    TEMP_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/tempfile', base_url=f'{settings.MEDIA_URL}tempfile/')
-    CASE_STORAGE = FileSystemStorage(location=f'{settings.MEDIA_ROOT}/casefile', base_url=f'{settings.MEDIA_URL}casefile/')
+class FileType(object):
+    CASE = 'case'
+    ARRANGE = 'arrange'
+
+    CHOICES = (
+        ('case', '案件附件'),
+        ('arrange', '處理紀錄附件'),
+    )
 
 
 class TempFile(models.Model):
@@ -36,7 +36,7 @@ class TempFile(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     user = models.ForeignKey('users.User', on_delete=models.CASCADE, related_name='tempfiles', verbose_name=_('Temp File'))
     case_uuid = models.UUIDField(verbose_name=_('UUID'))
-    file = models.FileField(storage=TEMP_STORAGE, verbose_name=_('Temp file'))
+    file = models.FileField(storage=TempStorage(), verbose_name=_('Temp file'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     size = models.PositiveIntegerField(editable=False, verbose_name=_('Size'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
@@ -54,7 +54,7 @@ class TempFile(models.Model):
 
     def check_duplicate(self):
         """
-        以案件編號及檔案名稱去query檢查資料是否重複
+        檢查案件編號及檔案名稱是否重複
         """
         return TempFile.objects.filter(case_uuid=self.case_uuid, file_name=self.file_name).count() > 0
 
@@ -82,14 +82,6 @@ class TempFile(models.Model):
         return total > settings.FILE_LIMIT_PER_DAY
 
     def save(self, *args, **kwargs):
-        """
-        TempFile save()時觸發
-        給予file_name欄位檔案名稱
-        檢查上傳的檔案是否重複
-        檢查上傳的檔案大小是否超過上限
-        將案件編號及檔案名稱組成路徑+檔案名稱
-        最後再執行原本save()的code
-        """
         self.file_name = self.file.name
         self.size = self.file.size
         if self.check_duplicate():
@@ -103,28 +95,28 @@ class TempFile(models.Model):
         self.file.name = f'{self.case_uuid}/{self.file_name}'
         super(TempFile, self).save(*args, **kwargs)
 
-
-class FileType(object):
-    CASE = 'case'
-    ARRANGE = 'arrange'
-
-    CHOICES = (
-        ('case', '案件附件'),
-        ('arrange', '處理紀錄附件'),
-    )
+    def migrate_to_case(self, case):
+        new_file = ContentFile(self.file.read())
+        new_file.name = self.file.name
+        CaseFile.objects.create(
+            case=case,
+            file=new_file,
+            file_name=self.file_name
+        )
+        self.delete()
 
 
 class CaseFile(models.Model):
     """
     案件檔案
-    * case: 案件編號，案件成立時會根據TempFile紀錄的案件編號，關聯到正確的案件
-    * file: 案件檔案，storage指定到 CASE
-    * file_name: 案件檔案名稱，不可編輯，save()時自動產生
+    * case: 案件編號
+    * file: 案件檔案
+    * file_name: 案件檔案名稱(自動產生)
     * upload_time: 檔案上傳時間
     """
     case = models.ForeignKey('cases.Case', on_delete=models.CASCADE, related_name='casefiles', verbose_name=_('Case File'))
     type = models.CharField(max_length=20, default=FileType.CASE, choices=FileType.CHOICES, verbose_name=_('File Type'))
-    file = models.FileField(storage=CASE_STORAGE, verbose_name=_('Case File'))
+    file = models.FileField(storage=CaseStorage(), verbose_name=_('Case File'))
     file_name = models.CharField(max_length=255, null=True, blank=True, editable=False, verbose_name=_('File Name'))
     upload_time = models.DateTimeField(auto_now=True, verbose_name=_('Upload Time'))
 
@@ -140,18 +132,6 @@ class CaseFile(models.Model):
     def url(self):
         return self.file.url
 
-    def save(self, *args, **kwargs):
-        """
-        CaseFile save()時觸發
-        給予file_name欄位檔案名稱
-        """
-        start = self.file.name.find(f'{self.case.uuid}')
-        if start > -1:
-            self.file.name = self.file.name[start:]
-        self.file_name = self.file.name.replace(f'{self.case.uuid}/', '')
-        self.file.name = f'{self.case.uuid}/{self.file_name}'
-        super(CaseFile, self).save(*args, **kwargs)
-
     def preview(self):
         if not self.file_name:
             return '-'
@@ -165,17 +145,9 @@ class CaseFile(models.Model):
 
 @receiver(pre_delete, sender=TempFile)
 def temp_file_delete_handler(sender, instance, **kwargs):
-    """
-    TempFile delete()時觸發
-    將storage的檔案刪除
-    """
     instance.file.storage.delete(name=instance.file.name)
 
 
 @receiver(pre_delete, sender=CaseFile)
 def case_file_delete_handler(sender, instance, **kwargs):
-    """
-    CaseFile delete()時觸發
-    將storage的檔案刪除
-    """
     instance.file.storage.delete(name=instance.file.name)

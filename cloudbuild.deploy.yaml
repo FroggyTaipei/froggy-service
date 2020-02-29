@@ -1,0 +1,142 @@
+steps:
+- id: decrypt_helm_values
+  name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=${_HELM_VALUES_CIPHERTEXT_FILE}
+  - --plaintext-file=${_HELM_VALUES_PLANTEXT_FILE}
+  - --location=global
+  - --keyring=${_KMS_KEYRING}
+  - --key=${_HELM_VALUES_KMS_KEY}
+  waitFor: ['-']
+
+- id: decrypt_env_file
+  name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=${_ENV_CIPHERTEXT_FILE}
+  - --plaintext-file=${_ENV_PLANTEXT_FILE}
+  - --location=global
+  - --keyring=${_KMS_KEYRING}
+  - --key=${_ENV_KMS_KEY}
+  waitFor: ['-']
+
+- id: decrypt_default_service_account
+  name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=${_DEFAULT_SA_CIPHERTEXT_FILE}
+  - --plaintext-file=${_DEFAULT_SA_PLANTEXT_FILE}
+  - --location=global
+  - --keyring=${_KMS_KEYRING}
+  - --key=${_DEFAULT_SA_KMS_KEY}
+  waitFor: ['-']
+
+- id: decrypt_firebase_service_account
+  name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=${_FIREBASE_SA_CIPHERTEXT_FILE}
+  - --plaintext-file=${_FIREBASE_SA_PLANTEXT_FILE}
+  - --location=global
+  - --keyring=${_KMS_KEYRING}
+  - --key=${_FIREBASE_SA_KMS_KEY}
+  waitFor: ['-']
+
+- id: pull_backend_cache
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_BACKEND_IMAGE}:${_CACHE_TAG}']
+  waitFor: ['-']
+
+- id: pull_frontend_cache
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_FRONTEND_IMAGE}:${_CACHE_TAG}']
+  waitFor: ['-']
+
+- id: pull_helm_builder
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_HELM_BUILDER_IMAGE}']
+  waitFor: ['-']
+
+- id: build_backend
+  name: 'gcr.io/cloud-builders/docker'
+  dir: 'backend'
+  args: ['build',
+         '-t', '${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}',
+         '--cache-from', '${_BACKEND_IMAGE}:${_CACHE_TAG}',
+         '.']
+  waitFor: ['pull_backend_cache']
+
+- id: build_frontend
+  name: 'gcr.io/cloud-builders/docker'
+  # Use root context for copying the env file
+  args: ['build',
+         '-t', '${_FRONTEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}',
+         '-f', 'nginx/Dockerfile',
+         '--build-arg', 'ENV_PATH=${_ENV_PLANTEXT_FILE}',
+         '--cache-from', '${_FRONTEND_IMAGE}:${_CACHE_TAG}',
+         '.']
+  waitFor: ['pull_frontend_cache']
+
+- id: push_backend
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}']
+  waitFor: ['build_backend']
+
+- id: push_frontend
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${_FRONTEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}']
+  waitFor: ['build_frontend']
+
+- id: helm_deploy
+  name: '${_HELM_BUILDER_IMAGE}'
+  args: ['upgrade',
+         '-f', '${_HELM_VALUES_PLANTEXT_FILE}',
+         '--set', 'backend.image.tag=${BRANCH_NAME}-${SHORT_SHA}',
+         '--set', 'frontend.image.tag=${BRANCH_NAME}-${SHORT_SHA}',
+         '${_RELEASE_NAME}',
+         'helm/froggy-service']
+  env:
+    - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
+    - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
+  waitFor: ['decrypt_helm_values', 'decrypt_env_file',
+            'decrypt_default_service_account', 'decrypt_firebase_service_account',
+            'pull_helm_builder', 'push_backend', 'push_frontend']
+
+- id: tag_cache_images
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    docker tag ${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA} ${_BACKEND_IMAGE}:${_CACHE_TAG}
+    docker tag ${_FRONTEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA} ${_FRONTEND_IMAGE}:${_CACHE_TAG}
+
+images:
+  - ${_BACKEND_IMAGE}:${_CACHE_TAG}
+  - ${_FRONTEND_IMAGE}:${_CACHE_TAG}
+substitutions:
+  _KMS_KEYRING:
+  _HELM_VALUES_CIPHERTEXT_FILE:
+  _HELM_VALUES_PLANTEXT_FILE:
+  _HELM_VALUES_KMS_KEY:
+  _ENV_CIPHERTEXT_FILE:
+  _ENV_PLANTEXT_FILE:
+  _ENV_KMS_KEY:
+  _DEFAULT_SA_CIPHERTEXT_FILE:
+  _DEFAULT_SA_PLANTEXT_FILE:
+  _DEFAULT_SA_KMS_KEY:
+  _FIREBASE_SA_CIPHERTEXT_FILE:
+  _FIREBASESA_PLANTEXT_FILE:
+  _FIREBASE_SA_KMS_KEY:
+  _BACKEND_IMAGE:
+  _FRONTEND_IMAGE:
+  _CACHE_TAG:
+  _HELM_BUILDER_IMAGE:
+  _RELEASE_NAME:
+  _CLOUDSDK_CONTAINER_CLUSTER:
+  _CLOUDSDK_COMPUTE_ZONE:

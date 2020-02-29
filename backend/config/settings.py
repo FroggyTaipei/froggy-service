@@ -12,8 +12,6 @@ import datetime
 
 from django.utils.translation import ugettext_lazy as _
 
-from google.oauth2 import service_account
-
 ROOT_DIR = environ.Path(__file__) - 2
 
 # Load operating system environment variables and then prepare to use them
@@ -35,7 +33,6 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     'rest_framework',
-    'django_extensions',
     'ckeditor',
     'storages',
     'suit_ckeditor',
@@ -90,16 +87,6 @@ EMAIL_HOST = env.str('EMAIL_HOST', default='mailhog')
 EMAIL_HOST_USER = env.str('EMAIL_HOST_USER', default='')
 SERVER_EMAIL = env.str('SERVER_EMAIL', default='')
 SERVER_EMAIL_NAME = '選服魔鏡號'
-# See: https://github.com/sendgrid/sendgrid-python
-USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
-if USE_SENDGRID:
-    # EMAIL_PORT = 587 or 2525
-    EMAIL_HOST = 'smtp.sendgrid.net'
-    EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
-    EMAIL_USE_TLS = True
-    EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
-    SENDGRID_API_KEY = env.str('SENDGRID_API_KEY')
-    SENDGRID_SANDBOX_MODE_IN_DEBUG = DEBUG
 
 # MANAGER CONFIGURATION
 # ------------------------------------------------------------------------------
@@ -347,7 +334,12 @@ LOGGING = {
             'propagate': False,
         },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['console', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'apps': {
+            'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -369,25 +361,27 @@ FIXTURE_DIRS = (
     str(ROOT_DIR('fixtures/auth')),
 )
 
+# Google Service Account
+
+DEFAULT_SA_PATH = env.str('DEFAULT_SA_PATH', default='')
+FIREBASE_SA_PATH = env.str('FIREBASE_SA_PATH', default='')
+
 # Cloud Storage
 # ------------------------------------------------------------------------------
 # See: https://django-storages.readthedocs.io/en/latest/
+
 USE_GCS = env.bool('USE_GCS', default=False)
+
 if USE_GCS:
-    STATICFILES_STORAGE = 'apps.files.storages.GoogleCloudStaticStorage'
-    DEFAULT_FILE_STORAGE = 'apps.files.storages.GoogleCloudMediaStorage'
+    STATICFILES_STORAGE = 'config.storages.StaticFileStorage'
+    DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
     GS_PROJECT_ID = env.str('GS_PROJECT_ID')
-    GS_BUCKET_NAME = env.str('GS_BUCKET_NAME')
-
-    GS_MEDIA_BUCKET_NAME = f'{GS_BUCKET_NAME}-media'
-    GS_STATIC_BUCKET_NAME = f'{GS_BUCKET_NAME}-staticfiles'
-    MEDIA_URL = f'https://{GS_MEDIA_BUCKET_NAME}.storage.googleapis.com/'
-    STATIC_URL = f'https://{GS_STATIC_BUCKET_NAME}.storage.googleapis.com/'
-    GS_AUTO_CREATE_BUCKET = True
-
-    GS_CREDENTIALS = service_account.Credentials.from_service_account_file(
-        f"{ROOT_DIR}/{env.str('GS_CREDENTIALS')}",
-    )
+    GS_MEDIA_BUCKET = env.str('GS_MEDIA_BUCKET')
+    GS_STATIC_BUCKET = env.str('GS_STATIC_BUCKET')
+    MEDIA_URL = f'https://{GS_MEDIA_BUCKET}.storage.googleapis.com/'
+    STATIC_URL = f'https://{GS_STATIC_BUCKET}.storage.googleapis.com/'
+    GS_CASE_BUCKET = env.str('GS_CASE_BUCKET')
+    GS_TEMP_BUCKET = env.str('GS_TEMP_BUCKET')
 
 FILE_LIMIT_CASE = 5
 FILE_LIMIT_PER_FILE = 10485760
@@ -445,3 +439,20 @@ SWAGGER_SETTINGS = {
 # ------------------------------------------------------------------------------
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#sessions
 SESSION_COOKIE_AGE = 120 * 60
+
+
+# Sendgrid API
+# ------------------------------------------------------------------------------
+# See: https://github.com/sendgrid/sendgrid-python
+USE_SENDGRID = env.bool('USE_SENDGRID', default=False)
+if USE_SENDGRID:
+    EMAIL_HOST = 'smtp.sendgrid.net'
+    EMAIL_USE_TLS = True
+    EMAIL_BACKEND = 'sendgrid_backend.SendgridBackend'
+    SENDGRID_API_KEY = env.str('SENDGRID_API_KEY')
+    SENDGRID_SANDBOX_MODE_IN_DEBUG = DEBUG
+
+# Slack API
+# ------------------------------------------------------------------------------
+# See: https://github.com/slackapi/python-slackclient
+SLACK_BOT_USER_TOKEN = env.str('SLACK_BOT_USER_TOKEN', default='')
