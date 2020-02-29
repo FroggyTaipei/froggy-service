@@ -11,7 +11,7 @@ class BaseFileSystemStorage:
         location = os.path.join(settings.MEDIA_ROOT, cls.relative_location)
         base_url = os.path.join(settings.MEDIA_URL, cls.relative_base_url)
         if not os.path.exists(location):
-            os.mkdir(location)
+            os.makedirs(location)
         return FileSystemStorage(location=location, base_url=base_url)
 
 

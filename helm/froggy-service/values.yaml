@@ -1,10 +1,10 @@
 backend:
   replicasCount:
   image:
-    repository: froggytaipei/froggy-service-backend:latest
+    repository: froggytaipei/froggy-service-api:latest
     tag: latest
     pullPolicy: IfNotPresent
-  livenessPath: /liveness
+  livenessPath: /healthz
   readinessPath: /readiness
   command:
     - "./scripts/gunicorn.sh"
@@ -22,7 +22,7 @@ backend:
 
 frontend:
   image:
-    repository: froggytaipei/froggy-service-frontend:latest
+    repository: froggytaipei/froggy-service-nginx:latest
     tag: latest
     pullPolicy: IfNotPresent
   livenessPath: /
@@ -51,7 +51,11 @@ environment:
   localPath:
 
 serviceAccount:
+  secretName: froggy-service-sa
+  mountPath: /secret
   default:
-    name: default-sa
-    mountPath: /secret
+    file:
+    localPath:
+  firebase:
+    file:
     localPath:

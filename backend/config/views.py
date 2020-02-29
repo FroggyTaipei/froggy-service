@@ -1,17 +1,8 @@
-import environ
-
-from django.http import JsonResponse, HttpResponse
-from django.core.signing import TimestampSigner
 from django.utils.translation import ugettext_lazy as _
 
 from suit_dashboard import DashboardView, Grid, Column, Row
 
 from . import boxes
-
-env = environ.Env()
-
-
-ACCOUNTKIT_APP_ID = env.str('VUE_APP_ACCOUNTKIT_APP_ID')
 
 
 class DashboardMainView(DashboardView):
@@ -31,11 +22,3 @@ class DashboardMainView(DashboardView):
             Column(boxes.CaseRegionLineBox(), width=8),
         ),
     )
-
-
-def get_token(request):
-    signer = TimestampSigner()
-    state = signer.sign(ACCOUNTKIT_APP_ID)
-    return JsonResponse({
-        'state': state,
-    })
