@@ -11,7 +11,6 @@ def firebase_app(credential_path=settings.FIREBASE_SA_PATH):
     try:
         yield app
     except Exception as e:
-        delete_app(app)
         raise e
     finally:
         delete_app(app)
