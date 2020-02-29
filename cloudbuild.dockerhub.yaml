@@ -23,7 +23,7 @@ steps:
          '-t', '${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}',
          '--cache-from', '${_BACKEND_IMAGE}:${_CACHE_TAG}',
          '.']
-  waitFor: ['copy_env_file', 'pull_backend_cache']
+  waitFor: ['pull_backend_cache']
 
 - id: build_frontend
   name: 'gcr.io/cloud-builders/docker'
@@ -34,7 +34,7 @@ steps:
          '--build-arg', 'ENV_PATH=.env.example',
          '--cache-from', '${_FRONTEND_IMAGE}:${_CACHE_TAG}',
          '.']
-  waitFor: ['copy_env_file', 'pull_frontend_cache']
+  waitFor: ['pull_frontend_cache']
 
 - id: push_backend
   name: 'gcr.io/cloud-builders/docker'
@@ -59,14 +59,12 @@ images:
   - ${_BACKEND_IMAGE}:${_CACHE_TAG}
   - ${_FRONTEND_IMAGE}:${_CACHE_TAG}
 secrets:
-- kmsKeyName: projects/${PROJECT_ID}/locations/global/keyRings/froggy-service/cryptoKeys/docker-username
+- kmsKeyName: projects/genial-bonbon-226211/locations/global/keyRings/froggy-service/cryptoKeys/docker-username
   secretEnv:
-    USERNAME: CiQAf4Y2nYXAXBxTfJiz+792yH20GAjghJIOwGTeiHWA3sp6CbESMADzX2zLVyMpiNvEQMI1XWjr
-      i7XFgpD002IVRtXVSg5RDLfvebT6Zh/a9BPaBIwGnA==
-- kmsKeyName: projects/${PROJECT_ID}/locations/global/keyRings/[KEYRING-NAME]/cryptoKeys/docker-password
+    USERNAME: CiQAf4Y2nYXAXBxTfJiz+792yH20GAjghJIOwGTeiHWA3sp6CbESMADzX2zLVyMpiNvEQMI1XWjri7XFgpD002IVRtXVSg5RDLfvebT6Zh/a9BPaBIwGnA==
+- kmsKeyName: projects/genial-bonbon-226211/locations/global/keyRings/froggy-service/cryptoKeys/docker-password
   secretEnv:
-    PASSWORD: CiQALEUxbIQoEE3n8cRHZrSJJA/nmf+Yn4nzriksrWBF+kQ8CH8SNADP6bdW3Nn++BW15c1C4opL
-      87NLympjdVnqVLqZFzzd9jGGNXQGTazu9np57Rx3CL5EvMw=
+    PASSWORD: CiQALEUxbIQoEE3n8cRHZrSJJA/nmf+Yn4nzriksrWBF+kQ8CH8SNADP6bdW3Nn++BW15c1C4opL87NLympjdVnqVLqZFzzd9jGGNXQGTazu9np57Rx3CL5EvMw=
 substitutions:
   _BACKEND_IMAGE: froggytaipei/froggy-service-api
   _FRONTEND_IMAGE: froggytaipei/froggy-service-nginx
