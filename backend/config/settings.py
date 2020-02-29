@@ -404,9 +404,9 @@ SUIT_CONFIG = {
 
 # JWT
 # ------------------------------------------------------------------------------
-# See: http://getblimp.github.io/django-rest-framework-jwt/#additional-settings
+# See: https://jpadilla.github.io/django-rest-framework-jwt/#additional-settings
 JWT_AUTH = {
-    'JWT_EXPIRATION_DELTA': datetime.timedelta(seconds=60*30),
+    'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=env.float('JWT_EXPIRATION_DELTA_MINUTES', default=120)),
 }
 
 
