@@ -16,14 +16,15 @@ admin.sites.site = admin.site
 admin.autodiscover()
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Froggy's Service API",
-      default_version='v1',
-      contact=openapi.Contact(email=settings.SERVER_EMAIL),
-      license=openapi.License(name="MIT License"),
-   ),
-   public=False,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Froggy's Service API",
+        default_version='v1',
+        contact=openapi.Contact(email=settings.SERVER_EMAIL),
+        license=openapi.License(name="MIT License"),
+    ),
+    url=settings.DOMAIN,
+    public=False,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
