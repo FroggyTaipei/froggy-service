@@ -6,6 +6,7 @@ volumes:
 services:
   backend:
     container_name: backend
+    image: froggy-service-api
     build:
       context: ./backend
     depends_on:
@@ -58,11 +59,3 @@ services:
       - ./backend/media/:/media/
       - ./backend/staticfiles/:/staticfiles/
       - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
-    logging:
-      driver: "json-file"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
-      timeout: 5s
-      retries: 30
-      start_period: 15s

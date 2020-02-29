@@ -9,7 +9,6 @@ from drf_yasg import openapi
 
 from config.api import api
 
-from .views import get_token
 from .site import DashboardSite
 
 admin.site = DashboardSite()
@@ -28,12 +27,11 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    # All Kubernetes services must serve a 200 page on '/', set admin page as index
+    # All Kubernetes services must serve a 200 page at '/', set admin page as index
     path('', admin.site.urls, name='admin'),
     path('api/', include(api.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger'),
-    path('api/csrftoken/', get_token),
 ]
 
 if settings.DEBUG:

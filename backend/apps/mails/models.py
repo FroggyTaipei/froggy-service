@@ -1,4 +1,5 @@
 import json
+import logging
 import sendgrid
 from python_http_client.exceptions import HTTPError
 from django.conf import settings
@@ -16,10 +17,7 @@ from django.db.models import (
     CharField,
 )
 
-from .utils import sendgrid_system_mail
-
-
-sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
+logger = logging.getLogger(__name__)
 
 
 class SendGridMailTemplate(Model):
@@ -41,6 +39,7 @@ class SendGridMailTemplate(Model):
         super(SendGridMailTemplate, self).save(*args, **kwargs)
 
     def retrieve_template(self):
+        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
         return sg.client.templates._(self.tid).get()
 
 
@@ -81,7 +80,7 @@ class SendGridMail(Model):
                 response = SendGridMail.send_template(self.from_email, self.to_email, self.data, self.template.tid)
                 self.success = bool(response and response.status_code == 202)
             except SendGridMailTemplate.DoesNotExist as e:
-                sendgrid_system_mail(e)
+                logger.error(e)
             super(SendGridMail, self).save(*args, **kwargs)
 
     def send(self):
@@ -90,6 +89,7 @@ class SendGridMail(Model):
     @staticmethod
     def send_template(from_email, to_email, data, template_id):
         """Call Sendgrid Transactional Template API"""
+        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
         if from_email == settings.SERVER_EMAIL:
             from_email = Email(from_email, name=settings.SERVER_EMAIL_NAME)
         else:
@@ -101,5 +101,5 @@ class SendGridMail(Model):
         try:
             return sg.client.mail.send.post(request_body=mail.get())
         except HTTPError as e:
-            sendgrid_system_mail(e)
+            logger.error(e)
             return None

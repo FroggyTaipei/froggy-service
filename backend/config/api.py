@@ -14,7 +14,7 @@ api = routers.DefaultRouter()
 api.trailing_slash = '/?'
 
 # Users API
-api.register(r'users', UserViewSet)
+api.register(r'users', UserViewSet, basename='users')
 
 # Mails API
 api.register(r'mails', MailViewSet)
