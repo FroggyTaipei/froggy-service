@@ -23,7 +23,7 @@ steps:
   - --key=${_ENV_KMS_KEY}
   waitFor: ['-']
 
-- id: decrypt_service_account
+- id: decrypt_default_service_account
   name: gcr.io/cloud-builders/gcloud
   args:
   - kms
@@ -33,6 +33,18 @@ steps:
   - --location=global
   - --keyring=${_KMS_KEYRING}
   - --key=${_DEFAULT_SA_KMS_KEY}
+  waitFor: ['-']
+
+- id: decrypt_firebase_service_account
+  name: gcr.io/cloud-builders/gcloud
+  args:
+  - kms
+  - decrypt
+  - --ciphertext-file=${_FIREBASE_SA_CIPHERTEXT_FILE}
+  - --plaintext-file=${_FIREBASE_SA_PLANTEXT_FILE}
+  - --location=global
+  - --keyring=${_KMS_KEYRING}
+  - --key=${_FIREBASE_SA_KMS_KEY}
   waitFor: ['-']
 
 - id: pull_backend_cache
@@ -82,17 +94,18 @@ steps:
 
 - id: helm_deploy
   name: '${_HELM_BUILDER_IMAGE}'
-  dir: 'helm/froggy-service'
   args: ['upgrade',
          '-f', '${_HELM_VALUES_PLANTEXT_FILE}',
          '--set', 'backend.image.tag=${BRANCH_NAME}-${SHORT_SHA}',
          '--set', 'frontend.image.tag=${BRANCH_NAME}-${SHORT_SHA}',
          '${_RELEASE_NAME}',
-         '.']
+         'helm/froggy-service']
   env:
     - 'CLOUDSDK_COMPUTE_ZONE=${_CLOUDSDK_COMPUTE_ZONE}'
     - 'CLOUDSDK_CONTAINER_CLUSTER=${_CLOUDSDK_CONTAINER_CLUSTER}'
-  waitFor: ['pull_helm_builder', 'push_backend', 'push_frontend']
+  waitFor: ['decrypt_helm_values', 'decrypt_env_file',
+            'decrypt_default_service_account', 'decrypt_firebase_service_account',
+            'pull_helm_builder', 'push_backend', 'push_frontend']
 
 - id: tag_cache_images
   name: 'gcr.io/cloud-builders/docker'
@@ -117,6 +130,9 @@ substitutions:
   _DEFAULT_SA_CIPHERTEXT_FILE:
   _DEFAULT_SA_PLANTEXT_FILE:
   _DEFAULT_SA_KMS_KEY:
+  _FIREBASE_SA_CIPHERTEXT_FILE:
+  _FIREBASESA_PLANTEXT_FILE:
+  _FIREBASE_SA_KMS_KEY:
   _BACKEND_IMAGE:
   _FRONTEND_IMAGE:
   _CACHE_TAG:

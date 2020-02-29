@@ -15,10 +15,6 @@ firebase-sa.json
 .env.prod
 .env.staging
 
-### NPM
-package-lock.json
-frontend/package-lock.json
-
 ### OSX ###
 .DS_Store
 .AppleDouble
