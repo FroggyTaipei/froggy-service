@@ -29,7 +29,6 @@ spec:
         - name: {{ template "froggy-service.frontend" . }}
           image: "{{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}"
           imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
-          command: ["npm", "run", "start"]
           ports:
             - containerPort: {{ .Values.frontend.service.targetPort }}
               protocol: TCP

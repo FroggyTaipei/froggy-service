@@ -32,7 +32,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, email, password, **extra_fields):
         return self._create_user(email, password, is_staff=True, is_superuser=True, **extra_fields)
 
-    def create_accountkit_user(self, **extra_fields):
+    def create_auth0_user(self, **extra_fields):
         email = extra_fields.pop('email', None)
         mobile = extra_fields.pop('mobile', None)
         is_staff = extra_fields.pop('is_staff', False)

@@ -149,7 +149,7 @@ DATETIME_FORMAT = '%Y/%m/%d %H:%M'
 STATIC_ROOT = str(ROOT_DIR('staticfiles'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#static-url
-# STATIC_URL = '/staticfiles/'
+STATIC_URL = '/staticfiles/'
 
 # See:
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
@@ -170,7 +170,7 @@ STATICFILES_FINDERS = [
 MEDIA_ROOT = str(ROOT_DIR('media'))
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#media-url
-# MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'
 
 # URL Configuration
 # ------------------------------------------------------------------------------
@@ -334,7 +334,12 @@ LOGGING = {
             'propagate': False,
         },
         'django.request': {
-            'handlers': ['mail_admins'],
+            'handlers': ['console', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': True,
+        },
+        'apps': {
+            'handlers': ['console', 'mail_admins'],
             'level': 'ERROR',
             'propagate': True,
         },
@@ -359,21 +364,24 @@ FIXTURE_DIRS = (
 # Google Service Account
 
 DEFAULT_SA_PATH = env.str('DEFAULT_SA_PATH', default='')
+FIREBASE_SA_PATH = env.str('FIREBASE_SA_PATH', default='')
 
 # Cloud Storage
 # ------------------------------------------------------------------------------
 # See: https://django-storages.readthedocs.io/en/latest/
-STATICFILES_STORAGE = 'config.storages.StaticFileStorage'
-DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
 
-GS_PROJECT_ID = env.str('GS_PROJECT_ID')
-GS_MEDIA_BUCKET = env.str('GS_MEDIA_BUCKET')
-GS_STATIC_BUCKET = env.str('GS_STATIC_BUCKET')
-MEDIA_URL = f'https://{GS_MEDIA_BUCKET}.storage.googleapis.com/'
-STATIC_URL = f'https://{GS_STATIC_BUCKET}.storage.googleapis.com/'
-GS_CASE_BUCKET = env.str('GS_CASE_BUCKET')
-GS_TEMP_BUCKET = env.str('GS_TEMP_BUCKET')
-GS_TEST_BUCKET = env.str('GS_TEST_BUCKET')
+USE_GCS = env.bool('USE_GCS', default=False)
+
+if USE_GCS:
+    STATICFILES_STORAGE = 'config.storages.StaticFileStorage'
+    DEFAULT_FILE_STORAGE = 'config.storages.MediaStorage'
+    GS_PROJECT_ID = env.str('GS_PROJECT_ID')
+    GS_MEDIA_BUCKET = env.str('GS_MEDIA_BUCKET')
+    GS_STATIC_BUCKET = env.str('GS_STATIC_BUCKET')
+    MEDIA_URL = f'https://{GS_MEDIA_BUCKET}.storage.googleapis.com/'
+    STATIC_URL = f'https://{GS_STATIC_BUCKET}.storage.googleapis.com/'
+    GS_CASE_BUCKET = env.str('GS_CASE_BUCKET')
+    GS_TEMP_BUCKET = env.str('GS_TEMP_BUCKET')
 
 FILE_LIMIT_CASE = 5
 FILE_LIMIT_PER_FILE = 10485760

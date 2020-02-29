@@ -11,21 +11,21 @@ class UserModelTestCase(TransactionTestCase):
         self.assertTrue(user.is_superuser)
         self.assertTrue(user.is_active)
 
-    def test_create_accountkit_use(self):
-        user = User.objects.create_accountkit_user(mobile='0912345678', email=None)
+    def test_create_auth0_user(self):
+        user = User.objects.create_auth0_user(mobile='0912345678', email=None)
         self.assertTrue(user.is_active)
 
         with self.assertRaises(IntegrityError):
-            User.objects.create_accountkit_user(mobile='0912345678', email=None)
+            User.objects.create_auth0_user(mobile='0912345678', email=None)
 
-        user = User.objects.create_accountkit_user(mobile=None, email='test@tester.email.com')
+        user = User.objects.create_auth0_user(mobile=None, email='test@tester.email.com')
         self.assertTrue(user.is_active)
 
         with self.assertRaises(IntegrityError):
-            User.objects.create_accountkit_user(mobile=None, email='test@tester.email.com')
+            User.objects.create_auth0_user(mobile=None, email='test@tester.email.com')
 
         with self.assertRaises(ValidationError):
-            User.objects.create_accountkit_user(mobile=None, email=None)
+            User.objects.create_auth0_user(mobile=None, email=None)
 
         with self.assertRaises(ValidationError):
-            User.objects.create_accountkit_user(mobile='0912345679', is_staff=True, is_superuser=True)
+            User.objects.create_auth0_user(mobile='0912345679', is_staff=True, is_superuser=True)

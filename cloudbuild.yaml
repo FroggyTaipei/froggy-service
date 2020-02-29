@@ -60,6 +60,6 @@ steps:
   waitFor: ['wait_for_backend']
 
 substitutions:
-  _BACKEND_IMAGE: froggytaipei/froggy-service-backend:latest
-  _FRONTEND_IMAGE: froggytaipei/froggy-service-frontend:latest
+  _BACKEND_IMAGE: froggytaipei/froggy-service-api
+  _FRONTEND_IMAGE: froggytaipei/froggy-service-nginx
   _CACHE_TAG: latest

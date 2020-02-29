@@ -68,6 +68,6 @@ secrets:
     PASSWORD: CiQALEUxbIQoEE3n8cRHZrSJJA/nmf+Yn4nzriksrWBF+kQ8CH8SNADP6bdW3Nn++BW15c1C4opL
       87NLympjdVnqVLqZFzzd9jGGNXQGTazu9np57Rx3CL5EvMw=
 substitutions:
-  _BACKEND_IMAGE: froggytaipei/froggy-service-backend:latest
-  _FRONTEND_IMAGE: froggytaipei/froggy-service-frontend:latest
+  _BACKEND_IMAGE: froggytaipei/froggy-service-api
+  _FRONTEND_IMAGE: froggytaipei/froggy-service-nginx
   _CACHE_TAG: latest

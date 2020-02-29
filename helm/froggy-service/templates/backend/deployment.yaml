@@ -23,9 +23,9 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       volumes:
-        - name: {{ .Values.serviceAccount.default.name }}
+        - name: {{ .Values.serviceAccount.secretName }}
           secret:
-            secretName: {{ .Values.serviceAccount.default.name }}
+            secretName: {{ .Values.serviceAccount.secretName }}
       {{- if .Values.backend.nodeSelector }}
       nodeSelector:
 {{ toYaml .Values.backend.nodeSelector | indent 8 }}
@@ -66,6 +66,6 @@ spec:
             failureThreshold: 30
           terminationMessagePath: /dev/termination-log
           volumeMounts:
-            - name: {{ .Values.serviceAccount.default.name }}
-              mountPath: {{ .Values.serviceAccount.default.mountPath }}
+            - name: {{ .Values.serviceAccount.secretName }}
+              mountPath: {{ .Values.serviceAccount.mountPath }}
               readOnly: true
