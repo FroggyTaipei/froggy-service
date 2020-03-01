@@ -134,15 +134,12 @@ export default {
       this.authenticating = true
     },
     dismissAuthModal (status) {
-      console.info(status)
       this.showAuthModal = false
       if(status !== 'DISMISS'){
         firebase.auth().currentUser.getIdToken(false).then(t => {
           let auth = status.split(',')
-          console.info("ID token: ", t)
-          this.sendToken(t, auth[1])
+          this.sendToken(t, auth[1].replace('+886', '0'))
         }).catch(e => {
-          console.info(e)
           this.$alert('請重新認證', '呱吉提示', {
             type: 'warning',
             confirmButtonText: '好！'
@@ -155,7 +152,6 @@ export default {
       this.axios.post('/api/users/token_auth/', {
         token: t
       }).then(response => {
-        console.info("傳送成功")
         this.mobileText = '手機號碼'
         this.applicant.mobile = mobile
         let jwt = { Authorization: 'JWT ' + response.data.jwt }
@@ -163,7 +159,7 @@ export default {
         this.$store.commit('setAuthenticated', true)
       }).catch(e => {
         let title = e.response.status + ' ' + e.response.statusText
-        let content = e.response.data.detail ? e.response.data.detail : e.response.data[0]
+        let content = e.response.data[0] ? e.response.data[0] : '請聯絡工作人員 02-27297708 分機 7152、7252'
         this.$alert(content, title, {
           type: 'error'
         })
