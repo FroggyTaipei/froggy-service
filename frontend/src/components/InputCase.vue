@@ -109,13 +109,6 @@ export default {
     }
   },
   methods: {
-    updateCSRFToken () {
-      this.axios.get('api/csrftoken/')
-        .then(response => {
-          this.axios.defaults.headers.common['X-CSRFToken'] = response.data['token']
-        })
-        .catch(e => { console.log(e) })
-    },
     removeFile (id) {
       this.axios.delete('/api/files/temp/' + id, { headers: this.$store.state.jwt })
         .then(response => {

@@ -3,7 +3,7 @@
         <div class="modal-mask">
             <div class="modal-wrapper">
               <div class="modal-container">
-                <div class="close-btn">
+                <div class="close-btn" v-show="!isClosed">
                   <el-button icon="el-icon-close" type="text" @click="cancel('DISMISS')" circle plain></el-button>
                 </div>
                 <div id="firebaseui-auth-container"></div>
@@ -18,6 +18,7 @@ export default {
   name: 'AuthModal',
   data: () => ({
     config: {},
+    isClosed: false,
     ui: ''
   }),
   created () {
@@ -40,8 +41,6 @@ export default {
       this.ui.start('#firebaseui-auth-container', {
         callbacks: {
           signInSuccessWithAuthResult: (authResult, redirectUrl) => {
-            console.info(authResult.user.phoneNumber)
-            console.info(authResult)
             this.cancel(`SUCCESS,${authResult.user.phoneNumber}`)
             return false
           },
@@ -55,7 +54,8 @@ export default {
               size: 'normal', // 'invisible' or 'compact'
               badge: 'inline' //' bottomright' or 'inline' applies to invisible.
             },
-            defaultCountry: 'TW'
+            defaultCountry: 'TW',
+            whitelistedCountries: ['TW', '+886']
           }
         ]
       });
@@ -65,6 +65,7 @@ export default {
   },
   methods: {
     cancel(status) {
+      this.isClosed = true
       this.$emit('cancel', status)
       this.ui.delete()
     }
@@ -77,7 +78,7 @@ export default {
   text-align: right;
 }
 
-.close-btn > button:hover {
+.close-btn > button:hover, .close-btn > button:focus {
   border-color: white !important;
 }
 
@@ -99,7 +100,7 @@ export default {
 }
 
 .modal-container {
-  width: fit-content;
+  min-width: 360px;
   margin: 0px auto;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
@@ -124,16 +125,22 @@ export default {
   text-align: center;
 }
 
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 767px) {
   .modal-container {
-    width: 85vw;
-    padding: 16px;
-    max-height: 80vh;
+    max-width: 360px;
   }
   .modal-body {
     margin: 0;
   }
 }
+
+@media only screen and (max-width: 359px) {
+  .modal-container {
+    min-width: 0 !important;
+    max-width: 100vw;
+  }
+}
+
 /*
  * The following styles are auto-applied to elements with
  * transition="modal" when their visibility is toggled
