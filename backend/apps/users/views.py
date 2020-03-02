@@ -2,7 +2,7 @@ import datetime
 from django.http import JsonResponse
 from django.conf import settings
 from django.db.models import Q
-from rest_framework import viewsets, status
+from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
@@ -33,12 +33,12 @@ class UserViewSet(viewsets.ViewSet):
                 email = user.email
                 mobile = user.phone_number
             except (
-                auth.ValueError,
+                ValueError,
                 auth.InvalidIdTokenError,
                 auth.ExpiredIdTokenError,
                 auth.UserNotFoundError
             ) as e:
-                raise AuthenticationFailed(e.message)
+                raise AuthenticationFailed(str(e))
 
         if mobile:
             if not mobile.startswith('+886'):
