@@ -100,7 +100,7 @@ export default {
 }
 
 .modal-container {
-  min-width: 360px;
+  max-width: 360px;
   margin: 0px auto;
   background-color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
