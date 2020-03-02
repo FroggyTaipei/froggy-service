@@ -143,7 +143,7 @@ article
 .froggyServantImg
   width: 100%
   transform: scale(1.5) translate3d(-5px ,-15px,0)
-  -webkit-mask-image: -webkit-gradient(linear, left 90%, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)))
+  mask-image: linear-gradient(rgba(0, 0, 0, 1.0), 90% ,transparent)
 
 .text-center
   text-align: center
