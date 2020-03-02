@@ -1,0 +1,10 @@
+apiVersion: v1
+appVersion: "1.0"
+description: Froggy Service Helm chart for Kubernetes
+name: froggy-service
+version: 1.1.0
+home: www.froggy-service.com
+sources:
+  - https://github.com/FroggyTaipei/froggy-service
+maintainers:
+  - name: travishen.tw@gmail.com

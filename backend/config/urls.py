@@ -9,7 +9,6 @@ from drf_yasg import openapi
 
 from config.api import api
 
-from .views import get_token
 from .site import DashboardSite
 
 admin.site = DashboardSite()
@@ -17,23 +16,23 @@ admin.sites.site = admin.site
 admin.autodiscover()
 
 schema_view = get_schema_view(
-   openapi.Info(
-      title="Froggy's Service API",
-      default_version='v1',
-      contact=openapi.Contact(email=settings.SERVER_EMAIL),
-      license=openapi.License(name="MIT License"),
-   ),
-   public=False,
-   permission_classes=(permissions.AllowAny,),
+    openapi.Info(
+        title="Froggy's Service API",
+        default_version='v1',
+        contact=openapi.Contact(email=settings.SERVER_EMAIL),
+        license=openapi.License(name="MIT License"),
+    ),
+    url=settings.DOMAIN,
+    public=False,
+    permission_classes=(permissions.AllowAny,),
 )
 
 urlpatterns = [
-    # All Kubernetes services must serve a 200 page on '/', set admin page as index
+    # All Kubernetes services must serve a 200 page at '/', set admin page as index
     path('', admin.site.urls, name='admin'),
     path('api/', include(api.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger'),
-    path('api/csrftoken/', get_token),
 ]
 
 if settings.DEBUG:

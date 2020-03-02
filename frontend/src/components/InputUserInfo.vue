@@ -15,10 +15,8 @@
         <el-input placeholder="e.g. 邱威傑" v-model.trim="applicant.username"></el-input>
       </el-form-item>
       <el-form-item :label="mobileText">
-        <el-row class="accountkit" type="flex">
-          <AccountKit v-if="!$store.state.authentication" ref="accountKit">
-            <el-button type="primary" @click="login" :loading="authenticating">手機認證</el-button>
-          </AccountKit>
+        <el-row class="phone-auth" type="flex">
+          <el-button v-if="!$store.state.authentication" type="primary" @click="phoneAuth" :loading="authenticating">手機認證</el-button>
           <div class="mobile-number" v-show="$store.state.authentication">{{ applicant.mobile }}</div>
           <i class="el-icon-success" v-show="$store.state.authentication"></i>
         </el-row>
@@ -57,21 +55,23 @@
     </div>
     <AgreementModal v-if="showAgreementModal" @close="disagree(true)" @disagree="disagree(false)">
     </AgreementModal>
+    <AuthModal v-if="showAuthModal"  @cancel="dismissAuthModal"></AuthModal>
   </fieldset>
 </template>
 
 <script>
-import AccountKit from '@/components/AccountKit.vue'
 import AgreementModal from '@/components/AgreementModal.vue'
+import AuthModal from '@/components/AuthModal.vue'
 export default {
   name: 'InputUserInfo',
   components: {
-    AccountKit,
-    AgreementModal
+    AgreementModal,
+    AuthModal
   },
   data: () => ({
     mobileText: '',
     showAgreementModal: false,
+    showAuthModal: false,
     authenticating: false,
     agreementText: '我同意《台北市議員邱威傑市民服務系統使用說明及隱私權政策》',
     type: '',
@@ -120,51 +120,50 @@ export default {
       this.$store.commit('setCase', { type: value })
     }
   },
+  created () {
+  },
+  mounted() {
+  },
   methods: {
     disagree (value) {
       this.applicant.agreement = value
       this.showAgreementModal = false
     },
-    login () {
-      this.$refs.accountKit.login(
-        {
-          countryCode: '+886'
-        },
-        this.loginCallback
-      )
+    phoneAuth () {
+      this.showAuthModal = true
       this.authenticating = true
     },
-    loginCallback (response) {
-      if (response && response.status === 'PARTIALLY_AUTHENTICATED') {
-        this.getAccountKitToken({
-          code: response.code,
-          status: response.status,
-          state: response.state
-        })
-      } else {
-        this.$alert('請重新認證', '呱吉提示', {
-          type: 'warning',
-          confirmButtonText: '好！'
+    dismissAuthModal (status) {
+      this.showAuthModal = false
+      if(status !== 'DISMISS'){
+        firebase.auth().currentUser.getIdToken(false).then(t => {
+          let auth = status.split(',')
+          this.sendToken(t, auth[1].replace('+886', '0'))
+        }).catch(e => {
+          this.$alert('請重新認證', '呱吉提示', {
+            type: 'warning',
+            confirmButtonText: '好！'
+          })
         })
       }
       this.authenticating = false
     },
-    getAccountKitToken (accountKitResp) {
-      this.axios.post('/api/users/accountkit_get_token/', accountKitResp)
-        .then(response => {
-          this.mobileText = '手機號碼'
-          this.applicant.mobile = response.data.mobile
-          let jwt = { Authorization: 'JWT ' + response.data.jwt }
-          this.$store.commit('setAuthenticated', true)
-          this.$store.commit('setJWT', jwt)
+    sendToken (t, mobile) {
+      this.axios.post('/api/users/token_auth/', {
+        token: t
+      }).then(response => {
+        this.mobileText = '手機號碼'
+        this.applicant.mobile = mobile
+        let jwt = { Authorization: 'JWT ' + response.data.jwt }
+        this.$store.commit('setJWT', jwt)
+        this.$store.commit('setAuthenticated', true)
+      }).catch(e => {
+        let title = e.response.status + ' ' + e.response.statusText
+        let content = e.response.data[0] ? e.response.data[0] : '請聯絡工作人員 02-27297708 分機 7152、7252'
+        this.$alert(content, title, {
+          type: 'error'
         })
-        .catch(e => {
-          let title = e.response.status + ' ' + e.response.statusText
-          let content = e.response.data.detail ? e.response.data.detail : e.response.data[0]
-          this.$alert(content, title, {
-            type: 'error'
-          })
-        })
+      })
     },
     nextPage () {
       this.$refs.form.validate((valid) => {
@@ -213,11 +212,11 @@ export default {
 </script>
 
 <style lang="css">
-.accountkit{
+.phone-auth{
   flex-direction: row;
 }
 
-.accountkit > i{
+.phone-auth > i{
   font-size: x-large;
   line-height: 40px;
   margin-left: 20px;

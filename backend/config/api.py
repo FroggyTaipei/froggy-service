@@ -1,7 +1,7 @@
 from rest_framework import routers
 from apps.users.views import UserViewSet
 from apps.mails.views import MailViewSet
-from apps.files.api.views import TempFileViewSet
+from apps.files.views import TempFileViewSet
 from apps.cases.views import (
     TypeViewSet,
     RegionViewSet,
@@ -14,7 +14,7 @@ api = routers.DefaultRouter()
 api.trailing_slash = '/?'
 
 # Users API
-api.register(r'users', UserViewSet)
+api.register(r'users', UserViewSet, basename='users')
 
 # Mails API
 api.register(r'mails', MailViewSet)

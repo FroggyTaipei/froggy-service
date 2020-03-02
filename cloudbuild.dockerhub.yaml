@@ -1,0 +1,71 @@
+steps:
+- id: docker_login
+  name: "gcr.io/cloud-builders/docker"
+  entrypoint: "bash"
+  args: ["-c", "docker login --username=$$USERNAME --password=$$PASSWORD"]
+  secretEnv: ["USERNAME", "PASSWORD"]
+  waitFor: ['-']
+
+- id: pull_backend_cache
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_BACKEND_IMAGE}:${_CACHE_TAG}']
+  waitFor: ['-']
+
+- id: pull_frontend_cache
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['pull', '${_FRONTEND_IMAGE}:${_CACHE_TAG}']
+  waitFor: ['-']
+
+- id: build_backend
+  name: 'gcr.io/cloud-builders/docker'
+  dir: 'backend'
+  args: ['build',
+         '-t', '${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}',
+         '--cache-from', '${_BACKEND_IMAGE}:${_CACHE_TAG}',
+         '.']
+  waitFor: ['pull_backend_cache']
+
+- id: build_frontend
+  name: 'gcr.io/cloud-builders/docker'
+  # Use root context for copying the env file
+  args: ['build',
+         '-t', '${_FRONTEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}',
+         '-f', 'nginx/Dockerfile',
+         '--build-arg', 'ENV_PATH=.env.example',
+         '--cache-from', '${_FRONTEND_IMAGE}:${_CACHE_TAG}',
+         '.']
+  waitFor: ['pull_frontend_cache']
+
+- id: push_backend
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}']
+  waitFor: ['build_backend']
+
+- id: push_frontend
+  name: 'gcr.io/cloud-builders/docker'
+  args: ['push', '${_FRONTEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA}']
+  waitFor: ['build_frontend']
+
+- id: tag_cache_images
+  name: 'gcr.io/cloud-builders/docker'
+  entrypoint: 'bash'
+  args:
+  - '-c'
+  - |
+    docker tag ${_BACKEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA} ${_BACKEND_IMAGE}:${_CACHE_TAG}
+    docker tag ${_FRONTEND_IMAGE}:${BRANCH_NAME}-${SHORT_SHA} ${_FRONTEND_IMAGE}:${_CACHE_TAG}
+
+images:
+  - ${_BACKEND_IMAGE}:${_CACHE_TAG}
+  - ${_FRONTEND_IMAGE}:${_CACHE_TAG}
+secrets:
+- kmsKeyName: projects/genial-bonbon-226211/locations/global/keyRings/froggy-service/cryptoKeys/docker-username
+  secretEnv:
+    USERNAME: CiQAf4Y2nYXAXBxTfJiz+792yH20GAjghJIOwGTeiHWA3sp6CbESMADzX2zLVyMpiNvEQMI1XWjri7XFgpD002IVRtXVSg5RDLfvebT6Zh/a9BPaBIwGnA==
+- kmsKeyName: projects/genial-bonbon-226211/locations/global/keyRings/froggy-service/cryptoKeys/docker-password
+  secretEnv:
+    PASSWORD: CiQALEUxbIQoEE3n8cRHZrSJJA/nmf+Yn4nzriksrWBF+kQ8CH8SNADP6bdW3Nn++BW15c1C4opL87NLympjdVnqVLqZFzzd9jGGNXQGTazu9np57Rx3CL5EvMw=
+substitutions:
+  _BACKEND_IMAGE: froggytaipei/froggy-service-api
+  _FRONTEND_IMAGE: froggytaipei/froggy-service-nginx
+  _CACHE_TAG: latest

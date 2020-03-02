@@ -1,18 +1,16 @@
 import logging
 import json
-import environ
+from django.conf import settings
 from slackclient import SlackClient
 
 logger = logging.getLogger('raven')
-
-env = environ.Env()
 
 
 def list_channels():
     """
     helper method for listing all slack channels
     """
-    token = env.str('SLACK_BOT_USER_TOKEN', default='')
+    token = settings.SLACK_BOT_USER_TOKEN
     if not token:
         return {}
     sc = SlackClient(token)
@@ -35,7 +33,7 @@ def new_case_notify(case, channels=[], topic='froggyservice'):
 點選連結前往編輯：
 {case.admin_absolute_url}
     """
-    token = env.str('SLACK_BOT_USER_TOKEN', default='')
+    token = settings.SLACK_BOT_USER_TOKEN
     if token:
         sc = SlackClient(token)
         channels = channels or list_channels()

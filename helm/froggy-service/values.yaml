@@ -1,0 +1,61 @@
+backend:
+  replicasCount:
+  image:
+    repository: froggytaipei/froggy-service-api:latest
+    tag: latest
+    pullPolicy: IfNotPresent
+  livenessPath: /healthz
+  readinessPath: /readiness
+  command:
+    - "./scripts/gunicorn.sh"
+  resources:
+    requests:
+      cpu:
+      memory:
+  service:
+    port: 8000
+    targetPort: 8000
+  podAutoscaler:
+    min:
+    max:
+    cpuPercentage:
+
+frontend:
+  image:
+    repository: froggytaipei/froggy-service-nginx:latest
+    tag: latest
+    pullPolicy: IfNotPresent
+  livenessPath: /
+  service:
+    port: 8080
+    targetPort: 8080
+
+ingress:
+  staticIPName:
+  rules:
+    - host:
+      backends:
+        - path: /*
+          name: froggy-service-frontend
+          port: 80
+        - path: /api/*
+          name: froggy-service-backend
+          port: 8000
+    - host:
+      backends:
+        - path: /*
+          name: froggy-service-backend
+          port: 8000
+
+environment:
+  localPath:
+
+serviceAccount:
+  secretName: froggy-service-sa
+  mountPath: /secret
+  default:
+    file:
+    localPath:
+  firebase:
+    file:
+    localPath:

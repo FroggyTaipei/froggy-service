@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 volumes:
     postgres_data: {}
@@ -6,16 +6,26 @@ volumes:
 services:
   backend:
     container_name: backend
+    image: froggy-service-api
     build:
       context: ./backend
     depends_on:
       - postgres
     volumes:
       - ./backend:/app
+      - ./helm/froggy-service/secret:/secret
     command: /app/scripts/start.sh
     entrypoint: /app/scripts/entrypoint.sh
     restart: on-failure
     env_file: .env
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/readiness"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+    ports:
+      - "8000:8000"
 
   frontend:
     container_name: frontend
@@ -27,6 +37,8 @@ services:
       - /app/node_modules
     working_dir: /app
     restart: on-failure
+    ports:
+      - "8080:8080"
 
   postgres:
     container_name: postgres
@@ -35,16 +47,15 @@ services:
       - postgres_data:/var/lib/postgresql/data
     env_file: .env
 
-  nginx:
+  proxy:
     container_name: proxy
     image: nginx:alpine
     ports:
-      - "8000:80"
+      - "80:80"
     depends_on:
       - backend
+      - frontend
     volumes:
       - ./backend/media/:/media/
       - ./backend/staticfiles/:/staticfiles/
       - ./nginx/dev.conf:/etc/nginx/nginx.conf:ro
-    logging:
-      driver: "json-file"
