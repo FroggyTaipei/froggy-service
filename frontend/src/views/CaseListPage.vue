@@ -67,13 +67,15 @@ $tag_selected_color: #dc5f84
   &:hover
     background-color: $tag_selected_color
 
-
 .break
   display: inline-block
   flex-basis: 100%
   width: 0px
   height: 0px
   overflow: hidden
+
+.row-table
+  min-height: 80vh
 
 table
   width: 100%
@@ -90,6 +92,7 @@ table
     color: transparent
   thead>tr>th
     font-size: $fz_sub_header_small
+    min-width: 100px
     @media screen and (max-width: $break_small)
       font-size: $fz_sub_header_small
   tbody>tr
@@ -120,9 +123,10 @@ table
     margin: 10px 0px 20px 0px
   .table-responsive
     width: 100%
+    max-height: 50vh
     overflow: scroll
     border-bottom: 2px solid white
-    margin-bottom: 100px
+    margin-bottom: 50px
     &::-webkit-scrollbar
       width: 0 !important
 
@@ -145,9 +149,15 @@ table
     height: 30px
     padding-left: 15px
 
+.VueTables__heading
+  @media screen and (max-width: 480px)
+    font-size: 14px
+
 .VuePagination
   position: absolute
   bottom: 0
+  .VuePagination__pagination
+    margin: 0
 
 .VuePagination, .VuePagination__pagination, .VuePagination__count
   display: flex !important
@@ -174,6 +184,9 @@ table
   >a
     color: $color_white
     border-bottom: solid white 1px
+
+.VuePagination__count
+  display: none !important
 
 .VuePagination__pagination-item.page-item
   @media screen and (max-width: 480px)
