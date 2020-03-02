@@ -417,7 +417,7 @@ export default {
 .category-content-froggy {
   height: 25vmax;
   bottom: 3vmax !important;
-  -webkit-mask-image: -webkit-gradient(linear, left 90%, left bottom, from(rgba(0,0,0,1)), to(rgba(0,0,0,0)));
+  mask-image: linear-gradient(rgba(0, 0, 0, 1.0), 90% ,transparent);
 }
 
 .category-content-froggy-bottom {

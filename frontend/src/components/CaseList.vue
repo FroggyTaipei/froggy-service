@@ -26,7 +26,7 @@
             size="mini"
             @click="selectType(t.id)"
             :class="{tagSelected: t.id === options.selectedType}"
-            :key="index"
+            :key="index + '-type'"
           >{{t.text}}</div>
           <div class="clearTag" size="mini" @click="selectType()">
             <i class="fas fa-times-circle"></i>
@@ -38,8 +38,9 @@
             size="mini"
             @click="selectState(s.id)"
             :class="{tagSelected: s.id === options.selectedState}"
-            :key="index"
+            :key="index + '-state'"
           >{{s.text}}</div>
+          <!-- +'-tag' -->
           <div class="clearTag" size="mini" @click="selectState()">
             <i class="fas fa-times-circle"></i>
           </div>
@@ -179,7 +180,7 @@ export default {
           defaultOption: "選擇{column}"
         },
         columnsDisplay: {
-          id: "min_tabletL",
+          id: "min_desktop",
           create_time: "min_tabletL"
         },
         sortable: ["id", "state", "type", "create_time"],
@@ -205,17 +206,15 @@ export default {
           {
             name: "alphabet",
             callback: function(row, query) {
-              console.log(query);
               return row.id == query;
             }
           }
         ],
-        perPage: 13,
+        perPage: 10,
         perPageValues: [10],
         selectedType: null,
         selectedState: null,
         requestAdapter(data) {
-          // console.clear()
           return {
             limit: this.perPage,
             sort: data.orderBy ? data.orderBy : "id",
