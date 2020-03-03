@@ -1,0 +1,34 @@
+- model: marquees.MarqueeMessage
+  pk: 1
+  fields:
+    message: ［系統］就職一週年啦！趕快點「呱吉做什麼」，看看我們有沒有做好、做滿！
+    order: 1
+    display: true
+
+- model: marquees.MarqueeMessage
+  pk: 2
+  fields:
+    message: ［活動］Merry Christmas！你要金卡片還是銀卡片，平安夜香堤廣場見！
+    order: 2
+    display: true
+
+- model: marquees.MarqueeMessage
+  pk: 3
+  fields:
+    message: ［中獎］恭喜您成功儲值 台灣價值，贈送您防滲透盔甲套裝（7日）！
+    order: 3
+    display: true
+
+- model: marquees.MarqueeMessage
+  pk: 4
+  fields:
+    message: ［拜票］2022台北市長候選人邱威傑，需要您的每一份支持！
+    order: 4
+    display: true
+
+- model: marquees.MarqueeMessage
+  pk: 5
+  fields:
+    message: ［告捷］歡樂無法黨攻得一席首都議員，榮譽總書記柚子表示欣慰！
+    order: 5
+    display: true

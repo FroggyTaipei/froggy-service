@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.contrib import admin
 from django.forms import ValidationError
 from django.contrib.admin import ModelAdmin
-from django.forms import TextInput, ModelForm, CharField
+from django.forms import TextInput, ModelForm
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 

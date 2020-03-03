@@ -9,7 +9,7 @@ python manage.py migrate
 python manage.py compilemessages
 python manage.py collectstatic --noinput --verbosity 0
 
-python manage.py loaddata region type site sendgrid-template.yaml
+python manage.py loaddata region type site sendgrid-template.yaml marquee.yaml
 python manage.py loaddata cases.test.yaml arranges.test.yaml
 
 python manage.py init_superuser test@test.test 123456
