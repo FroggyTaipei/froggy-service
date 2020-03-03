@@ -1,4 +1,7 @@
 from django.db.models import Q
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -21,7 +24,6 @@ from .models import (
     Type,
     Region,
     Case,
-    State,
 )
 from .schemas import vuetable_schema
 
@@ -32,12 +34,20 @@ class RegionViewSet(ReadOnlyModelViewSet):
     permission_classes = []
     http_method_names = ['get']
 
+    @method_decorator(cache_page(60 * 60 * 24 * 14))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class TypeViewSet(ReadOnlyModelViewSet):
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = []
     http_method_names = ['get']
+
+    @method_decorator(cache_page(60 * 60 * 24 * 14))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CaseViewSet(ModelViewSet):
