@@ -7,6 +7,7 @@ from apps.cases.views import (
     RegionViewSet,
     CaseViewSet,
 )
+from apps.marquees.views import MarqueeMessageViewSet
 
 
 # Settings
@@ -26,3 +27,6 @@ api.register(r'files/temp', TempFileViewSet)
 api.register(r'cases', CaseViewSet)
 api.register(r'types', TypeViewSet)
 api.register(r'regions', RegionViewSet)
+
+# Marquees API
+api.register(r'marquees', MarqueeMessageViewSet)

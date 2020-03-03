@@ -46,11 +46,12 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
-    'apps.users',
-    'apps.cases',
-    'apps.files',
-    'apps.arranges',
-    'apps.mails',
+    'apps.users.apps.UsersConfig',
+    'apps.cases.apps.CasesConfig',
+    'apps.files.apps.FilesConfig',
+    'apps.arranges.apps.ArrangesConfig',
+    'apps.mails.apps.MailsConfig',
+    'apps.marquees.apps.MarqueesConfig',
 ]
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
@@ -379,6 +380,7 @@ FIXTURE_DIRS = (
     str(ROOT_DIR('fixtures/arranges')),
     str(ROOT_DIR('fixtures/mails')),
     str(ROOT_DIR('fixtures/auth')),
+    str(ROOT_DIR('fixtures/marquees')),
 )
 
 # Google Service Account
