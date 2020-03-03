@@ -4,6 +4,10 @@ volumes:
     postgres_data: {}
 
 services:
+  redis:
+    container_name: ${REDIS_HOST}
+    image: redis:4.0
+
   backend:
     container_name: backend
     image: froggy-service-api

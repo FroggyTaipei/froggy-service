@@ -271,6 +271,26 @@ REST_FRAMEWORK = {
     ],
 }
 
+
+# Cache
+# ------------------------------------------------------------------------------
+
+REDIS_URL = 'redis://{host}:{port}'.format(
+    host=env.str('REDIS_HOST'),
+    port=env.int('REDIS_PORT', default=6379)
+)
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': REDIS_URL,
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
+    }
+}
+
+
 # RAVEN SENTRY CLIENT
 # ------------------------------------------------------------------------------
 # See https://docs.sentry.io/clients/python/integrations/django/
