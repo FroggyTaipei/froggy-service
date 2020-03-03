@@ -10,11 +10,16 @@ from django.db.models.functions import TruncMonth, TruncYear
 from django.conf import settings
 
 from apps.cases.models import Case, State, Region, Type
-from config.charts import (
-    get_highchart_pie,
-    get_highchart_line,
-    get_highchart_word_cloud,
-)
+
+
+__all__ = [
+    'get_case_state_pie_data',
+    'get_case_region_pie_data',
+    'get_case_type_pie_data',
+    'get_case_type_line_monthly_data',
+    'get_case_region_line_monthly_data',
+    'get_case_content_wordcloud_data'
+]
 
 
 def months(start_month, start_year, end_month, end_year):
@@ -27,7 +32,7 @@ def to_unix(dt):
     return int(time.mktime(dt.timetuple()) * 1000)
 
 
-def case_state_pie():
+def get_case_state_pie_data():
     data = []
     qs = Case.objects.all()
     if qs:
@@ -43,11 +48,10 @@ def case_state_pie():
         data[0]['sliced'] = True
         data[0]['selected'] = True
 
-    chart = get_highchart_pie(data=data)
-    return chart
+    return data
 
 
-def case_region_pie():
+def get_case_region_pie_data():
     data = []
     qs = Case.objects.all()
     if qs:
@@ -63,11 +67,10 @@ def case_region_pie():
         data[0]['sliced'] = True
         data[0]['selected'] = True
 
-    chart = get_highchart_pie(data=data)
-    return chart
+    return data
 
 
-def case_type_pie():
+def get_case_type_pie_data():
     data = []
     qs = Case.objects.all()
     if qs:
@@ -83,11 +86,10 @@ def case_type_pie():
         data[0]['sliced'] = True
         data[0]['selected'] = True
 
-    chart = get_highchart_pie(data=data)
-    return chart
+    return data
 
 
-def case_type_line_monthly():
+def get_case_type_line_monthly_data():
     qs = Case.objects.annotate(
         year=TruncYear('create_time'),
         month=TruncMonth('create_time'),
@@ -102,12 +104,10 @@ def case_type_line_monthly():
 
     data = [{'name': key, 'data': value} for key, value in result.items()]
 
-    chart = get_highchart_line(data=data, y_title='案件類型')
-
-    return chart
+    return data
 
 
-def case_region_line_monthly():
+def get_case_region_line_monthly_data():
     qs = Case.objects.annotate(
         year=TruncYear('create_time'),
         month=TruncMonth('create_time'),
@@ -122,12 +122,10 @@ def case_region_line_monthly():
 
     data = [{'name': key, 'data': value} for key, value in result.items()]
 
-    chart = get_highchart_line(data=data, y_title='選區')
-
-    return chart
+    return data
 
 
-def case_content_wordcloud():
+def get_case_content_wordcloud_data():
     content = ''
     for case in Case.objects.all():
         content += case.first_history.content
@@ -152,6 +150,4 @@ def case_content_wordcloud():
     data = [{'name': word, 'weight': weight*1} for word, weight in counter_2.most_common(20)] + \
            [{'name': word, 'weight': weight*1.5} for word, weight in counter_3.most_common(30)]
 
-    chart = get_highchart_word_cloud(data=data)
-
-    return chart
+    return data
