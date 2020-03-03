@@ -1,6 +1,7 @@
 import logging
 
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import HttpResponse, HttpResponseBadRequest
+from django.conf import settings
 
 logger = logging.getLogger("healthz")
 
@@ -35,23 +36,19 @@ class HealthCheckMiddleware(object):
                 cursor.execute("SELECT 1;")
                 row = cursor.fetchone()
                 if row is None:
-                    return HttpResponseServerError("db: invalid response")
+                    return HttpResponseBadRequest("db: invalid response")
         except Exception as e:
             logger.exception(e)
-            return HttpResponseServerError("db: cannot connect to database.")
+            return HttpResponseBadRequest("db: cannot connect to database.")
 
         # Call get_stats() to connect to each memcached instance and get it's stats.
         # This can effectively check if each is online.
         try:
-            from django.core.cache import caches
-            from django.core.cache.backends.memcached import BaseMemcachedCache
-            for cache in caches.all():
-                if isinstance(cache, BaseMemcachedCache):
-                    stats = cache._cache.get_stats()
-                    if len(stats) != len(cache._servers):
-                        return HttpResponseServerError("cache: cannot connect to cache.")
+            from django_redis import get_redis_connection
+            for key in settings.CACHES.keys():
+                get_redis_connection(key)
         except Exception as e:
             logger.exception(e)
-            return HttpResponseServerError("cache: cannot connect to cache.")
+            return HttpResponseBadRequest("cache: cannot connect to cache.")
 
         return HttpResponse("OK")
