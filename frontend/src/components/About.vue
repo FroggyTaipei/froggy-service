@@ -5,7 +5,7 @@
         class="about-main"
         type="flex"
         align="middle"
-        justify="center"
+        justify="start"
         style="max-width: 1024px;"
         v-show="showMainContent"
       >
@@ -14,22 +14,36 @@
         </el-col>
         <el-col class="about-content-wrapper" :span="22">
           <el-row type="flex" align="middle" justify="center">
-            <el-col class="noScrollbar" :span="15" :sm="24" :xs="24" style="height: 100%;">
+            <el-col
+              class="noScrollbar"
+              :span="15"
+              :sm="24"
+              :xs="24"
+              style="height: 100%;"
+            >
               <article>
                 <div class="about-content">
                   <span>口號喊了十幾年，政治仍然跟人心一樣複雜。</span>
                   <br />
                   <br />
-                  <span>密室的會談，檯面下的交換。我們用作秀來度量政治的專業，用喬事的廣度來判斷代議士服務的態度。要杜絕喬罰單與床位這類弊病，選民服務應該要和市政質詢一樣，可以被公開監督。</span>
+                  <span
+                    >密室的會談，檯面下的交換。我們用作秀來度量政治的專業，用喬事的廣度來判斷代議士服務的態度。要杜絕喬罰單與床位這類弊病，選民服務應該要和市政質詢一樣，可以被公開監督。</span
+                  >
                   <br />
                   <br />
-                  <span>「選服魔鏡號」是我的政見。只要你生活在台北市，你的意見、你覺得政府該做而沒做好、或是不知道該請誰幫忙的，都可以找我們協助。</span>
+                  <span
+                    >「選服魔鏡號」是我的政見。只要你生活在台北市，你的意見、你覺得政府該做而沒做好、或是不知道該請誰幫忙的，都可以找我們協助。</span
+                  >
                   <br />
                   <br />
-                  <span>但，只關乎個人利益的，我們不碰；不屬於民代職權的，我們不做！</span>
+                  <span
+                    >但，只關乎個人利益的，我們不碰；不屬於民代職權的，我們不做！</span
+                  >
                   <br />
                   <br />
-                  <span>我的團隊會在收到案件後進行隱私處理，並在第一時間向全體市民公布：一個市議員，到底做了什麼、又應該做些什麼？</span>
+                  <span
+                    >我的團隊會在收到案件後進行隱私處理，並在第一時間向全體市民公布：一個市議員，到底做了什麼、又應該做些什麼？</span
+                  >
                   <br />
                   <br />
                   <span>這是「民主開箱」第一步，未來四年，我們繼續前進！</span>
@@ -42,6 +56,97 @@
               <img class="froggyServantImg" :src="froggyAboutUrl" />
             </el-col>
           </el-row>
+        </el-col>
+        <el-col class="report" :span="22">
+          <div class="report-content-wrapper">
+            <div class="report-intro">
+              <h1 class="report-header">
+                大標題）選服魔鏡號重大回顧OOXX
+              </h1>
+              <span>
+                引文）前方白於同世。足無品統人玩我軍視轉比晚出、全爭而於媽子系動們自品當夫倒看合拿人給謝且入乎道。級道了消然……到男為組：題府水。相南同己加很紀府事險岸？推確腦基、點市沒負營調神話題了行一心縣麗是勢二狀全想就我顯生和不保。國據能式實毒大業分影整，說他知。
+              </span>
+            </div>
+            <el-divider></el-divider>
+            <h2 class="report-title">
+              小標）我們重視你的每個聲音－案件處理流程與
+            </h2>
+            <div class="report-flow">
+              <div>
+                可以提到處理流程（流程圖）、處理上的困難（像是主要的退件原因、是否有與市民交流的困難、在與主管機關溝通的瓶頸），跟是否有項目可以跟議員本人的施政成果相呼應？
+              </div>
+              <br>
+              <img class="report-flowchart" :src="require('@/assets/images/flowchart_fake.jpg')" alt="">
+            </div>
+            <el-divider></el-divider>
+            <div class="report-charts">
+              <h2 class="report-title">市民最在意的事...</h2>
+              <h3 class="chart-title">總案件數（數字+ 折線圖）</h3>
+              <div class="report-chart">
+                <div class="chart-graph chart-content">
+                  <img :src="require('@/assets/images/chart1.png')" alt="">
+                </div>
+                <div class="chart-text chart-content">
+                  指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光，門樂緊通意人下成我十圖天。是世代到保，品作為再說裡即解種？的就線錯位這？片先資我待都上生個把空居出車費一前推：水們小發健，經接盡司中道沒種特我存腦城爸信了我城。
+                </div>
+              </div>
+              <h3 class="chart-title">最關心案件類型（圓餅 / 泡泡圖？）</h3>
+              <div class="report-chart report-chart-reverse">
+                <div class="chart-graph chart-content">
+                  <img :src="require('@/assets/images/chart2.png')" alt="">
+                </div>
+                <div class="chart-text chart-content">
+                  指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光，門樂緊通意人下成我十圖天。是世代到保，品作為再說裡即解種？的就線錯位這？片先資我待都上生個把空居出車費一前推：水們小發健，經接盡司中道沒種特我存腦城爸信了我城。
+                </div>
+              </div>
+              <h3 class="chart-title">最重要關鍵字（文字雲）</h3>
+              <div class="report-chart">
+                <div class="chart-graph chart-content">
+                  <img :src="require('@/assets/images/chart3.jpg')" alt="">
+                </div>
+                <div class="chart-text chart-content">
+                  指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光，門樂緊通意人下成我十圖天。是世代到保，品作為再說裡即解種？的就線錯位這？片先資我待都上生個把空居出車費一前推：水們小發健，經接盡司中道沒種特我存腦城爸信了我城。
+                </div>
+              </div>
+              <div class="chart-paragraph">
+                （內文－簡單說明上面幾個數字）指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光。
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <h2 class="report-title">用戶地區與地區熱門案件</h2>
+            <div class="report-region">
+              <div class="region-chart">
+                <img class="region-map" :src="require('@/assets/images/map.png')" alt="">
+              </div>
+              <div class="region-data">
+                  <div class="region-info">
+                    <h2>OO 區</h2>
+                    <div>案件數量：56 件</div>
+                    <div>最關心議題：八卦</div>
+                  </div>
+                  <div class="region-cases">
+                    <h3>最新案件</h3>
+                    <div class="region-case">1. 在非洲工作的台商希望回家</div>
+                    <div class="region-case">2. 希望加強夜店及餐廳防疫措施</div>
+                    <div class="region-case">3. 信安街全段號誌化路口劃設機慢車停等區</div>
+                  </div>
+              </div>
+            </div>
+            <el-divider></el-divider>
+            <h2 class="report-title">最近大家在靠北什麼？隨機顯示案件</h2>
+            <div class="report-recent-cases">
+              <img class="" :src="require('@/assets/images/kaobei.png')" alt="">
+            </div>
+            <el-divider></el-divider>
+            <h2 class="report-title">（小標－未來的方向）團隊接下來要幹嘛，你可以做什麼？</h2>
+            <div class="report-future">
+              <ul>
+                <li> 發 PR </li>
+                <li> 捐錢給開發團隊 </li>
+                <li> 看 Youtube 頻道 </li>
+              </ul>
+            </div>
+          </div>
         </el-col>
       </el-row>
     </transition>
@@ -114,6 +219,7 @@ export default {
   flex: $flex_mainContentPart
   flex-direction: column
   flex-shrink: 0
+  overflow: scroll
   @media screen and (max-width: $break_small)
     flex: 8
 .row-dialog
@@ -129,8 +235,8 @@ export default {
   font-weight: bold
   .about-title
     padding: 30px 0 0 0
-.about-content-wrapper
-  display: flex
+// .about-content-wrapper
+//   display: flex
 
 article
   .about-content
@@ -147,6 +253,75 @@ article
 
 .text-center
   text-align: center
+
+.report
+  margin-bottom: 100px
+  color: white
+  .report-flowchart
+    width: 100%
+  .report-charts
+    // & > *
+    //   border: 1px solid black
+    .chart-title
+      padding-left: 20px
+    .report-chart
+      display: flex
+      flex-direction: row
+      .chart-graph
+        width: 70%
+      .chart-text
+        width: 30%
+      .chart-content
+        padding: 20px
+      img
+        width: 100%
+    .report-chart-reverse
+      flex-direction: row-reverse
+    @media screen and (max-width: $break_small)
+      .report-chart
+        flex-direction: column
+        .chart-content
+          width: 100%
+          padding: 0px
+    .chart-paragraph
+      margin-top: 20px
+  .report-region
+    // &> *
+    //   border: solid 1px black
+    width: 100%
+    display: flex
+    flex-direction: row
+    align-items: flex-start
+    justify-content: center
+    .region-chart
+      width: 50%
+      display: flex
+      align-items: center
+      justify-content: center
+      img
+        width: 100%
+    .region-data
+      width: 50%
+      min-height: 500px
+      padding-left: 20px
+      display: flex
+      flex-direction: column
+      justify-content: space-evenly
+    @media screen and (max-width: $break_small)
+      flex-direction: column
+      align-items: center
+      justify-content: center
+      .region-chart
+        width: 80%
+        max-width: 300px
+      .region-data
+        width: 80%
+        max-width: 300px
+        padding-left: 0px
+        min-height: 300px
+  .report-recent-cases
+    img
+      width: 100%
 
 .footer-row
   margin: auto auto 0 auto
