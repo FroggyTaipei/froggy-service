@@ -75,16 +75,21 @@
               <div>
                 可以提到處理流程（流程圖）、處理上的困難（像是主要的退件原因、是否有與市民交流的困難、在與主管機關溝通的瓶頸），跟是否有項目可以跟議員本人的施政成果相呼應？
               </div>
-              <br>
-              <img class="report-flowchart" :src="require('@/assets/images/flowchart_fake.jpg')" alt="">
+              <br />
+              <!-- <img class="report-flowchart" :src="require('@/assets/images/flowchart_fake.jpg')" alt=""> -->
+              <img
+                class="report-flowchart"
+                :src="require('@/assets/images/workflow.png')"
+                alt=""
+              />
             </div>
             <el-divider></el-divider>
             <div class="report-charts">
               <h2 class="report-title">市民最在意的事...</h2>
               <h3 class="chart-title">總案件數（數字+ 折線圖）</h3>
               <div class="report-chart">
-                <div class="chart-graph chart-content">
-                  <img :src="require('@/assets/images/chart1.png')" alt="">
+                <div id="chart-casesum" class="chart-graph chart-content">
+                  <!-- <img :src="require('@/assets/images/chart1.png')" alt="" /> -->
                 </div>
                 <div class="chart-text chart-content">
                   指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光，門樂緊通意人下成我十圖天。是世代到保，品作為再說裡即解種？的就線錯位這？片先資我待都上生個把空居出車費一前推：水們小發健，經接盡司中道沒種特我存腦城爸信了我城。
@@ -92,8 +97,8 @@
               </div>
               <h3 class="chart-title">最關心案件類型（圓餅 / 泡泡圖？）</h3>
               <div class="report-chart report-chart-reverse">
-                <div class="chart-graph chart-content">
-                  <img :src="require('@/assets/images/chart2.png')" alt="">
+                <div id="chart-casetype" class="chart-graph chart-content">
+                  <!-- <img :src="require('@/assets/images/chart2.png')" alt="" /> -->
                 </div>
                 <div class="chart-text chart-content">
                   指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光，門樂緊通意人下成我十圖天。是世代到保，品作為再說裡即解種？的就線錯位這？片先資我待都上生個把空居出車費一前推：水們小發健，經接盡司中道沒種特我存腦城爸信了我城。
@@ -101,8 +106,8 @@
               </div>
               <h3 class="chart-title">最重要關鍵字（文字雲）</h3>
               <div class="report-chart">
-                <div class="chart-graph chart-content">
-                  <img :src="require('@/assets/images/chart3.jpg')" alt="">
+                <div id="chart-wordcloud" class="chart-graph chart-content">
+                  <!-- <img :src="require('@/assets/images/chart3.jpg')" alt="" /> -->
                 </div>
                 <div class="chart-text chart-content">
                   指些修。些發統變存響是化美他直研動國種人空！動陸了就媽事，地家業也當價到正他片得可下，過放食我頭情，意多到社源成光，門樂緊通意人下成我十圖天。是世代到保，品作為再說裡即解種？的就線錯位這？片先資我待都上生個把空居出車費一前推：水們小發健，經接盡司中道沒種特我存腦城爸信了我城。
@@ -116,28 +121,38 @@
             <h2 class="report-title">用戶地區與地區熱門案件</h2>
             <div class="report-region">
               <div class="region-chart">
-                <img class="region-map" :src="require('@/assets/images/map.png')" alt="">
+                <img
+                  class="region-map"
+                  :src="require('@/assets/images/map.png')"
+                  alt=""
+                />
               </div>
               <div class="region-data">
-                  <div class="region-info">
-                    <h2>OO 區</h2>
-                    <div>案件數量：56 件</div>
-                    <div>最關心議題：八卦</div>
+                <div class="region-info">
+                  <h2>OO 區</h2>
+                  <div>案件數量：56 件</div>
+                  <div>最關心議題：八卦</div>
+                </div>
+                <div class="region-cases">
+                  <h3>最新案件</h3>
+                  <div class="region-case">1. 在非洲工作的台商希望回家</div>
+                  <div class="region-case">2. 希望加強夜店及餐廳防疫措施</div>
+                  <div class="region-case">
+                    3. 信安街全段號誌化路口劃設機慢車停等區
                   </div>
-                  <div class="region-cases">
-                    <h3>最新案件</h3>
-                    <div class="region-case">1. 在非洲工作的台商希望回家</div>
-                    <div class="region-case">2. 希望加強夜店及餐廳防疫措施</div>
-                    <div class="region-case">3. 信安街全段號誌化路口劃設機慢車停等區</div>
-                  </div>
+                </div>
               </div>
             </div>
             <el-divider></el-divider>
             <h2 class="report-title">最近大家在靠北什麼？隨機顯示案件</h2>
             <div class="report-recent-cases">
-              <img class="" :src="require('@/assets/images/kaobei.png')" alt="">
+              <img
+                class=""
+                :src="require('@/assets/images/kaobei.png')"
+                alt=""
+              />
             </div>
-            <el-divider></el-divider>
+            <!-- <el-divider></el-divider>
             <h2 class="report-title">（小標－未來的方向）團隊接下來要幹嘛，你可以做什麼？</h2>
             <div class="report-future">
               <ul>
@@ -145,7 +160,7 @@
                 <li> 捐錢給開發團隊 </li>
                 <li> 看 Youtube 頻道 </li>
               </ul>
-            </div>
+            </div> -->
           </div>
         </el-col>
       </el-row>
@@ -156,6 +171,10 @@
 
 <script>
 import BottomGameDialog from "./BottomGameDialog.vue";
+var Highcharts = require("highcharts");
+require("highcharts/highcharts-more")(Highcharts);
+require("highcharts/modules/wordcloud.js")(Highcharts);
+
 export default {
   name: "About",
   components: { BottomGameDialog },
@@ -176,6 +195,9 @@ export default {
   },
   mounted() {
     this.showMainContent = true;
+    this.showChartTotalCases();
+    this.showChartCaseType();
+    this.showChartWordCloud();
   },
   methods: {
     toggleLeaveAnimation: function(destination) {
@@ -184,6 +206,166 @@ export default {
     redirect: function() {
       let direction = this.$store.state.redirectTo;
       this.$router.push(direction);
+    },
+    showChartTotalCases: () => {
+      let d = axios
+        .get("/api/cases/insights/case_type_line_monthly")
+        .then(res => {
+          Highcharts.chart("chart-casesum", {
+            title: {
+              text: "總案件數"
+            },
+            yAxis: {
+              title: {
+                text: "數量"
+              }
+            },
+            xAxis: {
+              accessibility: {
+                // rangeDescription: ""
+              }
+            },
+            legend: {
+              enabled: false,
+              layout: "vertical",
+              align: "right",
+              verticalAlign: "middle"
+            },
+            plotOptions: {
+              series: {
+                label: {
+                  connectorAllowed: true
+                },
+                pointStart: 2010
+              }
+            },
+            series: [
+              {
+                name: "案件總數",
+                data: [5, 10, 15, 20, 25, 30, 35, 40]
+              }
+            ]
+          });
+        });
+    },
+    showChartCaseType: () => {
+      Highcharts.chart("chart-casetype", {
+        chart: {
+          type: "packedbubble"
+          // height: "100%"
+        },
+        plotOptions: {
+          packedbubble: {
+            minSize: "50%",
+            maxSize: "150%",
+            zMin: 0,
+            zMax: 888,
+            layoutAlgorithm: {
+              splitSeries: false,
+              gravitationalConstant: 0.02
+            },
+            dataLabels: {
+              enabled: true,
+              format: "{point.name}",
+              filter: {
+                property: "y",
+                operator: ">",
+                value: 10
+              }
+            }
+          }
+        },
+        title: {
+          text: "最關心案件類型"
+        },
+        legend: {
+          enabled: false,
+          layout: "vertical",
+          align: "right",
+          verticalAlign: "middle"
+        },
+        series: [
+          {
+            name: "XX",
+            data: [
+              {
+                name: "0.0",
+                value: 888
+              }
+            ]
+          },
+          {
+            name: "XX1",
+            data: [
+              {
+                name: "555",
+                value: 25
+              }
+            ]
+          },
+          {
+            name: "XX2",
+            data: [
+              {
+                name: "-.-",
+                value: 444
+              }
+            ]
+          },
+          {
+            name: "XX3",
+            data: [
+              {
+                name: "-.-",
+                value: 66
+              }
+            ]
+          },
+          {
+            name: "XX4",
+            data: [
+              {
+                name: "-.-",
+                value: 24
+              }
+            ]
+          },
+          {
+            name: "XX5",
+            data: [
+              {
+                name: "-.-",
+                value: 11
+              }
+            ]
+          }
+        ]
+      });
+    },
+    showChartWordCloud: () => {
+      axios.get("/api/cases/insights/case_content_wordcloud").then(res => {
+        Highcharts.chart("chart-wordcloud", {
+          accessibility: {
+            screenReaderSection: {
+              beforeChartFormat:
+                "<h5>{chartTitle}</h5>" +
+                "<div>{chartSubtitle}</div>" +
+                "<div>{chartLongdesc}</div>" +
+                "<div>{viewTableButton}</div>"
+            }
+          },
+          series: [
+            {
+              type: "wordcloud",
+              data: res.data,
+              name: "數量"
+            }
+          ],
+          title: {
+            text: "最重要關鍵字"
+          }
+        });
+      });
     }
   }
 };
