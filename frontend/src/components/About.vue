@@ -119,7 +119,8 @@
             </div>
             <el-divider></el-divider>
             <h2 class="report-title">用戶地區與地區熱門案件</h2>
-            <div class="report-region">
+            <SvgMap></SvgMap>
+            <!-- <div class="report-region">
               <div class="region-chart">
                 <img
                   class="region-map"
@@ -142,7 +143,7 @@
                   </div>
                 </div>
               </div>
-            </div>
+            </div> -->
             <el-divider></el-divider>
             <h2 class="report-title">最近大家在靠北什麼？隨機顯示案件</h2>
             <div class="report-recent-cases">
@@ -171,13 +172,14 @@
 
 <script>
 import BottomGameDialog from "./BottomGameDialog.vue";
+import SvgMap from "./SvgMap.vue";
 var Highcharts = require("highcharts");
 require("highcharts/highcharts-more")(Highcharts);
 require("highcharts/modules/wordcloud.js")(Highcharts);
 
 export default {
   name: "About",
-  components: { BottomGameDialog },
+  components: { BottomGameDialog, SvgMap },
   data: function() {
     return {
       showMainContent: false,
