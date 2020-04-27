@@ -108,17 +108,19 @@
     </div>
     <div class="region-data">
       <div class="region-info">
-        <h2>{{ distData.zh }}</h2>
-        <div>案件數量：{{ distData.data.caseCount }} 件</div>
-        <div>最關心議題：{{ distData.data.topType }}</div>
+        <div class="region-title">{{ distData.zh }}</div>
+        <div class="region-content">
+          案件數量：{{ distData.data.caseCount }} 件
+        </div>
+        <div class="region-content">
+          最關心議題：{{ distData.data.topType }}
+        </div>
       </div>
       <div class="region-cases">
-        <h3>最新案件</h3>
+        <div class="region-subtitle">最新案件</div>
         <div class="region-case">1. 在非洲工作的台商希望回家</div>
         <div class="region-case">2. 希望加強夜店及餐廳防疫措施</div>
-        <div class="region-case">
-          3. 信安街全段號誌化路口劃設機慢車停等區
-        </div>
+        <div class="region-case">3. 信安街全段號誌化路口劃設機慢車停等區</div>
       </div>
     </div>
     <svg
@@ -153,6 +155,24 @@
       width: 100%;
     }
   }
+  .region-info {
+    .region-title {
+      font-size: 48px;
+      font-weight: bold;
+    }
+    .region-content {
+      font-size: 24px;
+    }
+  }
+  .region-cases {
+    .region-subtitle {
+      font-size: 32px;
+      font-weight: bold;
+    }
+    .region-case {
+      font-size: 24px;
+    }
+  }
   .region-data {
     width: 50%;
     min-height: 500px;
@@ -163,16 +183,18 @@
   }
   svg path {
     // fill: transparent;
-    fill: white;
+
+    fill: rgba(0,0,0,0.3);
     // fill: url(#my-cool-gradient) #d2889a;
-    stroke: transparent;
-    // stroke-width: 0px;
+    // stroke: transparent;
+    stroke: #fff;
+    stroke-width: 1px;
     -webkit-transition: 2s ease;
     -moz-transition: 2s ease;
     -o-transition: 2s ease;
     transition: 2s ease;
     &:hover {
-      // fill: yellow;
+      // fill: white;
       fill: url(#my-cool-gradient) #d2889a;
       transform: translateY(-5px);
       -webkit-transition: 2s ease;

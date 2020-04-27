@@ -27,6 +27,7 @@
     "vue": "^2.5.17",
     "vue-analytics": "^5.16.0",
     "vue-axios": "^2.1.4",
+    "vue-carousel": "^0.18.0",
     "vue-lazyload": "^1.2.6",
     "vue-raven": "^1.0.0",
     "vue-router": "^3.0.1",

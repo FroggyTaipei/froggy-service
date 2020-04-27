@@ -120,39 +120,16 @@
             <el-divider></el-divider>
             <h2 class="report-title">用戶地區與地區熱門案件</h2>
             <SvgMap></SvgMap>
-            <!-- <div class="report-region">
-              <div class="region-chart">
-                <img
-                  class="region-map"
-                  :src="require('@/assets/images/map.png')"
-                  alt=""
-                />
-              </div>
-              <div class="region-data">
-                <div class="region-info">
-                  <h2>OO 區</h2>
-                  <div>案件數量：56 件</div>
-                  <div>最關心議題：八卦</div>
-                </div>
-                <div class="region-cases">
-                  <h3>最新案件</h3>
-                  <div class="region-case">1. 在非洲工作的台商希望回家</div>
-                  <div class="region-case">2. 希望加強夜店及餐廳防疫措施</div>
-                  <div class="region-case">
-                    3. 信安街全段號誌化路口劃設機慢車停等區
-                  </div>
-                </div>
-              </div>
-            </div> -->
             <el-divider></el-divider>
             <h2 class="report-title">最近大家在靠北什麼？隨機顯示案件</h2>
-            <div class="report-recent-cases">
+            <CarouselCards></CarouselCards>
+            <!-- <div class="report-recent-cases">
               <img
                 class=""
                 :src="require('@/assets/images/kaobei.png')"
                 alt=""
               />
-            </div>
+            </div> -->
             <!-- <el-divider></el-divider>
             <h2 class="report-title">（小標－未來的方向）團隊接下來要幹嘛，你可以做什麼？</h2>
             <div class="report-future">
@@ -173,13 +150,14 @@
 <script>
 import BottomGameDialog from "./BottomGameDialog.vue";
 import SvgMap from "./SvgMap.vue";
+import CarouselCards from "./CarouselCards.vue";
 var Highcharts = require("highcharts");
 require("highcharts/highcharts-more")(Highcharts);
 require("highcharts/modules/wordcloud.js")(Highcharts);
 
 export default {
   name: "About",
-  components: { BottomGameDialog, SvgMap },
+  components: { BottomGameDialog, SvgMap, CarouselCards },
   data: function() {
     return {
       showMainContent: false,
@@ -238,13 +216,24 @@ export default {
                 label: {
                   connectorAllowed: true
                 },
-                pointStart: 2010
+                pointInterval: 24 * 3600 * 1000 * 30,
+                pointStart: Date.UTC(2019, 3, 1),
+              }
+            },
+            xAxis: {
+              min: Date.UTC(2019, 3, 1),
+              max: Date.UTC(2020, 3, 31),
+              allowDecimals: false,
+              type: "datetime",
+              tickInterval: 24 * 3600 * 1000 * 30, //one day
+              labels: {
+                rotation: 1
               }
             },
             series: [
               {
                 name: "案件總數",
-                data: [5, 10, 15, 20, 25, 30, 35, 40]
+                data: [60, 150, 250, 360, 480, 520, 590, 680, 750, 800, 910, 1100]
               }
             ]
           });
@@ -258,8 +247,8 @@ export default {
         },
         plotOptions: {
           packedbubble: {
-            minSize: "50%",
-            maxSize: "150%",
+            minSize: "100%",
+            maxSize: "200%",
             zMin: 0,
             zMax: 888,
             layoutAlgorithm: {
@@ -286,57 +275,78 @@ export default {
           align: "right",
           verticalAlign: "middle"
         },
+        tooltip: {
+          pointFormat: "<small>數量：{point.y}</small>"
+        },
         series: [
           {
-            name: "XX",
+            name: "交通運輸",
             data: [
               {
-                name: "0.0",
+                name: "交通運輸",
                 value: 888
               }
             ]
           },
           {
-            name: "XX1",
+            name: "公共設施",
             data: [
               {
-                name: "555",
+                name: "公共設施",
                 value: 25
               }
             ]
           },
           {
-            name: "XX2",
+            name: "衛福勞動",
             data: [
               {
-                name: "-.-",
+                name: "衛福勞動",
                 value: 444
               }
             ]
           },
           {
-            name: "XX3",
+            name: "文教科技",
             data: [
               {
-                name: "-.-",
+                name: "文教科技",
                 value: 66
               }
             ]
           },
           {
-            name: "XX4",
+            name: "環境建管",
             data: [
               {
-                name: "-.-",
+                name: "環境建管",
                 value: 24
               }
             ]
           },
           {
-            name: "XX5",
+            name: "警消政風",
             data: [
               {
-                name: "-.-",
+                name: "警消政風",
+                value: 11
+              }
+            ]
+          },
+          {
+            name: "市政議題",
+            data: [
+              {
+                name: "市政議題",
+                value: 11
+              }
+            ]
+          },
+          {
+            name: "其他服務",
+            data: [
+              {
+                name: "其他服務",
                 value: 11
               }
             ]
@@ -419,8 +429,11 @@ export default {
   font-weight: bold
   .about-title
     padding: 30px 0 0 0
-// .about-content-wrapper
-//   display: flex
+.about-content-wrapper
+  min-height: calc(80vh - 100px)
+  display: flex
+  align-items: center
+  justify-content: center
 
 article
   .about-content
