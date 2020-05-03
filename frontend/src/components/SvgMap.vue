@@ -15,7 +15,7 @@
         xmlns:xlink="http://www.w3.org/1999/xlink"
       >
         <!-- Generator: Sketch 53.2 (72643) - https://sketchapp.com -->
-        <title>TaipeiMap</title>
+        <title></title>
         <desc>Created with Sketch.</desc>
         <g
           id="Page-1"
@@ -118,9 +118,14 @@
       </div>
       <div class="region-cases">
         <div class="region-subtitle">最新案件</div>
-        <div class="region-case">1. 在非洲工作的台商希望回家</div>
-        <div class="region-case">2. 希望加強夜店及餐廳防疫措施</div>
-        <div class="region-case">3. 信安街全段號誌化路口劃設機慢車停等區</div>
+        <ul>
+          <li class="region-case">在非洲工作的台商希望回家</li>
+          <li class="region-case">希望加強夜店及餐廳防疫措施</li>
+          <li class="region-case">信安街全段號誌化路口劃設機慢車停等區</li>
+        </ul>
+        <!-- <div class="region-case">1. </div>
+        <div class="region-case">2. </div>
+        <div class="region-case">3. </div> -->
       </div>
     </div>
     <svg
@@ -128,11 +133,32 @@
       aria-hidden="true"
       focusable="false"
     >
-      <linearGradient id="my-cool-gradient" x2="1" y2="1">
+      <!-- <linearGradient id="my-cool-gradient" x2="1" y2="1">
         <stop offset="0%" stop-color="#833ab4" />
         <stop offset="50%" stop-color="#c0407f" />
         <stop offset="100%" stop-color="#ff4747" />
+      </linearGradient> -->
+      <linearGradient id="my-cool-gradient" x2="1" y2="1">
+        <stop offset="0%" stop-color="#60B3DF" />
+        <stop offset="50%" stop-color="#A16BC6" />
+        <stop offset="100%" stop-color="#DB6069" />
       </linearGradient>
+      <filter id="dropshadow" height="130%">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="3" />
+        <!-- stdDeviation is how much to blur -->
+        <feOffset dx="2" dy="2" result="offsetblur" />
+        <!-- how much to offset -->
+        <feComponentTransfer>
+          <feFuncA type="linear" slope="0.5" />
+          <!-- slope is the opacity of the shadow -->
+        </feComponentTransfer>
+        <feMerge>
+          <feMergeNode />
+          <!-- this contains the offset blurred image -->
+          <feMergeNode in="SourceGraphic" />
+          <!-- this contains the element that the filter is applied to -->
+        </feMerge>
+      </filter>
     </svg>
   </div>
 </template>
@@ -165,6 +191,11 @@
     }
   }
   .region-cases {
+    ul {
+      list-style-type: decimal;
+      margin: 0;
+      padding-left: 30px;
+    }
     .region-subtitle {
       font-size: 32px;
       font-weight: bold;
@@ -183,8 +214,7 @@
   }
   svg path {
     // fill: transparent;
-
-    fill: rgba(0,0,0,0.3);
+    fill: rgba(0, 0, 0, 0.3);
     // fill: url(#my-cool-gradient) #d2889a;
     // stroke: transparent;
     stroke: #fff;
@@ -201,6 +231,7 @@
       -moz-transition: 2s ease;
       -o-transition: 2s ease;
       transition: 2s ease;
+      filter:url(#dropshadow);
     }
   }
 
@@ -208,15 +239,45 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    svg {
+      height: 300px;
+      margin-bottom: 20px;
+    }
     .region-chart {
       width: 80%;
       max-width: 300px;
     }
+    .region-info {
+      min-width: 30%;
+      .region-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+      .region-content {
+        font-size: 1rem;
+      }
+    }
+    .region-cases {
+      min-width: 50%;
+      margin-left: 10px;
+      margin-top: 6px;
+      ul {
+        padding-left: 20px;
+      }
+      .region-subtitle {
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+      .region-case {
+        font-size: 1rem;
+      }
+    }
     .region-data {
-      width: 80%;
-      max-width: 300px;
+      flex-direction: row;
+      width: 100%;
+      // max-width: 300px;
       padding-left: 0px;
-      min-height: 300px;
+      min-height: initial;
     }
   }
 }
