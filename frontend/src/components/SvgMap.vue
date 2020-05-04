@@ -9,7 +9,7 @@
       <svg
         width="413px"
         height="550px"
-        viewBox="0 0 413 550"
+        viewBox="0 -10 450 570"
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
         xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -212,11 +212,11 @@
     flex-direction: column;
     justify-content: space-evenly;
   }
+  svg{
+    margin-top: 20px;
+  }
   svg path {
-    // fill: transparent;
     fill: rgba(0, 0, 0, 0.3);
-    // fill: url(#my-cool-gradient) #d2889a;
-    // stroke: transparent;
     stroke: #fff;
     stroke-width: 1px;
     -webkit-transition: 2s ease;

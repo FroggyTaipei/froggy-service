@@ -73,12 +73,8 @@
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
-    // box-shadow: -3px -3px 3px 0 rgba(#26e6f7, 0.6),
-    //   3px 3px 3px 0 rgba(#f759e4, 0.6), 0 0 6px 2px rgba(#ffe759, 0.6),
-    //   0 35px 25px -15px rgba(0, 0, 0, 0.5);
     box-shadow: 0px 0px 2px 0 rgba(#000,0.3), 5px 5px  5px 0 rgba(#000,0.3);
     border-radius: 5%;
-    // border: #fff 0.1rem solid;
     margin: 10px 10px;
     color: black;
     overflow: hidden;
@@ -86,6 +82,7 @@
     &:after {
       content: "";
       position: absolute;
+      border-radius: 5%;
       left: 0;
       right: 0;
       bottom: 0;
@@ -118,6 +115,7 @@
     }
     &.active:before {
       opacity: 1;
+      border-radius: 5%;
       animation: holoGradient 1.5s ease-out forwards;
       transition: none;
       // background-image: linear-gradient(
@@ -159,6 +157,9 @@
         font-size: 0.8em;
       }
       .card-progress-icon {
+        position: absolute;
+        right: 10%;
+        bottom: 20px;
         border: 2px solid #606266;
         width: fit-content;
         border-radius: 15px 5px 15px 5px;

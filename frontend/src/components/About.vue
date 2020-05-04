@@ -11,7 +11,7 @@
         ref="main"
       >
         <el-col class="about-title-wrapper" :span="22">
-          <div class="about-title">公開透明。</div>
+          <div class="about-title"></div>
         </el-col>
         <el-col class="about-content-wrapper" :span="22">
           <el-row type="flex" align="middle" justify="center">
@@ -24,6 +24,7 @@
             >
               <article>
                 <div class="about-content">
+                  <div class="about-title">公開透明。</div>
                   <span>口號喊了十幾年，政治仍然跟人心一樣複雜。</span>
                   <br />
                   <br />
@@ -77,6 +78,12 @@
                 每當我們接到你透過魔鏡號（或者是直接打電話給我們）告訴我們的服務需求，我們就會立刻發送一封E-mail到你的信箱，確認我們已經收到並開始著手處理；接下來，我們會先將涉及隱私的資訊進行處理，確保每位朋友的身分不會被輕易辨識出來，同時我們會將案件進行初步分類，通常有以下幾種情形：
               </div>
               <br />
+              <img
+                class="report-flowchart"
+                :src="require('@/assets/images/workflow.png')"
+                alt=""
+              />
+              <br />
               <ul>
                 <li>
                   可處理：沒錯，這些都是跟我們有關的案件！作為台北市議員，我們可以把你所遇到的問題或政策建議，透過舉辦會勘要求市府各局處一同檢討，或納入我們的質詢選題，要求市府做出正式、可追蹤的改善回覆。
@@ -88,13 +95,6 @@
                   無法處理：等等，你是不是搞錯了什麼？如果遇到這個分類，通常你是提出了一些與公益無關的要求，或者是與台北市議員職務無關的訊息。我們有遇過幫忙做寒假作業、腦內思想被讀取（？）、喬當兵時間等等的，實在是不好意思，我們會給你一個大大的「不受理」！
                 </li>
               </ul>
-              <br />
-              <!-- <img class="report-flowchart" :src="require('@/assets/images/flowchart_fake.jpg')" alt=""> -->
-              <img
-                class="report-flowchart"
-                :src="require('@/assets/images/workflow.png')"
-                alt=""
-              />
             </div>
             <el-divider></el-divider>
             <div class="report-charts">
@@ -188,22 +188,22 @@ export default {
     };
   },
   mounted() {
-    let _this = this;
-    this.$refs.main.$el.onscroll = function(e) {
-      let chartOffset = document.getElementsByClassName('report-charts')[0].offsetTop - 300;
-      if (this.scrollTop > chartOffset  && !_this.chartRendered[0]) {
-        _this.chartRendered[0] = true
-        _this.showChartTotalCases();
-      }
-      if (this.scrollTop > chartOffset+300  && !_this.chartRendered[1]) {
-        _this.chartRendered[1] = true
-        _this.showChartCaseType();
-      }
-      if (this.scrollTop > chartOffset+400  && !_this.chartRendered[2]) {
-        _this.chartRendered[2] = true
-        _this.showChartWordCloud();
-      }
-    };
+    // let _this = this;
+    // this.$refs.main.$el.onscroll = function(e) {
+    //   let chartOffset = document.getElementsByClassName('report-charts')[0].offsetTop - 300;
+    //   if (this.scrollTop > chartOffset  && !_this.chartRendered[0]) {
+    //     _this.chartRendered[0] = true
+    //     _this.showChartTotalCases();
+    //   }
+    //   if (this.scrollTop > chartOffset+300  && !_this.chartRendered[1]) {
+    //     _this.chartRendered[1] = true
+    //     _this.showChartCaseType();
+    //   }
+    //   if (this.scrollTop > chartOffset+400  && !_this.chartRendered[2]) {
+    //     _this.chartRendered[2] = true
+    //     _this.showChartWordCloud();
+    //   }
+    // };
     this.showMainContent = true;
     Highcharts.theme = {
       colors: [
@@ -230,6 +230,9 @@ export default {
         // "#FFF263",
         // "#6AF9C4"
       ],
+      credits: {
+        enabled: false
+      },
       chart: {
         animation: {
           duration: 1500,
@@ -242,13 +245,6 @@ export default {
             [0, "rgba(255,255,255,0.3)"],
             [1, "rgba(255,255,255,0.7)"],
             [2, "rgba(255,255,255,1)"]
-            // [0, "rgba(10,128,256,0.5)"],
-            // [1, "rgba(255, 255, 255,0.5)"]
-            // [0, "rgba(239, 202, 205,0.2)"],
-            // [1, "rgba(222, 143, 149,0.4)"],
-            // [2, "rgba(196, 128, 162,0.6)"],
-            // [3, "rgba(182, 159, 198,0.8)"],
-            // [4, "rgba(162,206,229,1)"],
           ]
         }
       },
@@ -278,9 +274,9 @@ export default {
     // Apply the theme
     Highcharts.setOptions(Highcharts.theme);
 
-    // this.showChartTotalCases();
-    // this.showChartCaseType();
-    // this.showChartWordCloud();
+    this.showChartTotalCases();
+    this.showChartCaseType();
+    this.showChartWordCloud();
   },
   methods: {
     toggleLeaveAnimation: function(destination) {
@@ -545,6 +541,8 @@ export default {
   flex-direction: column
   flex-shrink: 0
   overflow: scroll
+  overflow-x: hidden
+  line-height: 1.6
   @media screen and (max-width: $break_small)
     flex: 8
 .row-dialog
@@ -560,6 +558,13 @@ export default {
   font-weight: bold
   .about-title
     padding: 30px 0 0 0
+.about-title
+  // padding: 30px 0 0 0
+  line-height: initial
+  color: white
+  font-size: 2.5em
+  min-height: 60px
+  font-weight: bold
 .about-content-wrapper
   min-height: calc(80vh - 100px)
   display: flex
