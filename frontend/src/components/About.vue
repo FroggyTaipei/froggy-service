@@ -10,9 +10,9 @@
         v-show="showMainContent"
         ref="main"
       >
-        <el-col class="about-title-wrapper" :span="22">
+        <!-- <el-col class="about-title-wrapper" :span="22">
           <div class="about-title"></div>
-        </el-col>
+        </el-col> -->
         <el-col class="about-content-wrapper" :span="22">
           <el-row type="flex" align="middle" justify="center">
             <el-col
@@ -20,7 +20,6 @@
               :span="15"
               :sm="24"
               :xs="24"
-              style="height: 100%;"
             >
               <article>
                 <div class="about-content">
@@ -62,7 +61,7 @@
         <el-col class="report" :span="22">
           <div class="report-content-wrapper">
             <div class="report-intro">
-              <h1 class="report-header">
+              <h1 id="report" class="report-header">
                 選服魔鏡號一週年報告！
               </h1>
               <span>
@@ -80,7 +79,7 @@
               <br />
               <img
                 class="report-flowchart"
-                :src="require('@/assets/images/workflow.png')"
+                :src="require('@/assets/images/workflow.svg')"
                 alt=""
               />
               <br />
@@ -118,7 +117,7 @@
                 </div>
               </div>
               <h3 class="chart-title">什麼關鍵字最常被提到？</h3>
-              <div class="report-chart">
+              <div class="report-chart report-chart-wordcloud">
                 <div id="chart-wordcloud" class="chart-graph chart-content">
                   <!-- <img :src="require('@/assets/images/chart3.jpg')" alt="" /> -->
                 </div>
@@ -134,26 +133,84 @@
             <h2 class="report-title">你在哪一區？</h2>
             <SvgMap></SvgMap>
             <el-divider></el-divider>
-            <h2 class="report-title">隨機看案件，歡迎進入魔鏡號！</h2>
-            <CarouselCards></CarouselCards>
-            <!-- <div class="report-recent-cases">
-              <img
-                class=""
-                :src="require('@/assets/images/kaobei.png')"
-                alt=""
-              />
-            </div> -->
-            <!-- <el-divider></el-divider>
-            <h2 class="report-title">（小標－未來的方向）團隊接下來要幹嘛，你可以做什麼？</h2>
-            <div class="report-future">
-              <ul>
-                <li> 發 PR </li>
-                <li> 捐錢給開發團隊 </li>
-                <li> 看 Youtube 頻道 </li>
-              </ul>
-            </div> -->
+            <h2 class="report-title">
+              隨機看案件，歡迎進入魔鏡號！<a
+                class="randomcase"
+                @click="randomCase"
+                >換案件</a
+              >
+            </h2>
+            <CarouselCards ref="carouselCards"></CarouselCards>
           </div>
         </el-col>
+        <el-dialog title :visible.sync="dialogVisible" @closed="closeDialog">
+          <div class="upper-block">
+            <div class="upper-block-bkg">
+              <div class="case-content-type-header">
+                {{ selectedCaseDetails.type }}
+              </div>
+            </div>
+          </div>
+          <div class="case-content">
+            <div class="case-content-type-body">
+              案件類別：{{ selectedCaseDetails.type }}
+            </div>
+            <div class="case-content-title">
+              案件標題：{{ selectedCaseDetails.title }}
+            </div>
+            <div class="case-content-date">
+              時間：{{ selectedCaseDetails.create_time.split("-")[0] }} 年
+              {{ selectedCaseDetails.create_time.split("-")[1] }} 月
+              {{ selectedCaseDetails.create_time.split("-")[2] }} 日
+            </div>
+            <div
+              class="case-content-location"
+              v-if="selectedCaseDetails.location !== null"
+            >
+              地點：{{ selectedCaseDetails.location }}
+            </div>
+            <hr />
+            <div class="case-content-details">案件內容：</div>
+            <br />
+            <div v-html="selectedCaseDetails.content"></div>
+            <hr />
+            <div
+              v-if="selectedCaseDetails.state === '不受理' &amp;&amp; selectedCaseDetails.disapprove_info !== ''"
+            >
+              <div class="case-disapproved">案件不受理原因：</div>
+              <br />
+              <div class="disapprove-info">
+                {{ selectedCaseDetails.disapprove_info }}
+              </div>
+            </div>
+            <div
+              v-if="selectedCaseDetails.state !== '不受理' &amp;&amp; selectedCaseDetails.arranges.length !== 0"
+            >
+              <div class="arranges-title">案件處理進度：</div>
+              <br />
+              <div
+                class="case-content-arranges"
+                v-for="(arrange, index) in reverseCaseProcess"
+                :key="index"
+              >
+                <hr v-if="index &gt; 0" />
+                <div class="arrange-title">處理主旨： {{ arrange.title }}</div>
+                <div class="arrange-time">
+                  處理時間： {{ arrange.arrange_time }}
+                </div>
+                <div class="arrange-content" v-html="arrange.content"></div>
+              </div>
+            </div>
+            <div style="text-align: center; display:block;"></div>
+          </div>
+          <div class="dialog-footer" slot="footer">
+            <div class="footer-block">
+              <div class="content-state">
+                處理進度：{{ selectedCaseDetails.state }}
+              </div>
+            </div>
+          </div>
+        </el-dialog>
       </el-row>
     </transition>
     <BottomGameDialog :title="aboutTitle"></BottomGameDialog>
@@ -175,6 +232,21 @@ export default {
     return {
       chartRendered: [false, false, false],
       showMainContent: false,
+      dialogVisible: false,
+      isDetailLoaded: false,
+      selectedCaseDetails: {
+        id: 13,
+        number: "000013",
+        create_time: "2019-02-19",
+        title: "台北101周邊交通亂象",
+        content:
+          "由（松廉路松智路口周邊）到（松智路）到（信義路五段）到（市府路），這段路，有很多計程車違規排班停等、自小客違規臨停、大客車併排停等上下客（加上計程車違規搗蛋，有時候一併就四排），車流常因上述違規打結，公車因上述違規無法停靠站，公車乘客因上述違規無法安全上下車等。\r\n\r\n松智路（世貿三館往101方向）本身就不寬，一排要違停，一排要左轉松廉路，就只剩中間車道可以行車，車流交織甚為嚴重。\r\n\r\n松廉路松智路口周邊也不時看到車輛因為車流交織而發生擦撞，已與市政單一陳情搞了好一陣子，行政單位都沒有打算認真看待此處的亂象。",
+        location: "由松廉路松智路口周邊 到（松智路）到（信義路五段）到市府路",
+        type: "交通運輸",
+        state: "處理中",
+        arranges: [],
+        disapprove_info: ""
+      },
       aboutTitle: [
         "「選民魔鏡號，市民看得到！」－台北市議員邱威傑市民服務系統⋯⋯",
         "不要再點了，上面我說的話好好看！"
@@ -188,48 +260,13 @@ export default {
     };
   },
   mounted() {
-    // let _this = this;
-    // this.$refs.main.$el.onscroll = function(e) {
-    //   let chartOffset = document.getElementsByClassName('report-charts')[0].offsetTop - 300;
-    //   if (this.scrollTop > chartOffset  && !_this.chartRendered[0]) {
-    //     _this.chartRendered[0] = true
-    //     _this.showChartTotalCases();
-    //   }
-    //   if (this.scrollTop > chartOffset+300  && !_this.chartRendered[1]) {
-    //     _this.chartRendered[1] = true
-    //     _this.showChartCaseType();
-    //   }
-    //   if (this.scrollTop > chartOffset+400  && !_this.chartRendered[2]) {
-    //     _this.chartRendered[2] = true
-    //     _this.showChartWordCloud();
-    //   }
-    // };
     this.showMainContent = true;
+    console.log(this.$route.hash);
+    if (this.$route.hash) {
+      setTimeout(() => (location.href = this.$route.hash), 1);
+    }
     Highcharts.theme = {
-      colors: [
-        "#A16BC6",
-        "#60B3DF",
-        "#C65B90",
-        "#DB6069",
-        "#EC8089"
-
-        // "#a2cee5",
-        // "#ffffff",
-        // "#b69fc6",
-        // "#c480a2",
-        // "#de8f95",
-        // "#efcacd"
-
-        // "#058DC7",
-        // "#50B432",
-        // "#ED561B",
-        // "#DDDF00",
-        // "#24CBE5",
-        // "#64E572",
-        // "#FF9655",
-        // "#FFF263",
-        // "#6AF9C4"
-      ],
+      colors: ["#A16BC6", "#60B3DF", "#C65B90", "#DB6069", "#EC8089"],
       credits: {
         enabled: false
       },
@@ -252,13 +289,15 @@ export default {
         text: null,
         style: {
           color: "#fff",
-          font: 'bold 16px "Trebuchet MS", Verdana, sans-serif'
+          font:
+            "bold 16px PingFangSC-Regular, Microsoft JhengHei, DejaVu Sans, sans-serif"
         }
       },
       subtitle: {
         style: {
           color: "#666666",
-          font: 'bold 12px "Trebuchet MS", Verdana, sans-serif'
+          font:
+            "bold 12px PingFangSC-Regular, Microsoft JhengHei, DejaVu Sans, sans-serif"
         }
       },
       legend: {
@@ -273,12 +312,14 @@ export default {
     };
     // Apply the theme
     Highcharts.setOptions(Highcharts.theme);
-
     this.showChartTotalCases();
     this.showChartCaseType();
     this.showChartWordCloud();
   },
   methods: {
+    randomCase() {
+      this.$refs.carouselCards.randomCase();
+    },
     toggleLeaveAnimation: function(destination) {
       this.showMainContent = false;
     },
@@ -290,10 +331,19 @@ export default {
       let d = axios
         .get("/api/cases/insights/case_type_line_monthly")
         .then(res => {
+          console.log(res);
+          let data = res["data"][0]["data"];
+          let ts = data.map(d => d[0]);
+          let amount = data.map(d => d[1]);
+
+          // console.log(data);
+          // console.log(ts);
+          // console.log(amount);
           Highcharts.chart("chart-casesum", {
             chart: {
               renderTo: "container",
-              type: "spline"
+              type: "spline",
+              marginTop: "30"
             },
             title: {
               // text: "總案件數"
@@ -323,39 +373,33 @@ export default {
                 marker: {
                   enabled: false
                 },
-                pointInterval: 24 * 3600 * 1000 * 30,
-                pointStart: Date.UTC(2019, 3, 1),
+                // pointInterval: 24 * 3600 * 1000 * 30,
+                // pointStart: Date.UTC(2019, 3, 1),
                 shadow: true
               }
             },
             xAxis: {
-              min: Date.UTC(2019, 3, 1),
-              max: Date.UTC(2020, 3, 31),
-              allowDecimals: false,
+              // min: Date.UTC(2019, 3, 1),
+              // max: Date.UTC(2020, 3, 31),
+              // allowDecimals: false,
               type: "datetime",
-              tickInterval: 24 * 3600 * 1000 * 30, //one day
+              // tickInterval: 24 * 3600 * 1000 * 30, //one day
+              // labels: {
+              //   rotation: 1
+              // },
+              categories: ts,
               labels: {
-                rotation: 1
+                format: "{value:%Y %b}"
               }
+            },
+            tooltip: {
+              xDateFormat: "%Y %b"
             },
             series: [
               {
                 name: "案件總數",
                 // type : "area",
-                data: [
-                  60,
-                  150,
-                  250,
-                  360,
-                  480,
-                  520,
-                  590,
-                  680,
-                  750,
-                  800,
-                  910,
-                  1100
-                ]
+                data: amount
               }
             ]
           });
@@ -365,9 +409,11 @@ export default {
       Highcharts.chart("chart-casetype", {
         chart: {
           type: "packedbubble"
-          // height: "100%"
         },
         plotOptions: {
+          series: {
+            cursor: "pointer"
+          },
           packedbubble: {
             minSize: "100%",
             maxSize: "200%",
@@ -387,6 +433,13 @@ export default {
                 property: "y",
                 operator: ">",
                 value: 10
+              }
+            },
+            events: {
+              click: function(event) {
+                console.log(event);
+                let cat = event.point.name;
+                router.push({ name: "cases", query: { category: cat } });
               }
             }
           }
@@ -496,7 +549,14 @@ export default {
             {
               type: "wordcloud",
               data: res.data,
-              name: "數量"
+              name: "數量",
+              cursor: "pointer",
+              events: {
+                click: function(event) {
+                  let keyword = event.point.name;
+                  router.push({ name: "cases", query: { keyword: keyword } });
+                }
+              }
             }
           ],
           title: {
@@ -505,6 +565,52 @@ export default {
           }
         });
       });
+    },
+    click: function(caseId) {
+      console.log("><");
+      this.isDetailLoaded = false;
+      const loading = this.$loading({
+        lock: true,
+        text: "案件資料讀取中",
+        target: ".row-table",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)"
+      });
+      this.axios
+        .get("/api/cases/" + caseId)
+        .then(response => {
+          this.selectedCaseDetails = response.data;
+          return true;
+        })
+        .then(() => {
+          this.dialogVisible = true;
+          loading.close();
+        })
+        .catch(e => console.log(e))
+        .finally(() => {
+          const t = document.getElementsByClassName("case-content")[0];
+          t.scrollTo(0, 0);
+        });
+    },
+    closeDialog: function() {
+      this.isDetailLoaded = false;
+      this.selectedCaseDetails = {
+        id: 0,
+        number: "0",
+        create_time: "",
+        title: "",
+        content: "",
+        location: "",
+        type: "",
+        state: "",
+        arranges: [],
+        disapprove_info: ""
+      };
+    }
+  },
+  computed: {
+    reverseCaseProcess() {
+      return this.selectedCaseDetails.arranges.slice(0).reverse();
     }
   }
 };
@@ -536,7 +642,7 @@ export default {
   background-repeat: no-repeat
 
 .about-main
-  z-index: 5
+  // z-index: 5
   flex: $flex_mainContentPart
   flex-direction: column
   flex-shrink: 0
@@ -559,14 +665,15 @@ export default {
   .about-title
     padding: 30px 0 0 0
 .about-title
-  // padding: 30px 0 0 0
   line-height: initial
   color: white
   font-size: 2.5em
-  min-height: 60px
+  margin-bottom: 10px
+  // min-height: 60px
   font-weight: bold
 .about-content-wrapper
-  min-height: calc(80vh - 100px)
+  margin-top: 20px
+  min-height: calc(100vh - 100px)
   display: flex
   align-items: center
   justify-content: center
@@ -591,12 +698,11 @@ article
   margin-bottom: 100px
   color: white
   ul
-    list-style-type: trad-chinese-informal
+    // list-style-type: trad-chinese-informal
+    list-style-type: cjk-ideographic
   .report-flowchart
     width: 100%
   .report-charts
-    // & > *
-    //   border: 1px solid black
     .chart-title
       padding-left: 20px
     .report-chart
@@ -610,11 +716,23 @@ article
         padding: 20px
       img
         width: 100%
+      &.report-chart-wordcloud
+        flex-direction: column
+        .chart-graph
+          width: calc(100% - 40px)
+        .chart-text
+          width: calc(100% - 40px)
     .report-chart-reverse
       flex-direction: row-reverse
     @media screen and (max-width: $break_small)
       .report-chart
         flex-direction: column
+        &.report-chart-wordcloud
+          flex-direction: column
+          .chart-graph
+            width: calc(100%)
+          .chart-text
+            width: calc(100%)
         .chart-content
           margin-top: 20px
           width: 100%
@@ -660,6 +778,8 @@ article
   .report-recent-cases
     img
       width: 100%
+  .randomcase:hover
+    cursor: pointer
 
 .footer-row
   margin: auto auto 0 auto

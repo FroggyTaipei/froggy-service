@@ -26,6 +26,7 @@
           :speed="70"
         >{{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}} {{marqueeMessage[4]}}</VTextMarquee>
         <img class="froggyImage" :src="froggyImageUrl" />
+        <img class="reportArrow" @click="$router.push({name:'about', hash: '#report'})" :src="require('@/assets/images/report_arrow.png')" />
       </el-row>
     </transition>
     <BottomGameDialog :title="dialogMessage" v-show="isShowMainContent || isShowBtnBar"></BottomGameDialog>
@@ -315,6 +316,15 @@ export default {
     @media screen and (max-width: $break_small)
       animation: flyin-mobile 1.5s forwards
       -webkit-animation: flyin-mobile 1.5s forwards
+  .reportArrow
+    position: absolute
+    right: 50px
+    bottom: 20px
+    width: 200px
+    @media screen and (max-width: $break_small)
+      width: 100px
+      right: 20px
+      bottom: 0px
 
 .row-dialog
   flex: $flex_dialogPart

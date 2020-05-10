@@ -1,5 +1,46 @@
 <template>
-  <carousel
+  <div class="card-cases">
+    <div class="wrapper" v-for="i in cardNum">
+      <div
+        class="card-case"
+        @mousemove="mousemove"
+        @mouseleave="mouseleave"
+        @click="click(i)"
+      >
+        <img
+          class="card-logo"
+          :src="require('@/assets/images/card_logo.png')"
+          alt=""
+        />
+        <div class="card-content">
+          <div class="card-info">
+            <div class="card-info-title">案件標題：案件標題{{ i }}</div>
+            <div class="card-info-title">時間：2020 年 02 月 26 日</div>
+            <div class="card-info-title">地點：台北市信義區鬍鬚張附近</div>
+          </div>
+          <hr />
+          <div class="card-details">
+            <div class="card-info-title">案件內容</div>
+            <div class="card-details-text">
+              小弟我是台北市民，常常看到很多人亂倒垃圾，請問大家會不會覺得台北市的人太沒道德？
+            </div>
+          </div>
+          <hr />
+          <div class="card-progress">
+            <div class="card-info-title">案件處理進度</div>
+            <div class="card-progress-text">
+              無法幫忙，謝謝指教
+            </div>
+            <div class="card-progress-icon">
+              處理進度：已結案
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <carousel
     class="carousel"
     :perPage="1"
     :perPageCustom="[
@@ -17,7 +58,7 @@
     :paginationPosition="`bottom`"
   >
     <slide v-for="i in 5">
-      <div class="card-case" @mousemove="mousemove" @mouseleave="mouseleave">
+      <div class="card-case" @mousemove="mousemove" @mouseleave="mouseleave" @click="click(i)">
         <img
           class="card-logo"
           :src="require('@/assets/images/card_logo.png')"
@@ -49,19 +90,29 @@
         </div>
       </div>
     </slide>
-  </carousel>
+  </carousel> -->
 </template>
 
 <style lang="scss" scoped>
 @import "@/assets/css/style.sass";
 
-.carousel {
+// .carousel
+.card-cases {
+  display: flex;
+  // height: 100%;
+  .wrapper {
+    width: 100%;
+    height: 100%;
+    height: 400px;
+    overflow: hidden;
+    padding-bottom: 20px;
+  }
   .card-case {
     position: relative;
     display: flex;
     align-items: flex-start;
     justify-content: center;
-    height: 400px;
+    height: 100%;
     background-image: linear-gradient(
       #ffffff,
       #a2cee5,
@@ -73,11 +124,15 @@
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
-    box-shadow: 0px 0px 2px 0 rgba(#000,0.3), 5px 5px  5px 0 rgba(#000,0.3);
+    box-shadow: 0px 0px 2px 0 rgba(#000, 0.3), 5px 5px 5px 0 rgba(#000, 0.3);
     border-radius: 5%;
     margin: 10px 10px;
     color: black;
     overflow: hidden;
+    transition: 0.5s ease-out;
+    &:hover {
+      cursor: pointer;
+    }
     &:before,
     &:after {
       content: "";
@@ -87,15 +142,6 @@
       right: 0;
       bottom: 0;
       top: 0;
-      // background-image: linear-gradient(
-      //   115deg,
-      //   transparent 0%,
-      //   rgba(#a2cee5, 1) 20%,
-      //   rgba(#b69fc6, 1) 40%,
-      //   rgba(#c480a2, 1) 60%,
-      //   rgba(#de8f95, 1) 80%,
-      //   transparent 100%
-      // );
       background-position: 0% 0%;
       background-repeat: no-repeat;
       background-size: 400% 400%;
@@ -118,15 +164,6 @@
       border-radius: 5%;
       animation: holoGradient 1.5s ease-out forwards;
       transition: none;
-      // background-image: linear-gradient(
-      //   115deg,
-      //   transparent 0%,
-      //   transparent 25%,
-      //   rgba(0, 231, 255, 0.7) 45%,
-      //   rgba(255, 0, 231, 0.7) 55%,
-      //   transparent 70%,
-      //   transparent 100%
-      // );
       background-image: linear-gradient(
         115deg,
         transparent 0%,
@@ -134,7 +171,7 @@
         rgba(#b69fc6, 1) 55%,
         rgba(#c480a2, 1) 60%,
         rgba(#de8f95, 1) 65%,
-        transparent 100%,
+        transparent 100%
       );
     }
     .card-content {
@@ -174,7 +211,7 @@
       top: 0;
       width: 60%;
       max-width: 150px;
-      transform: translate3D(20px, -25px, 0);
+      transform: translate3D(15px, -20px, 0);
       z-index: 5;
     }
   }
@@ -201,10 +238,23 @@ export default {
   },
   props: {},
   data() {
-    return {};
+    return {
+      cardNum: 3
+    };
   },
   watch: {},
   methods: {
+    randomCase() {
+      let cards = document.getElementsByClassName("card-case");
+      for (let i = 0; i < cards.length; i++) {
+        setTimeout(() => {
+          cards[i].style.transform = "translateX(-200%)";
+          setTimeout(() => {
+            cards[i].style.transform = "translateX(0)";
+          }, 250 * cards.length);
+        }, 200 * i);
+      }
+    },
     mousemove(e) {
       let card = e.target;
       let l = e.offsetX;
@@ -221,13 +271,30 @@ export default {
     mouseleave(e) {
       let card = e.target;
       card.classList.remove("active");
+    },
+    click(id) {
+      // console.log(this.$parent);
+      this.$parent.$parent.$parent.$parent.click(id);
+    },
+    setCardNum() {
+      let width = window.innerWidth;
+      let num = 3;
+      if (width < 768) {
+        num = 1;
+      }
+      if (width >= 768 && width < 1024) {
+        num = 2;
+      }
+      this.cardNum = num;
     }
   },
   computed: {},
   mounted() {
-    // var styleElem = document.createElement("style");
-    // styleElem.className = "hover";
-    // document.head.appendChild(styleElem);
+    this.setCardNum();
+    window.addEventListener("resize", this.setCardNum);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.setCardNum);
   }
 };
 </script>

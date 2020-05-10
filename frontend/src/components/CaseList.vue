@@ -17,34 +17,43 @@
             clearable="clearable"
             placeholder="請輸入編號或內容"
           ></el-input>
-          <el-button class="searchButton" type="primary" size="small" @click="search(query)">搜尋</el-button>
+          <el-button
+            class="searchButton"
+            type="primary"
+            size="small"
+            @click="search(query)"
+            >搜尋</el-button
+          >
         </el-col>
-        <el-col class="filterTags" :span="22" style="max-width: 1024px;">
+        <!-- <el-col class="filterTags" :span="22" style="max-width: 1024px;">
           <div
             class="typeTag"
-            v-for="(t,index) in types"
+            v-for="(t, index) in types"
             size="mini"
             @click="selectType(t.id)"
-            :class="{tagSelected: t.id === options.selectedType}"
+            :class="{ tagSelected: t.id === options.selectedType }"
             :key="index + '-type'"
-          >{{t.text}}</div>
+          >
+            {{ t.text }}
+          </div>
           <div class="clearTag" size="mini" @click="selectType()">
             <i class="fas fa-times-circle"></i>
           </div>
           <div class="break"></div>
           <div
             class="stateTag"
-            v-for="(s,index) in states"
+            v-for="(s, index) in states"
             size="mini"
             @click="selectState(s.id)"
-            :class="{tagSelected: s.id === options.selectedState}"
+            :class="{ tagSelected: s.id === options.selectedState }"
             :key="index + '-state'"
-          >{{s.text}}</div>
-          <!-- +'-tag' -->
+          >
+            {{ s.text }}
+          </div>
           <div class="clearTag" size="mini" @click="selectState()">
             <i class="fas fa-times-circle"></i>
           </div>
-        </el-col>
+        </el-col> -->
         <el-col :span="22" style="max-width: 1024px;">
           <v-server-table
             v-if="mounted"
@@ -54,22 +63,33 @@
             :options="options"
             @row-click="click"
           ></v-server-table>
+          <!-- <CardDetail :dialogVisible="dialogVisible"></CardDetail> -->
           <el-dialog title :visible.sync="dialogVisible" @closed="closeDialog">
             <div class="upper-block">
               <div class="upper-block-bkg">
-                <div class="case-content-type-header">{{selectedCaseDetails.type}}</div>
+                <div class="case-content-type-header">
+                  {{ selectedCaseDetails.type }}
+                </div>
               </div>
             </div>
             <div class="case-content">
-              <div class="case-content-type-body">案件類別：{{selectedCaseDetails.type}}</div>
-              <div class="case-content-title">案件標題：{{selectedCaseDetails.title}}</div>
-              <div
-                class="case-content-date"
-              >時間：{{selectedCaseDetails.create_time.split('-')[0]}} 年 {{selectedCaseDetails.create_time.split('-')[1]}} 月 {{selectedCaseDetails.create_time.split('-')[2]}} 日</div>
+              <div class="case-content-type-body">
+                案件類別：{{ selectedCaseDetails.type }}
+              </div>
+              <div class="case-content-title">
+                案件標題：{{ selectedCaseDetails.title }}
+              </div>
+              <div class="case-content-date">
+                時間：{{ selectedCaseDetails.create_time.split("-")[0] }} 年
+                {{ selectedCaseDetails.create_time.split("-")[1] }} 月
+                {{ selectedCaseDetails.create_time.split("-")[2] }} 日
+              </div>
               <div
                 class="case-content-location"
                 v-if="selectedCaseDetails.location !== null"
-              >地點：{{selectedCaseDetails.location}}</div>
+              >
+                地點：{{ selectedCaseDetails.location }}
+              </div>
               <hr />
               <div class="case-content-details">案件內容：</div>
               <br />
@@ -80,7 +100,9 @@
               >
                 <div class="case-disapproved">案件不受理原因：</div>
                 <br />
-                <div class="disapprove-info">{{selectedCaseDetails.disapprove_info}}</div>
+                <div class="disapprove-info">
+                  {{ selectedCaseDetails.disapprove_info }}
+                </div>
               </div>
               <div
                 v-if="selectedCaseDetails.state !== '不受理' &amp;&amp; selectedCaseDetails.arranges.length !== 0"
@@ -89,12 +111,16 @@
                 <br />
                 <div
                   class="case-content-arranges"
-                  v-for="(arrange,index) in reverseCaseProcess"
+                  v-for="(arrange, index) in reverseCaseProcess"
                   :key="index"
                 >
                   <hr v-if="index &gt; 0" />
-                  <div class="arrange-title">處理主旨： {{ arrange.title }}</div>
-                  <div class="arrange-time">處理時間： {{arrange.arrange_time}}</div>
+                  <div class="arrange-title">
+                    處理主旨： {{ arrange.title }}
+                  </div>
+                  <div class="arrange-time">
+                    處理時間： {{ arrange.arrange_time }}
+                  </div>
                   <div class="arrange-content" v-html="arrange.content"></div>
                 </div>
               </div>
@@ -102,7 +128,9 @@
             </div>
             <div class="dialog-footer" slot="footer">
               <div class="footer-block">
-                <div class="content-state">處理進度：{{ selectedCaseDetails.state }}</div>
+                <div class="content-state">
+                  處理進度：{{ selectedCaseDetails.state }}
+                </div>
               </div>
             </div>
           </el-dialog>
@@ -115,14 +143,16 @@
 
 <script>
 import BottomGameDialog from "./BottomGameDialog.vue";
+import CardDetail from "./CardDetail.vue";
 import { Event } from "vue-tables-2";
 
 export default {
   name: "CaseList",
-  components: { BottomGameDialog },
+  components: { BottomGameDialog, CardDetail },
   data: function() {
     return {
       query: "",
+      searched: false,
       showMainContent: false,
       dialogVisible: false,
       isDetailLoaded: false,
@@ -210,6 +240,9 @@ export default {
             }
           }
         ],
+        initFilters: {
+          GENERIC: ""
+        },
         perPage: 10,
         perPageValues: [10],
         selectedType: null,
@@ -290,6 +323,30 @@ export default {
       this.options.listColumns.type = filterTypes;
       this.types = filterTypes;
     });
+    let keyword = this.$route.query.keyword || null;
+    let category = this.$route.query.category || null;
+
+    if (keyword) {
+      this.query = keyword;
+    }
+
+    if (category) {
+      let type = this.$store.state.types.find(t => {
+        return t.name == category;
+      });
+      let typeId = type.id || null;
+      this.options.selectedType = typeId;
+    }
+  },
+  updated() {
+    this.$nextTick(() => {
+      if (!this.searched) {
+        setTimeout(() => {
+          this.search(this.query);
+          this.searched = true;
+        }, 150);
+      }
+    });
   },
   methods: {
     click: function(clickedRow) {
@@ -362,7 +419,7 @@ export default {
 };
 </script>
 
-<style lang='sass' scoped>
+<style lang="sass" scoped>
 @import '@/assets/css/style.sass'
 
 .page2
