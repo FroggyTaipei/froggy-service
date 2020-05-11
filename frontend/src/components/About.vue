@@ -15,12 +15,7 @@
         </el-col> -->
         <el-col class="about-content-wrapper" :span="22">
           <el-row type="flex" align="middle" justify="center">
-            <el-col
-              class="noScrollbar"
-              :span="15"
-              :sm="24"
-              :xs="24"
-            >
+            <el-col class="noScrollbar" :span="15" :sm="24" :xs="24">
               <article>
                 <div class="about-content">
                   <div class="about-title">公開透明。</div>
@@ -130,7 +125,7 @@
               </div> -->
             </div>
             <el-divider></el-divider>
-            <h2 class="report-title">你在哪一區？</h2>
+            <h2 class="report-title region-title">你在哪一區？</h2>
             <SvgMap></SvgMap>
             <el-divider></el-divider>
             <h2 class="report-title">
@@ -328,82 +323,80 @@ export default {
       this.$router.push(direction);
     },
     showChartTotalCases: () => {
-      let d = axios
-        .get("/api/cases/insights/case_type_line_monthly")
-        .then(res => {
-          console.log(res);
-          let data = res["data"][0]["data"];
-          let ts = data.map(d => d[0]);
-          let amount = data.map(d => d[1]);
+      axios.get("/api/cases/insights/case_type_line_monthly").then(res => {
+        console.log(res);
+        let data = res["data"][0]["data"];
+        let ts = data.map(d => d[0]);
+        let amount = data.map(d => d[1]);
 
-          // console.log(data);
-          // console.log(ts);
-          // console.log(amount);
-          Highcharts.chart("chart-casesum", {
-            chart: {
-              renderTo: "container",
-              type: "spline",
-              marginTop: "30"
-            },
+        // console.log(data);
+        // console.log(ts);
+        // console.log(amount);
+        Highcharts.chart("chart-casesum", {
+          chart: {
+            renderTo: "container",
+            type: "spline",
+            marginTop: "30"
+          },
+          title: {
+            // text: "總案件數"
+            text: null
+          },
+          yAxis: {
             title: {
-              // text: "總案件數"
-              text: null
-            },
-            yAxis: {
-              title: {
-                text: "數量"
-              }
-            },
-            xAxis: {
-              accessibility: {
-                // rangeDescription: ""
-              }
-            },
-            legend: {
-              enabled: false,
-              layout: "vertical",
-              align: "right",
-              verticalAlign: "middle"
-            },
-            plotOptions: {
-              series: {
-                label: {
-                  connectorAllowed: true
-                },
-                marker: {
-                  enabled: false
-                },
-                // pointInterval: 24 * 3600 * 1000 * 30,
-                // pointStart: Date.UTC(2019, 3, 1),
-                shadow: true
-              }
-            },
-            xAxis: {
-              // min: Date.UTC(2019, 3, 1),
-              // max: Date.UTC(2020, 3, 31),
-              // allowDecimals: false,
-              type: "datetime",
-              // tickInterval: 24 * 3600 * 1000 * 30, //one day
-              // labels: {
-              //   rotation: 1
-              // },
-              categories: ts,
-              labels: {
-                format: "{value:%Y %b}"
-              }
-            },
-            tooltip: {
-              xDateFormat: "%Y %b"
-            },
-            series: [
-              {
-                name: "案件總數",
-                // type : "area",
-                data: amount
-              }
-            ]
-          });
+              text: "數量"
+            }
+          },
+          xAxis: {
+            accessibility: {
+              // rangeDescription: ""
+            }
+          },
+          legend: {
+            enabled: false,
+            layout: "vertical",
+            align: "right",
+            verticalAlign: "middle"
+          },
+          plotOptions: {
+            series: {
+              label: {
+                connectorAllowed: true
+              },
+              marker: {
+                enabled: false
+              },
+              // pointInterval: 24 * 3600 * 1000 * 30,
+              // pointStart: Date.UTC(2019, 3, 1),
+              shadow: true
+            }
+          },
+          xAxis: {
+            // min: Date.UTC(2019, 3, 1),
+            // max: Date.UTC(2020, 3, 31),
+            // allowDecimals: false,
+            type: "datetime",
+            // tickInterval: 24 * 3600 * 1000 * 30, //one day
+            // labels: {
+            //   rotation: 1
+            // },
+            categories: ts,
+            labels: {
+              format: "{value:%Y %b}"
+            }
+          },
+          tooltip: {
+            xDateFormat: "%Y %b"
+          },
+          series: [
+            {
+              name: "案件總數",
+              // type : "area",
+              data: amount
+            }
+          ]
         });
+      });
     },
     showChartCaseType: () => {
       Highcharts.chart("chart-casetype", {
@@ -415,8 +408,8 @@ export default {
             cursor: "pointer"
           },
           packedbubble: {
-            minSize: "100%",
-            maxSize: "200%",
+            minSize: window.innerWidth > 768 ? "50px" : "50px",
+            maxSize: window.innerWidth > 768 ? "150px" : "150px",
             zMin: 0,
             zMax: 888,
             layoutAlgorithm: {
@@ -567,7 +560,6 @@ export default {
       });
     },
     click: function(caseId) {
-      console.log("><");
       this.isDetailLoaded = false;
       const loading = this.$loading({
         lock: true,
@@ -643,6 +635,7 @@ export default {
 
 .about-main
   // z-index: 5
+  height: 100%
   flex: $flex_mainContentPart
   flex-direction: column
   flex-shrink: 0
@@ -651,32 +644,31 @@ export default {
   line-height: 1.6
   @media screen and (max-width: $break_small)
     flex: 8
+  .about-title
+    line-height: initial
+    color: white
+    font-size: 2.5em
+    margin-bottom: 10px
+    font-weight: bold
+  .about-content-wrapper
+    margin-top: 20px
+    min-height: calc(100vh - 100px)
+    height: calc(100vh - 100px)
+    display: flex
+    align-items: center
+    justify-content: center
+    @media screen and (max-width: $break_small)
+      // margin-top: 0px
+      min-height: initial
+      height: initial
+
 .row-dialog
   z-index: 5
   flex: $flex_dialogPart
   @media screen and (max-width: $break_small)
     flex: 2
 
-.about-title-wrapper
-  color: white
-  font-size: 2em
-  min-height: 100px
-  font-weight: bold
-  .about-title
-    padding: 30px 0 0 0
-.about-title
-  line-height: initial
-  color: white
-  font-size: 2.5em
-  margin-bottom: 10px
-  // min-height: 60px
-  font-weight: bold
-.about-content-wrapper
-  margin-top: 20px
-  min-height: calc(100vh - 100px)
-  display: flex
-  align-items: center
-  justify-content: center
+
 
 article
   .about-content
@@ -739,6 +731,8 @@ article
           padding: 0px
       .chart-title
         padding-left: 0px
+      .region-title
+        margin-bottom: 0
     .chart-paragraph
       margin-top: 20px
   .report-region

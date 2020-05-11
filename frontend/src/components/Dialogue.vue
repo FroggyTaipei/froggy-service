@@ -321,6 +321,8 @@ export default {
     right: 50px
     bottom: 20px
     width: 200px
+    &:hover
+      cursor: pointer
     @media screen and (max-width: $break_small)
       width: 100px
       right: 20px

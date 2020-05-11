@@ -1,6 +1,15 @@
 <template>
   <div class="card-cases">
     <div class="wrapper" v-for="i in cardNum">
+      <div class="hidden-froggy">
+        <img
+          src=""
+          alt=""
+          :src="
+            require(`@/assets/images/froggy_report_${froggy_imgs.urls[i]}.png`)
+          "
+        />
+      </div>
       <div
         class="card-case"
         @mousemove="mousemove"
@@ -99,15 +108,27 @@
 // .carousel
 .card-cases {
   display: flex;
-  // height: 100%;
+  position: relative;
   .wrapper {
+    position: relative;
     width: 100%;
-    height: 100%;
     height: 400px;
     overflow: hidden;
     padding-bottom: 20px;
+    .hidden-froggy {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      img {
+        height: 80%;
+      }
+    }
   }
   .card-case {
+    // opacity: 0.5;
     position: relative;
     display: flex;
     align-items: flex-start;
@@ -129,7 +150,7 @@
     margin: 10px 10px;
     color: black;
     overflow: hidden;
-    transition: 0.5s ease-out;
+    transition: 0.5s;
     &:hover {
       cursor: pointer;
     }
@@ -239,21 +260,33 @@ export default {
   props: {},
   data() {
     return {
-      cardNum: 3
+      cardNum: 3,
+      froggy_imgs: { urls: [...Array(6).keys()].map(i => i + 1) }
     };
   },
-  watch: {},
   methods: {
     randomCase() {
-      let cards = document.getElementsByClassName("card-case");
-      for (let i = 0; i < cards.length; i++) {
-        setTimeout(() => {
-          cards[i].style.transform = "translateX(-200%)";
+      this.shuffleImg();
+      setTimeout(() => {
+        let cards = document.getElementsByClassName("card-case");
+        for (let i = 0; i < cards.length; i++) {
           setTimeout(() => {
-            cards[i].style.transform = "translateX(0)";
-          }, 250 * cards.length);
-        }, 200 * i);
+            cards[i].style.transform = "translateX(-200%)";
+            setTimeout(() => {
+              cards[i].style.transform = "translateX(0)";
+            }, 250 * cards.length);
+          }, 200 * i);
+        }
+      }, 500);
+    },
+    shuffleImg() {
+      let urls = this.froggy_imgs.urls;
+      for (let i = urls.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [urls[i], urls[j]] = [urls[j], urls[i]];
       }
+      this.froggy_imgs = {}; //update template
+      this.froggy_imgs["urls"] = urls;
     },
     mousemove(e) {
       let card = e.target;
@@ -288,7 +321,6 @@ export default {
       this.cardNum = num;
     }
   },
-  computed: {},
   mounted() {
     this.setCardNum();
     window.addEventListener("resize", this.setCardNum);

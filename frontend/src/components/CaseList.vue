@@ -25,7 +25,7 @@
             >搜尋</el-button
           >
         </el-col>
-        <!-- <el-col class="filterTags" :span="22" style="max-width: 1024px;">
+        <el-col class="filterTags" :span="22" style="max-width: 1024px;">
           <div
             class="typeTag"
             v-for="(t, index) in types"
@@ -53,7 +53,7 @@
           <div class="clearTag" size="mini" @click="selectState()">
             <i class="fas fa-times-circle"></i>
           </div>
-        </el-col> -->
+        </el-col>
         <el-col :span="22" style="max-width: 1024px;">
           <v-server-table
             v-if="mounted"
