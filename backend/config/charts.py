@@ -35,6 +35,9 @@ def get_highchart_pie(data, title=''):
 
 def get_highchart_line(data, y_title, title=''):
     return {
+        'chart': {
+            'type': 'spline',
+        },
         'title': {
             'text': title,
         },
@@ -91,4 +94,40 @@ def get_highchart_word_cloud(data, title=''):
         'title': {
             'text': title,
         },
+    }
+
+
+def get_highchart_packed_bubble(data, title=''):
+    print(data)
+    return {
+        'chart': {
+            'type': 'packedbubble',
+        },
+        'title': {
+            'text': title
+        },
+        'tooltip': {
+            'useHTML': 'true',
+            'pointFormat': '{point.value}'
+        },
+        'plotOptions': {
+            'packedbubble': {
+                'minSize': '30%',
+                'maxSize': '150%',
+                'layoutAlgorithm': {
+                    'splitSeries': False,
+                    'gravitationalConstant': 0.02
+                },
+                'dataLabels': {
+                    'enabled': 'true',
+                    'format': '{point.name}',
+                    'style': {
+                        'color': 'black',
+                        'textOutline': 'none',
+                        'fontWeight': 'normal'
+                    }
+                }
+            }
+        },
+        'series': data
     }

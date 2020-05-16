@@ -1,31 +1,28 @@
 import time
 import re
 import jieba
+from itertools import accumulate
 from collections import Counter
-from _datetime import datetime
-from dateutil.rrule import rrule, MONTHLY
 
 from django.db.models import Count
-from django.db.models.functions import TruncMonth, TruncYear
+from django.db.models.functions import TruncDate, TruncYear
 from django.conf import settings
 
-from apps.cases.models import Case, State, Region, Type
+from apps.cases.models import Case, State, Region
 
 
 __all__ = [
     'get_case_state_pie_data',
     'get_case_region_pie_data',
     'get_case_type_pie_data',
-    'get_case_type_line_monthly_data',
-    'get_case_region_line_monthly_data',
+    'get_case_state_packed_bubble_data',
+    'get_case_region_packed_bubble_data',
+    'get_case_type_packed_bubble_data',
+    'get_case_line_data',
+    'get_case_type_line_data',
+    'get_case_region_line_data',
     'get_case_content_wordcloud_data'
 ]
-
-
-def months(start_month, start_year, end_month, end_year):
-    start = datetime(start_year, start_month, 1)
-    end = datetime(end_year, end_month, 1)
-    return [(d.month, d.year) for d in rrule(MONTHLY, dtstart=start, until=end)]
 
 
 def to_unix(dt):
@@ -33,96 +30,163 @@ def to_unix(dt):
 
 
 def get_case_state_pie_data():
-    data = []
-    qs = Case.objects.all()
-    if qs:
-        for i, (state, title) in enumerate(State.CHOICES):
-            y = qs.filter(state=state).count() / qs.count()
-            data.append(
-                {
-                    'name': title,
-                    'y': y,
-                },
-            )
+    total = Case.objects.count()
+    qs = Case.objects.values('state').order_by().annotate(count=Count('id'))
+    data = [
+        {
+            'name': title,
+            'y': qs.get(state=state)['count'] / total
+        } for state, title in State.CHOICES
+    ]
+    if data:
         data = sorted(data, key=lambda x: x['y'], reverse=True)
         data[0]['sliced'] = True
         data[0]['selected'] = True
-
     return data
 
 
 def get_case_region_pie_data():
-    data = []
-    qs = Case.objects.all()
-    if qs:
-        for region in Region.objects.all():
-            y = qs.filter(region=region).count() / qs.count()
-            data.append(
-                {
-                    'name': region.name,
-                    'y': y,
-                },
-            )
+    total = Case.objects.count()
+    qs = Case.objects.values('region__name').order_by().annotate(count=Count('id'))
+    data = [
+        {
+            'name': item['region__name'],
+            'y': item['count'] / total
+        } for item in qs
+    ]
+    if data:
         data = sorted(data, key=lambda x: x['y'], reverse=True)
         data[0]['sliced'] = True
         data[0]['selected'] = True
-
     return data
 
 
 def get_case_type_pie_data():
-    data = []
-    qs = Case.objects.all()
-    if qs:
-        for type_ in Type.objects.all():
-            y = qs.filter(type=type_).count() / qs.count()
-            data.append(
-                {
-                    'name': type_.name,
-                    'y': y,
-                },
-            )
+    total = Case.objects.count()
+    qs = Case.objects.values('type__name').order_by().annotate(count=Count('id'))
+    data = [
+        {
+            'name': item['type__name'],
+            'y': item['count'] / total
+        } for item in qs
+    ]
+    if data:
         data = sorted(data, key=lambda x: x['y'], reverse=True)
         data[0]['sliced'] = True
         data[0]['selected'] = True
-
     return data
 
 
-def get_case_type_line_monthly_data():
+def get_case_state_packed_bubble_data():
+    qs = Case.objects.values('state').order_by().annotate(count=Count('id'))
+    return [
+        {
+            'name': title,
+            'data': [{
+                'name': title,
+                'value': qs.get(state=state)['count']
+            }]
+        } for state, title in State.CHOICES
+    ]
+
+
+def get_case_region_packed_bubble_data():
+    qs = Case.objects.values('region__name').order_by().annotate(count=Count('id'))
+    return [
+        {
+            'name': item['region__name'],
+            'data': [{
+                'name': item['region__name'],
+                'value': item['count']
+            }]
+        } for item in qs
+    ]
+
+
+def get_case_type_packed_bubble_data():
+    qs = Case.objects.values('type__name').order_by().annotate(count=Count('id'))
+    return [
+        {
+            'name': item['type__name'],
+            'data': [{
+                'name': item['type__name'],
+                'value': item['count']
+            }]
+        } for item in qs
+    ]
+
+
+def get_case_line_data(accumulative=True):
     qs = Case.objects.annotate(
         year=TruncYear('create_time'),
-        month=TruncMonth('create_time'),
-    ).values('month', 'type').annotate(
+        date=TruncDate('create_time'),
+    ).values('date').annotate(
         count=Count('id'),
-    ).values('month', 'type__name', 'count').order_by('month')
-
-    result = {type_.name: [] for type_ in Type.objects.all()}
-
+    ).order_by('date')
+    dates = []
+    counts = []
     for item in qs:
-        result[item['type__name']].append([to_unix(item['month']), item['count']])
+        dates.append(to_unix(item['date']))
+        counts.append(item['count'])
+    if accumulative:
+        counts = list(accumulate(counts))
+    data = [list(t) for t in zip(dates, counts)]
+    return [
+        {
+            'name': '全部',
+            'data': data
+        }
+    ]
 
-    data = [{'name': key, 'data': value} for key, value in result.items()]
 
-    return data
-
-
-def get_case_region_line_monthly_data():
+def get_case_type_line_data(accumulative=True):
     qs = Case.objects.annotate(
         year=TruncYear('create_time'),
-        month=TruncMonth('create_time'),
-    ).values('month', 'region').annotate(
+        date=TruncDate('create_time'),
+    ).values('date', 'type__name').annotate(
         count=Count('id'),
-    ).values('month', 'region__name', 'count').order_by('month')
+    ).order_by('date')
 
-    result = {region.name: [] for region in Region.objects.all()}
+    results = []
+    for name in set(qs.values_list('type__name', flat=True)):
+        dates = []
+        counts = []
+        for item in qs.filter(type__name=name):
+            dates.append(to_unix(item['date']))
+            counts.append(item['count'])
+        if accumulative:
+            counts = list(accumulate(counts))
+        results.append({
+            'name': name,
+            'data': [list(t) for t in zip(dates, counts)]
+        })
 
-    for item in qs:
-        result[item['region__name']].append([to_unix(item['month']), item['count']])
+    return results
 
-    data = [{'name': key, 'data': value} for key, value in result.items()]
 
-    return data
+def get_case_region_line_data(accumulative=True):
+    qs = Case.objects.annotate(
+        year=TruncYear('create_time'),
+        date=TruncDate('create_time'),
+    ).values('date', 'region__name').annotate(
+        count=Count('id'),
+    ).order_by('date')
+
+    results = []
+    for name in set(qs.values_list('region__name', flat=True)):
+        dates = []
+        counts = []
+        for item in qs.filter(region__name=name):
+            dates.append(to_unix(item['date']))
+            counts.append(item['count'])
+        if accumulative:
+            counts = list(accumulate(counts))
+        results.append({
+            'name': name,
+            'data': [list(t) for t in zip(dates, counts)]
+        })
+
+    return results
 
 
 def get_case_content_wordcloud_data():
@@ -151,3 +215,21 @@ def get_case_content_wordcloud_data():
            [{'name': word, 'weight': weight*1.5} for word, weight in counter_3.most_common(30)]
 
     return data
+
+
+def get_region_case_count_and_top_type_data():
+    results = []
+    for region in Region.objects.all():
+        qs = (
+            Case.objects.filter(region=region)
+                .values('type__name').order_by()
+                .annotate(count=Count('id'))
+                .order_by('-count')
+        )
+        if qs:
+            results.append({
+                'region_name': region.name,
+                'top_type_name': qs.first()['type__name'],
+                'case_counts': sum(qs.values_list('count', flat=True))
+            })
+    return results

@@ -46,20 +46,44 @@ class CaseTypePie(InsightWidget):
     chart_template = staticmethod(charts.get_highchart_pie)
 
 
-class CaseRegionLineMonthly(InsightWidget):
-    html_id = 'case-region-line-monthly-chart'
+class CaseStatePackedBubble(InsightWidget):
+    html_id = 'case-state-packed-bubble-chart'
     template = 'highchart.html'
 
-    data_func = staticmethod(insights.get_case_region_line_monthly_data)
-    chart_template = staticmethod(partial(charts.get_highchart_line, y_title='地區'))
+    data_func = staticmethod(insights.get_case_state_packed_bubble_data)
+    chart_template = staticmethod(charts.get_highchart_packed_bubble)
 
 
-class CaseTypeLineMonthly(InsightWidget):
-    html_id = 'case-type-line-monthly-chart'
+class CaseRegionPackedBubble(InsightWidget):
+    html_id = 'case-region-packed-bubble-chart'
     template = 'highchart.html'
 
-    data_func = staticmethod(insights.get_case_type_line_monthly_data)
-    chart_template = staticmethod(partial(charts.get_highchart_line, y_title='案件類型'))
+    data_func = staticmethod(insights.get_case_region_packed_bubble_data)
+    chart_template = staticmethod(charts.get_highchart_packed_bubble)
+
+
+class CaseTypePackedBubble(InsightWidget):
+    html_id = 'case-type-packed-bubble-chart'
+    template = 'highchart.html'
+
+    data_func = staticmethod(insights.get_case_type_packed_bubble_data)
+    chart_template = staticmethod(charts.get_highchart_packed_bubble)
+
+
+class CaseRegionLine(InsightWidget):
+    html_id = 'case-region-line-chart'
+    template = 'highchart.html'
+
+    data_func = staticmethod(insights.get_case_region_line_data)
+    chart_template = staticmethod(partial(charts.get_highchart_line, y_title='數量'))
+
+
+class CaseTypeLine(InsightWidget):
+    html_id = 'case-type-line-chart'
+    template = 'highchart.html'
+
+    data_func = staticmethod(insights.get_case_type_line_data)
+    chart_template = staticmethod(partial(charts.get_highchart_line, y_title='數量'))
 
 
 class CaseContentWordCloud(InsightWidget):
