@@ -59,3 +59,13 @@ serviceAccount:
   firebase:
     file:
     localPath:
+
+redis:
+  pdName:
+  resources:
+    requests:
+      cpu:
+      memory:
+    limits:
+      cpu:
+      memory:
