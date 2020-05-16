@@ -1,0 +1,44 @@
+apiVersion: apps/v1beta2
+kind: StatefulSet
+metadata:
+  name: {{ template "froggy-service.redis" . }}
+  labels:
+    app.kubernetes.io/name: {{ template "froggy-service.redis" . }}
+    helm.sh/chart: {{ include "froggy-service.chart" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/managed-by: {{ .Release.Service }}
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "froggy-service.redis" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: {{ template "froggy-service.redis" . }}
+        app.kubernetes.io/instance: {{ .Release.Name }}
+    spec:
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      {{- if .Values.backend.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.redis.nodeSelector | indent 8 }}
+      {{- end }}
+      containers:
+        - name: {{ template "froggy-service.redis" . }}
+          image: redis:4.0
+          args: ["--appendonly", "yes", "--save", "900", "1", "--save", "300", "10"]
+          resources:
+{{ toYaml .Values.redis.resources | indent 12 }}
+          ports:
+          - containerPort: 6379
+          volumeMounts:
+            - name: redis-volume
+              mountPath: /data
+      volumes:
+        - name: redis-volume
+          gcePersistentDisk:
+            pdName: {{ .Values.redis.pdName }}
+            fsType: ext4
