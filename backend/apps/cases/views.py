@@ -29,6 +29,7 @@ from .models import (
     Case,
 )
 from .schemas import vuetable_schema
+from .filters import ExcludeIDFilter, CaseRegionFilter, CaseTypeFilter
 from . import insights
 
 
@@ -60,10 +61,11 @@ class CaseViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     http_method_names = ['get', 'post', 'retrieve']
     pagination_class = LimitOffsetPagination
-    filter_backends = (OrderingFilter, SearchFilter)
+    filter_backends = (OrderingFilter, SearchFilter, ExcludeIDFilter, CaseTypeFilter, CaseRegionFilter)
     search_fields = ('id', 'number', 'type__name', 'location', 'title', 'content',
                      'disapprove_info', 'arranges__title', 'arranges__content')
     ordering_fields = ('id', 'number', 'type')
+    ordering = ('?',)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -156,13 +158,33 @@ class CaseInsightViewSet(ViewSet):
         return Response(self.get_data_from_cache(insights.get_case_region_pie_data))
 
     @action(methods=['GET'], detail=False)
-    def case_type_line_monthly(self, request):
-        return Response(self.get_data_from_cache(insights.get_case_type_line_monthly_data))
+    def case_state_packed_bubble(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_state_packed_bubble_data))
 
     @action(methods=['GET'], detail=False)
-    def case_region_line_monthly(self, request):
-        return Response(self.get_data_from_cache(insights.get_case_region_line_monthly_data))
+    def case_type_packed_bubble(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_type_packed_bubble_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_packed_bubble(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_region_packed_bubble_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_line(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_line_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_type_line(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_type_line_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_line(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_region_line_data))
 
     @action(methods=['GET'], detail=False)
     def case_content_wordcloud(self, request):
         return Response(self.get_data_from_cache(insights.get_case_content_wordcloud_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_case_count_and_top_type(self, request):
+        return Response(self.get_data_from_cache(insights.get_region_case_count_and_top_type_data))
