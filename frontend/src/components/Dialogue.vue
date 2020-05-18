@@ -21,10 +21,7 @@
         v-show="isShowMainContent"
       >
         <img class="bkg-logo-img" :src="logoUrl" />
-        <VTextMarquee
-          ref="marquee"
-          :speed="70"
-        >{{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}} {{marqueeMessage[4]}}</VTextMarquee>
+        <VTextMarquee ref="marquee" :speed="70">{{marqueeStr}}</VTextMarquee>
         <img class="froggyImage" :src="froggyImageUrl" />
         <img class="reportArrow" @click="$router.push({name:'about', hash: '#report'})" :src="require('@/assets/images/report_arrow.png')" />
       </el-row>
@@ -101,13 +98,6 @@ export default {
           ],
           froggyImage: ["night_1.png", "night_2.png", "night_3.png"]
         }
-      ],
-      marqueeMessage: [
-        "［系統］就職一週年啦！趕快點「呱吉做什麼」，看看我們有沒有做好、做滿！",
-        "［活動］Merry Christmas！你要金卡片還是銀卡片，平安夜香堤廣場見！",
-        "［中獎］恭喜您成功儲值 台灣價值，贈送您防滲透盔甲套裝（7日）！",
-        "［拜票］2022台北市長候選人邱威傑，需要您的每一份支持！",
-        "［告捷］歡樂無法黨攻得一席首都議員，榮譽總書記柚子表示欣慰！"
       ]
     };
   },
@@ -198,6 +188,11 @@ export default {
           return this.dialogue[this.sceneCount].textContent_mobile;
         } else return this.dialogue[this.sceneCount].textContent;
       }
+    },
+    marqueeStr: function() {
+      let message = "";
+      this.$store.state.marqueeMessages.forEach( msg => { if (msg.display) { message += `${msg.message} `;}});
+      return message;
     }
   },
   created: function() {},

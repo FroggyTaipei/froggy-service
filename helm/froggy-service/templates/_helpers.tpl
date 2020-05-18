@@ -24,6 +24,10 @@ Expand the service names of the chart.
     {{- printf "%s-frontend" (include "froggy-service.name" .) -}}
 {{- end -}}
 
+{{- define "froggy-service.redis" -}}
+    {{- printf "%s-redis" (include "froggy-service.name" .) -}}
+{{- end -}}
+
 {{- define "froggy-service.frontend.readinessPath" -}}
     {{- template "froggy-service.backend" . }}:{{ .Values.backend.service.targetPort }}{{ .Values.backend.livenessPath }}
 {{- end -}}

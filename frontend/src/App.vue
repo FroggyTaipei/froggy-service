@@ -43,6 +43,7 @@ export default {
       this.$store.dispatch('getRegionsList')
       this.$store.dispatch('getTypeList')
     }
+    this.$store.dispatch("getMarqueeMessages");
   }
 }
 </script>

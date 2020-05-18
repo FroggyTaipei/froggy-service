@@ -1,7 +1,6 @@
 import datetime
 from django.http import JsonResponse
 from django.conf import settings
-from django.db.models import Q
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAdminUser
@@ -23,14 +22,13 @@ class UserViewSet(viewsets.ViewSet):
     def token_auth(self, request):
         id_token = request.data.get('token')
 
-        email = mobile = None
+        mobile = None
 
         with firebase_app() as app:
             try:
                 decoded_token = auth.verify_id_token(id_token, app=app)
                 uid = decoded_token['uid']
                 user = auth.get_user(uid=uid, app=app)
-                email = user.email
                 mobile = user.phone_number
             except (
                 ValueError,
@@ -40,16 +38,15 @@ class UserViewSet(viewsets.ViewSet):
             ) as e:
                 raise AuthenticationFailed(str(e))
 
-        if mobile:
-            if not mobile.startswith('+886'):
-                raise ValidationError('請使用國碼為 +886 的手機號碼進行驗證')
-            mobile = mobile.replace('+886', '0')
+        if not mobile.startswith('+886'):
+            raise ValidationError('請使用國碼為 +886 的手機號碼進行驗證')
 
-        user = User.objects.filter(Q(email=email) | Q(mobile=mobile)).first()
+        mobile = mobile.replace('+886', '0')
+        user = User.objects.filter(mobile=mobile).first()
 
         if not user:
             # Register a new user
-            user = User.objects.create_auth0_user(email=email, mobile=mobile, full_name='Firebase User')
+            user = User.objects.create_auth0_user(email=None, mobile=mobile, full_name='Firebase User')
 
         temp_files = TempFile.objects.filter(user=user, upload_time__date=datetime.date.today())
         if temp_files.distinct('case_uuid').count() >= settings.FILE_LIMIT_CASE:
