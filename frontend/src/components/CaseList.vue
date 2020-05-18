@@ -447,6 +447,7 @@ export default {
 .row-table
   flex: $flex_mainContentPart
   flex-direction: column
+  max-height: 80vh
   @media screen and (max-width: $break_small)
     flex: 8
 .row-dialog

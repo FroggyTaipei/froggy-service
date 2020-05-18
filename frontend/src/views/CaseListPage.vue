@@ -75,9 +75,9 @@ $tag_selected_color: #dc5f84
   overflow: hidden
 
 .row-table
-  min-height: 80vh
-  max-height: 80vh
-  height: 80vh
+  min-height: 60vh
+  max-height: 60vh
+  // height: 80vh
 
 table
   width: 100%

@@ -305,6 +305,7 @@ export default {
 
 .forggyImage-wrapper
   flex: $flex_mainContentPart
+  max-height: 60vh
   @media screen and (max-width: $break_small)
     flex: $flex_small_mainContentPart
   .froggyImage

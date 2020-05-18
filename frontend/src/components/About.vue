@@ -659,7 +659,7 @@ export default {
     justify-content: center
     @media screen and (max-width: $break_small)
       // margin-top: 0px
-      min-height: initial
+      min-height: fit-content
       height: initial
 
 .row-dialog
