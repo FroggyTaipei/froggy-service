@@ -1,6 +1,6 @@
 <template>
   <div class="card-cases">
-    <div class="wrapper" v-for="i in cardNum">
+    <div class="wrapper" v-for="(c, i) in cases">
       <div class="hidden-froggy">
         <img
           src=""
@@ -14,7 +14,7 @@
         class="card-case"
         @mousemove="mousemove"
         @mouseleave="mouseleave"
-        @click="click(i)"
+        @click="click(c.id)"
       >
         <img
           class="card-logo"
@@ -23,26 +23,32 @@
         />
         <div class="card-content">
           <div class="card-info">
-            <div class="card-info-title">案件標題：案件標題{{ i }}</div>
-            <div class="card-info-title">時間：2020 年 02 月 26 日</div>
-            <div class="card-info-title">地點：台北市信義區鬍鬚張附近</div>
+            <div class="card-info-title">{{ c.title }}</div>
+            <div class="card-info-title">
+              時間：{{ c.create_time.split("-")[0] }} 年
+              {{ c.create_time.split("-")[1] }} 月
+              {{ c.create_time.split("-")[2] }} 日
+            </div>
+            <div class="card-info-title">地點：{{ c.location }}</div>
           </div>
           <hr />
           <div class="card-details">
             <div class="card-info-title">案件內容</div>
             <div class="card-details-text">
-              小弟我是台北市民，常常看到很多人亂倒垃圾，請問大家會不會覺得台北市的人太沒道德？
+              {{
+                c.content.length > 50
+                  ? `${c.content.slice(0, 50)}...`
+                  : c.content
+              }}
             </div>
           </div>
-          <hr />
+          <!-- <hr /> -->
           <div class="card-progress">
-            <div class="card-info-title">案件處理進度</div>
+            <!-- <div class="card-info-title">案件處理進度</div>
             <div class="card-progress-text">
-              無法幫忙，謝謝指教
-            </div>
-            <div class="card-progress-icon">
-              處理進度：已結案
-            </div>
+              {{c.state}}
+            </div> -->
+            <div class="card-progress-icon">處理進度：{{ c.state }}</div>
           </div>
         </div>
       </div>
@@ -261,14 +267,19 @@ export default {
   data() {
     return {
       cardNum: 3,
-      froggy_imgs: { urls: [...Array(6).keys()].map(i => i + 1) }
+      froggy_imgs: { urls: [...Array(6).keys()].map(i => i + 1) },
+      cases: [],
+      excludes: []
     };
   },
   methods: {
     randomCase() {
       this.shuffleImg();
+      let cards = document.getElementsByClassName("card-case");
       setTimeout(() => {
-        let cards = document.getElementsByClassName("card-case");
+        this.getRandomCases();
+      }, 300 + 200 * cards.length);
+      setTimeout(() => {
         for (let i = 0; i < cards.length; i++) {
           setTimeout(() => {
             cards[i].style.transform = "translateX(-200%)";
@@ -277,7 +288,7 @@ export default {
             }, 250 * cards.length);
           }, 200 * i);
         }
-      }, 500);
+      }, 200);
     },
     shuffleImg() {
       let urls = this.froggy_imgs.urls;
@@ -309,6 +320,30 @@ export default {
       // console.log(this.$parent);
       this.$parent.$parent.$parent.$parent.click(id);
     },
+    getRandomCases() {
+      console.log(
+        `/api/cases?ordering=?&limit=${
+          this.cardNum
+        }&exclude_ids=${this.excludes.join()}`
+      );
+      axios
+        .get(
+          `/api/cases?ordering=?&limit=${
+            this.cardNum
+          }&exclude_ids=${this.excludes.join()}`
+        )
+        .then(res => {
+          let cases = res.data.results;
+          let excludes = cases.map(c => c.id);
+          this.cases = cases;
+          // excludes.forEach(id => {
+          //   if (this.excludes.includes(id)) {
+          //     this.excludes = [];
+          //   }
+          // });
+          this.excludes = this.excludes.concat(excludes);
+        });
+    },
     setCardNum() {
       let width = window.innerWidth;
       let num = 3;
@@ -324,6 +359,7 @@ export default {
   mounted() {
     this.setCardNum();
     window.addEventListener("resize", this.setCardNum);
+    this.getRandomCases();
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.setCardNum);

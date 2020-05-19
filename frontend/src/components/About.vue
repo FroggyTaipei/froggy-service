@@ -323,7 +323,7 @@ export default {
       this.$router.push(direction);
     },
     showChartTotalCases: () => {
-      axios.get("/api/cases/insights/case_type_line_monthly").then(res => {
+      axios.get("/api/cases/insights/case_line").then(res => {
         console.log(res);
         let data = res["data"][0]["data"];
         let ts = data.map(d => d[0]);

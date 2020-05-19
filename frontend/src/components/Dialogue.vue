@@ -300,9 +300,10 @@ export default {
 
 .forggyImage-wrapper
   flex: $flex_mainContentPart
-  max-height: 60vh
+  max-height: 80vh
   @media screen and (max-width: $break_small)
     flex: $flex_small_mainContentPart
+    max-height: 60vh
   .froggyImage
     width: 100%
     max-width: 500px
