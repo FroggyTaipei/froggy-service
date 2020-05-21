@@ -77,7 +77,7 @@
                 每當我們接到你透過魔鏡號（或者是直接打電話給我們）告訴我們的服務需求，我們就會立刻發送一封E-mail到你的信箱，確認我們已經收到並開始著手處理；接下來，我們會先將涉及隱私的資訊進行處理，確保每位朋友的身分不會被輕易辨識出來，同時我們會將案件進行初步分類，通常有以下幾種情形：
               </div>
               <br />
-              <Workflow></Workflow>
+              <Workflow v-if="!isSmall"></Workflow>
               <img v-if="isSmall"
                 class="report-flowchart"
                 :src="require('@/assets/images/workflow.svg')"
