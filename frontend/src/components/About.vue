@@ -60,6 +60,7 @@
                 選服魔鏡號一週年報告！
               </h1> -->
               <img
+                id="report"
                 class="report-logo"
                 :src="require('@/assets/images/report_logo.png')"
                 alt="report-logo"
