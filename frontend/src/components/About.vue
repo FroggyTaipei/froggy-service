@@ -56,9 +56,14 @@
         <el-col class="report" :span="22">
           <div class="report-content-wrapper">
             <div class="report-intro">
-              <h1 id="report" class="report-header">
+              <!-- <h1 id="report" class="report-header">
                 選服魔鏡號一週年報告！
-              </h1>
+              </h1> -->
+              <img
+                class="report-logo"
+                :src="require('@/assets/images/report_logo.png')"
+                alt="report-logo"
+              />
               <span>
                 從2019年3月，我們的「選服魔鏡號－台北市議員邱威傑市民服務系統」正式上線以來，已經整整過一年啦！在這一年來，我和我的團隊處理了超過一千一百件的市民服務需求，有來自對台北市的政策建議、交通問題反應、個人問題陳情，我們特別將所有資料視覺化，一起來看看有哪些有趣的結果吧！
               </span>
@@ -72,13 +77,14 @@
                 每當我們接到你透過魔鏡號（或者是直接打電話給我們）告訴我們的服務需求，我們就會立刻發送一封E-mail到你的信箱，確認我們已經收到並開始著手處理；接下來，我們會先將涉及隱私的資訊進行處理，確保每位朋友的身分不會被輕易辨識出來，同時我們會將案件進行初步分類，通常有以下幾種情形：
               </div>
               <br />
-              <img
+              <Workflow></Workflow>
+              <img v-if="isSmall"
                 class="report-flowchart"
                 :src="require('@/assets/images/workflow.svg')"
                 alt=""
               />
               <br />
-              <ul>
+              <ul v-if="isSmall">
                 <li>
                   可處理：沒錯，這些都是跟我們有關的案件！作為台北市議員，我們可以把你所遇到的問題或政策建議，透過舉辦會勘要求市府各局處一同檢討，或納入我們的質詢選題，要求市府做出正式、可追蹤的改善回覆。
                 </li>
@@ -102,6 +108,7 @@
                   從2019年3月至今，我們一共處理了超過一千一百多件的市民服務案件，每個月平均經手近百件，雖然不一定是全台北市議會最多的，但絕對是不少的！市民朋友們的陳情，也都成為我們累積市政監督經驗最重要的養分，我們還會繼續努力下去！
                 </div>
               </div>
+              <el-divider></el-divider>
               <h3 class="chart-title">大家最關心的案件類型</h3>
               <div class="report-chart report-chart-reverse">
                 <div id="chart-casetype" class="chart-graph chart-content">
@@ -111,6 +118,7 @@
                   我們分析了所有透過魔鏡號向我們尋求協助的案件，在七個議題分類中，大家最關心的就是「交通運輸」，超過三分之一以上的朋友跟我們反應包括機車停車、公車行駛安全、待轉區狹小等問題；其次則是「環境建管」中，舉凡違建拆除、低頻噪音、河川污染等都屬於這個案件類型！
                 </div>
               </div>
+              <el-divider></el-divider>
               <h3 class="chart-title">什麼關鍵字最常被提到？</h3>
               <div class="report-chart report-chart-wordcloud">
                 <div id="chart-wordcloud" class="chart-graph chart-content">
@@ -128,13 +136,18 @@
             <h2 class="report-title region-title">你在哪一區？</h2>
             <SvgMap></SvgMap>
             <el-divider></el-divider>
-            <h2 class="report-title">
-              隨機看案件，歡迎進入魔鏡號！<a
-                class="randomcase"
-                @click="randomCase"
-                >換案件</a
-              >
-            </h2>
+            <div class="report-title random-title">
+              <div>
+                隨機看案件，歡迎進入魔鏡號！
+              </div>
+              <a class="randomcase" @click="randomCase">
+                <img
+                  src="https://storage.googleapis.com/froggy-service/frontend/images/about/icon_change.png"
+                  alt="change-icon"
+                />
+              </a>
+            </div>
+
             <CarouselCards ref="carouselCards"></CarouselCards>
           </div>
         </el-col>
@@ -215,6 +228,7 @@
 <script>
 import BottomGameDialog from "./BottomGameDialog.vue";
 import SvgMap from "./SvgMap.vue";
+import Workflow from "./Workflow.vue";
 import CarouselCards from "./CarouselCards.vue";
 var Highcharts = require("highcharts");
 require("highcharts/highcharts-more")(Highcharts);
@@ -222,10 +236,10 @@ require("highcharts/modules/wordcloud.js")(Highcharts);
 
 export default {
   name: "About",
-  components: { BottomGameDialog, SvgMap, CarouselCards },
+  components: { BottomGameDialog, Workflow, SvgMap, CarouselCards },
   data: function() {
     return {
-      chartRendered: [false, false, false],
+      windowWidth: window.innerWidth,
       showMainContent: false,
       dialogVisible: false,
       isDetailLoaded: false,
@@ -248,15 +262,18 @@ export default {
       ],
       froggyservantUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_servant.png",
-      froggyAboutUrl:
-        "https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png",
+      froggyAboutUrl: require("@/assets/images/g2-2_s_center.png"),
+      // froggyAboutUrl:
+      //   "https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png",
       froggySignUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign_s.png"
     };
   },
   mounted() {
+    window.addEventListener("resize", () => {
+      this.windowWidth = window.innerWidth;
+    });
     this.showMainContent = true;
-    console.log(this.$route.hash);
     if (this.$route.hash) {
       setTimeout(() => (location.href = this.$route.hash), 1);
     }
@@ -324,14 +341,10 @@ export default {
     },
     showChartTotalCases: () => {
       axios.get("/api/cases/insights/case_line").then(res => {
-        console.log(res);
         let data = res["data"][0]["data"];
         let ts = data.map(d => d[0]);
         let amount = data.map(d => d[1]);
 
-        // console.log(data);
-        // console.log(ts);
-        // console.log(amount);
         Highcharts.chart("chart-casesum", {
           chart: {
             renderTo: "container",
@@ -399,131 +412,62 @@ export default {
       });
     },
     showChartCaseType: () => {
-      Highcharts.chart("chart-casetype", {
-        chart: {
-          type: "packedbubble"
-        },
-        plotOptions: {
-          series: {
-            cursor: "pointer"
+      axios.get("/api/cases/insights/case_type_packed_bubble/").then(res => {
+        let values = res.data.map(e => e.data[0].value);
+        let zMax = Math.max(...values);
+        let zMin = Math.min(...values);
+        Highcharts.chart("chart-casetype", {
+          chart: {
+            type: "packedbubble"
           },
-          packedbubble: {
-            minSize: window.innerWidth > 768 ? "50px" : "50px",
-            maxSize: window.innerWidth > 768 ? "150px" : "150px",
-            zMin: 0,
-            zMax: 888,
-            layoutAlgorithm: {
-              splitSeries: false,
-              gravitationalConstant: 0.02
+          plotOptions: {
+            series: {
+              cursor: "pointer"
             },
-            dataLabels: {
-              enabled: true,
-              style: {
-                fontSize: "14"
+            packedbubble: {
+              minSize: window.innerWidth > 768 ? "80px" : "50px",
+              maxSize: window.innerWidth > 768 ? "150px" : "150px",
+              zMin: zMin,
+              zMax: zMax,
+              layoutAlgorithm: {
+                splitSeries: false,
+                gravitationalConstant: 0.01
               },
-              format: "{point.name}",
-              filter: {
-                property: "y",
-                operator: ">",
-                value: 10
-              }
-            },
-            events: {
-              click: function(event) {
-                console.log(event);
-                let cat = event.point.name;
-                router.push({ name: "cases", query: { category: cat } });
+              dataLabels: {
+                enabled: true,
+                style: {
+                  fontSize: "14"
+                },
+                format: "{point.name}",
+                filter: {
+                  property: "y",
+                  operator: ">",
+                  value: 0
+                }
+              },
+              events: {
+                click: function(event) {
+                  let cat = event.point.name;
+                  router.push({ name: "cases", query: { category: cat } });
+                }
               }
             }
-          }
-        },
-        title: {
-          // text: "最關心案件類型"
-          text: null
-        },
-        legend: {
-          enabled: false,
-          layout: "vertical",
-          align: "right",
-          verticalAlign: "middle"
-        },
-        tooltip: {
-          pointFormat: "<small>數量：{point.y}</small>"
-        },
-        series: [
-          {
-            name: "交通運輸",
-            data: [
-              {
-                name: "交通運輸",
-                value: 888
-              }
-            ]
           },
-          {
-            name: "公共設施",
-            data: [
-              {
-                name: "公共設施",
-                value: 25
-              }
-            ]
+          title: {
+            // text: "最關心案件類型"
+            text: null
           },
-          {
-            name: "衛福勞動",
-            data: [
-              {
-                name: "衛福勞動",
-                value: 444
-              }
-            ]
+          legend: {
+            enabled: false,
+            layout: "vertical",
+            align: "right",
+            verticalAlign: "middle"
           },
-          {
-            name: "文教科技",
-            data: [
-              {
-                name: "文教科技",
-                value: 66
-              }
-            ]
+          tooltip: {
+            pointFormat: "<small>數量：{point.y}</small>"
           },
-          {
-            name: "環境建管",
-            data: [
-              {
-                name: "環境建管",
-                value: 24
-              }
-            ]
-          },
-          {
-            name: "警消政風",
-            data: [
-              {
-                name: "警消政風",
-                value: 11
-              }
-            ]
-          },
-          {
-            name: "市政議題",
-            data: [
-              {
-                name: "市政議題",
-                value: 11
-              }
-            ]
-          },
-          {
-            name: "其他服務",
-            data: [
-              {
-                name: "其他服務",
-                value: 11
-              }
-            ]
-          }
-        ]
+          series: res.data
+        });
       });
     },
     showChartWordCloud: () => {
@@ -603,6 +547,9 @@ export default {
   computed: {
     reverseCaseProcess() {
       return this.selectedCaseDetails.arranges.slice(0).reverse();
+    },
+    isSmall() {
+      return this.windowWidth <= 768;
     }
   }
 };
@@ -668,8 +615,6 @@ export default {
   @media screen and (max-width: $break_small)
     flex: 2
 
-
-
 article
   .about-content
     color: white
@@ -680,7 +625,7 @@ article
 
 .froggyServantImg
   width: 100%
-  transform: scale(1.5) translate3d(-5px ,-15px,0)
+  transform: scale(1.2) translate3d(-5px ,-15px,0)
   mask-image: linear-gradient(rgba(0, 0, 0, 1.0), 90% ,transparent)
 
 .text-center
@@ -689,9 +634,17 @@ article
 .report
   margin-bottom: 100px
   color: white
+  .report-logo
+    display: block
+    width: 300px
+    margin-bottom: 25px
+    @media screen and (max-width: $break_small)
+      max-width: 90vw
   ul
     // list-style-type: trad-chinese-informal
     list-style-type: cjk-ideographic
+    li
+      margin-bottom: 15px
   .report-flowchart
     width: 100%
   .report-charts
@@ -735,14 +688,15 @@ article
         margin-bottom: 0
     .chart-paragraph
       margin-top: 20px
+  h2.report-title.region-title
+        margin-bottom: 0px
+        margin-block-end: 0px
   .report-region
-    // &> *
-    //   border: solid 1px black
     width: 100%
     display: flex
     flex-direction: row
     align-items: flex-start
-    justify-content: center
+    justify-content: flex-start
     .region-chart
       width: 50%
       display: flex
@@ -770,10 +724,23 @@ article
         padding-left: 0px
         min-height: 300px
   .report-recent-cases
+    margin-top: 20px
     img
       width: 100%
-  .randomcase:hover
-    cursor: pointer
+  .random-title
+    display: flex
+    align-items: center
+    vertical-align: middle
+    @media screen and (max-width: 568px)
+      flex-direction: column
+    div
+      font-size: 1.5em
+      font-weight: bold
+  .randomcase
+    img
+        height: 75px
+    &:hover
+      cursor: pointer
 
 .footer-row
   margin: auto auto 0 auto

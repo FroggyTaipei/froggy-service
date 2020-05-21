@@ -9,7 +9,9 @@
         v-show="isShowIntro"
       >
         <img class="intro-img" :src="logoUrl" />
-        <div class="intro-text" v-show="isShowIntroText" @click="start">START</div>
+        <div class="intro-text" v-show="isShowIntroText" @click="start">
+          START
+        </div>
       </el-row>
     </transition>
     <transition name="fade" @after-leave="redirect">
@@ -21,12 +23,19 @@
         v-show="isShowMainContent"
       >
         <img class="bkg-logo-img" :src="logoUrl" />
-        <VTextMarquee ref="marquee" :speed="70">{{marqueeStr}}</VTextMarquee>
+        <VTextMarquee ref="marquee" :speed="70">{{ marqueeStr }}</VTextMarquee>
         <img class="froggyImage" :src="froggyImageUrl" />
-        <img class="reportArrow" @click="$router.push({name:'about', hash: '#report'})" :src="require('@/assets/images/report_arrow.png')" />
+        <img
+          class="reportArrow"
+          @click="$router.push({ name: 'about', hash: '#report' })"
+          :src="reportArrowImg"
+        />
       </el-row>
     </transition>
-    <BottomGameDialog :title="dialogMessage" v-show="isShowMainContent || isShowBtnBar"></BottomGameDialog>
+    <BottomGameDialog
+      :title="dialogMessage"
+      v-show="isShowMainContent || isShowBtnBar"
+    ></BottomGameDialog>
   </el-container>
 </template>
 
@@ -43,6 +52,7 @@ export default {
       isShowMainContent: false,
       isShowIntroText: false,
       isShowBtnBar: false,
+      windowWidth: window.innerWidth,
       froggyImageStorageUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/froggy/",
       logoUrl:
@@ -189,14 +199,26 @@ export default {
         } else return this.dialogue[this.sceneCount].textContent;
       }
     },
+    reportArrowImg: function() {
+      if (this.windowWidth >= 768) {
+        return require('@/assets/images/report_arrow_lg.png');
+      } else return require('@/assets/images/report_arrow_sm.png');
+    },
     marqueeStr: function() {
       let message = "";
-      this.$store.state.marqueeMessages.forEach( msg => { if (msg.display) { message += `${msg.message} `;}});
+      this.$store.state.marqueeMessages.forEach(msg => {
+        if (msg.display) {
+          message += `${msg.message} `;
+        }
+      });
       return message;
     }
   },
   created: function() {},
   mounted: function() {
+    window.addEventListener('resize',()=>{
+      this.windowWidth = window.innerWidth
+    })
     let visited = this.$store.state.firstVisit;
     if (visited) {
       this.isShowMainContent = true;
@@ -307,21 +329,21 @@ export default {
   .froggyImage
     width: 100%
     max-width: 500px
-    // max-height: 500px
     transform: translateY(1000px)
     animation: flyin 1.5s forwards
     @media screen and (max-width: $break_small)
+      mask-image: linear-gradient(rgba(0, 0, 0, 1.0), 90% ,transparent)
       animation: flyin-mobile 1.5s forwards
       -webkit-animation: flyin-mobile 1.5s forwards
   .reportArrow
     position: absolute
     right: 50px
     bottom: 20px
-    width: 200px
+    width: 25vw
     &:hover
       cursor: pointer
     @media screen and (max-width: $break_small)
-      width: 100px
+      width: 30vw
       right: 20px
       bottom: 0px
 

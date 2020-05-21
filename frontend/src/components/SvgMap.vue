@@ -218,6 +218,7 @@
     }
   }
   .region-cases {
+    margin-top: 20px;
     ul {
       list-style-type: decimal;
       margin: 0;
@@ -240,10 +241,7 @@
     padding-left: 20px;
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-  }
-  svg {
-    margin-top: 20px;
+    justify-content: flex-start;
   }
   svg path,
   svg text {
@@ -281,7 +279,6 @@
     svg {
       height: 300px;
       margin-bottom: 20px;
-      margin-top: 0;
     }
     .region-chart {
       width: 100%;
@@ -458,7 +455,7 @@ export default {
       return this.dataAllDists[this.selectedDist];
     },
     breakLine() {
-      return window.innerWidth < 500;
+      return window.innerWidth < 768;
     }
   },
   mounted() {

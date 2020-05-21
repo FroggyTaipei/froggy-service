@@ -6,7 +6,7 @@
           src=""
           alt=""
           :src="
-            require(`@/assets/images/froggy_report_${froggy_imgs.urls[i]}.png`)
+            `https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_report_${froggy_imgs.urls[i]}.png`
           "
         />
       </div>
@@ -129,7 +129,7 @@
       width: 100%;
       height: 100%;
       img {
-        height: 70%;
+        height: 90%;
       }
     }
   }
@@ -269,16 +269,24 @@ export default {
       cardNum: 3,
       froggy_imgs: { urls: [...Array(6).keys()].map(i => i + 1) },
       cases: [],
-      excludes: []
+      excludes: [],
+      timer: null,
+      clickable: true
     };
   },
   methods: {
     randomCase() {
-      this.shuffleImg();
       let cards = document.getElementsByClassName("card-case");
+
+      this.timer = setTimeout(() => {
+        this.clickable = true;
+      }, 400* cards.length);
+      if (!this.clickable) return;
+
+      this.shuffleImg();
       setTimeout(() => {
         this.getRandomCases();
-      }, 300 + 200 * cards.length);
+      }, 500 + 200 * cards.length);
       setTimeout(() => {
         for (let i = 0; i < cards.length; i++) {
           setTimeout(() => {
@@ -288,7 +296,7 @@ export default {
             }, 250 * cards.length);
           }, 200 * i);
         }
-      }, 200);
+      }, 400);
     },
     shuffleImg() {
       let urls = this.froggy_imgs.urls;
@@ -298,6 +306,7 @@ export default {
       }
       this.froggy_imgs = {}; //update template
       this.froggy_imgs["urls"] = urls;
+      this.clickable = false;
     },
     mousemove(e) {
       let card = e.target;
@@ -317,15 +326,9 @@ export default {
       card.classList.remove("active");
     },
     click(id) {
-      // console.log(this.$parent);
       this.$parent.$parent.$parent.$parent.click(id);
     },
     getRandomCases() {
-      console.log(
-        `/api/cases?ordering=?&limit=${
-          this.cardNum
-        }&exclude_ids=${this.excludes.join()}`
-      );
       axios
         .get(
           `/api/cases?ordering=?&limit=${
@@ -336,13 +339,9 @@ export default {
           let cases = res.data.results;
           let excludes = cases.map(c => c.id);
           this.cases = cases;
-          // excludes.forEach(id => {
-          //   if (this.excludes.includes(id)) {
-          //     this.excludes = [];
-          //   }
-          // });
           this.excludes = this.excludes.concat(excludes);
         });
+      this.clickable = false;
     },
     setCardNum() {
       let width = window.innerWidth;
