@@ -262,9 +262,7 @@ export default {
       ],
       froggyservantUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_servant.png",
-      froggyAboutUrl: require("@/assets/images/g2-2_s_center.png"),
-      // froggyAboutUrl:
-      //   "https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png",
+      froggyAboutUrl: "https://storage.cloud.google.com/froggy-service/frontend/images/about/g2-2_s_center.png",
       froggySignUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign_s.png"
     };
