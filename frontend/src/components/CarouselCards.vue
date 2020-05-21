@@ -278,10 +278,11 @@ export default {
     randomCase() {
       let cards = document.getElementsByClassName("card-case");
 
-      this.timer = setTimeout(() => {
-        this.clickable = true;
-      }, 400* cards.length);
-      if (!this.clickable) return;
+      // this.timer = setTimeout(() => {
+      //   this.clickable = true;
+      // }, 400* cards.length);
+      // if (!this.clickable) return;
+      // this.clickable = false;
 
       this.shuffleImg();
       setTimeout(() => {
@@ -341,7 +342,6 @@ export default {
           this.cases = cases;
           this.excludes = this.excludes.concat(excludes);
         });
-      this.clickable = false;
     },
     setCardNum() {
       let width = window.innerWidth;
