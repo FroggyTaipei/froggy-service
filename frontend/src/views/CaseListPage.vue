@@ -75,7 +75,9 @@ $tag_selected_color: #dc5f84
   overflow: hidden
 
 .row-table
-  min-height: 80vh
+  min-height: 60vh
+  max-height: 60vh
+  // height: 80vh
 
 table
   width: 100%
@@ -127,6 +129,8 @@ table
     overflow: scroll
     border-bottom: 2px solid white
     margin-bottom: 50px
+    @media screen and (max-width: $break_small)
+      max-height: 40vh
     &::-webkit-scrollbar
       width: 0 !important
 

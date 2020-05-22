@@ -22,6 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 axios.defaults.xsrfCookieName = 'csrftoken'
 axios.defaults.xsrfHeaderName = 'X-CSRFToken'
 window.axios = require('axios')
+window.router = router
 
 Vue.config.productionTip = false
 Vue.prototype.$moment = moment
