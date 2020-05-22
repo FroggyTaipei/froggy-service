@@ -233,11 +233,11 @@ def get_region_case_count_and_top_type_data():
                 'case_counts': sum(qs.values_list('count', flat=True))
             })
     qs_all = (
-            Case.objects.all()
-                .values('type__name').order_by()
-                .annotate(count=Count('id'))
-                .order_by('-count')
-        )
+        Case.objects.all()
+            .values('type__name').order_by()
+            .annotate(count=Count('id'))
+            .order_by('-count')
+    )
     if qs_all:
         results.append({
             'region_name': '總計',
