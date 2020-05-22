@@ -235,7 +235,7 @@ export default {
       this.shuffleImg();
       setTimeout(() => {
         this.getRandomCases();
-      }, 500 + 200 * cards.length);
+      }, 350 * cards.length);
       setTimeout(() => {
         for (let i = 0; i < cards.length; i++) {
           setTimeout(() => {
