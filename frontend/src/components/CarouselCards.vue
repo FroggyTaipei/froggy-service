@@ -242,10 +242,10 @@ export default {
             cards[i].style.transform = "translateX(-200%)";
             setTimeout(() => {
               cards[i].style.transform = "translateX(0)";
-            }, 250 * cards.length);
+            }, 300 * cards.length);
           }, 200 * i);
         }
-      }, 400);
+      }, 350);
     },
     shuffleImg() {
       let urls = this.froggy_imgs.urls;
