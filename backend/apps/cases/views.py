@@ -1,11 +1,17 @@
+import pickle
 from django.db.models import Q
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet, ViewSet
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
+
+from django_redis import get_redis_connection
 
 from apps.users.authentication import AccountKitUserAuthentication
 from apps.arranges.models import Arrange
@@ -21,9 +27,10 @@ from .models import (
     Type,
     Region,
     Case,
-    State,
 )
 from .schemas import vuetable_schema
+from .filters import ExcludeIDFilter, CaseRegionFilter, CaseTypeFilter
+from . import insights
 
 
 class RegionViewSet(ReadOnlyModelViewSet):
@@ -32,12 +39,20 @@ class RegionViewSet(ReadOnlyModelViewSet):
     permission_classes = []
     http_method_names = ['get']
 
+    @method_decorator(cache_page(60 * 60 * 24 * 14))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
+
 
 class TypeViewSet(ReadOnlyModelViewSet):
     queryset = Type.objects.all()
     serializer_class = TypeSerializer
     permission_classes = []
     http_method_names = ['get']
+
+    @method_decorator(cache_page(60 * 60 * 24 * 14))
+    def dispatch(self, request, *args, **kwargs):
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CaseViewSet(ModelViewSet):
@@ -46,10 +61,11 @@ class CaseViewSet(ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
     http_method_names = ['get', 'post', 'retrieve']
     pagination_class = LimitOffsetPagination
-    filter_backends = (OrderingFilter, SearchFilter)
+    filter_backends = (OrderingFilter, SearchFilter, ExcludeIDFilter, CaseTypeFilter, CaseRegionFilter)
     search_fields = ('id', 'number', 'type__name', 'location', 'title', 'content',
                      'disapprove_info', 'arranges__title', 'arranges__content')
     ordering_fields = ('id', 'number', 'type')
+    ordering = ('?',)
 
     def get_serializer_class(self):
         if self.action in ['create', 'update']:
@@ -117,3 +133,58 @@ class CaseViewSet(ModelViewSet):
             'count': count,
         }
         return Response(result, status=status.HTTP_200_OK)
+
+
+class CaseInsightViewSet(ViewSet):
+    http_method_names = ['get']
+    permission_classes = [AllowAny]
+
+    @staticmethod
+    def get_data_from_cache(func):
+        cache = get_redis_connection('default')
+        cached_data = cache.get(func.__name__)
+        return pickle.loads(cached_data) if cached_data else func()
+
+    @action(methods=['GET'], detail=False)
+    def case_type_pie(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_type_pie_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_state_pie(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_state_pie_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_pie(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_region_pie_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_state_packed_bubble(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_state_packed_bubble_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_type_packed_bubble(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_type_packed_bubble_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_packed_bubble(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_region_packed_bubble_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_line(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_line_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_type_line(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_type_line_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_line(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_region_line_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_content_wordcloud(self, request):
+        return Response(self.get_data_from_cache(insights.get_case_content_wordcloud_data))
+
+    @action(methods=['GET'], detail=False)
+    def case_region_case_count_and_top_type(self, request):
+        return Response(self.get_data_from_cache(insights.get_region_case_count_and_top_type_data))

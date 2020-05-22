@@ -1,46 +1,57 @@
 from suit_dashboard import Box
 
-from apps.cases.widgets import (
-    CaseStatePie,
-    CaseRegionPie,
-    CaseTypePie,
-    CaseTypeLineMonthly,
-    CaseRegionLineMonthly,
-    CaseContentWordCloud,
-)
+from apps.cases import widgets
 
 
 class CaseStatePieBox(Box):
-    title = '現在是處理到哪裡？'
+    title = '案件狀態百分比'
     description = ''
-    widgets = [CaseStatePie()]
+    widgets = [widgets.CaseStatePie()]
+
+
+class CaseStatePackedBubbleBox(Box):
+    title = '狀態案件數'
+    description = ''
+    widgets = [widgets.CaseStatePackedBubble()]
 
 
 class CaseRegionPieBox(Box):
-    title = '你的使用者多在哪些選區？'
+    title = '地區案件百分比'
     description = ''
-    widgets = [CaseRegionPie()]
+    widgets = [widgets.CaseRegionPie()]
+
+
+class CaseRegionPackedBubbleBox(Box):
+    title = '地區案件數'
+    description = ''
+    widgets = [widgets.CaseRegionPackedBubble()]
 
 
 class CaseRegionLineBox(Box):
-    title = '每個月處理了多少案件？（按選區）'
+    title = '累計案件數（按選區）'
     description = ''
-    widgets = [CaseRegionLineMonthly()]
+    widgets = [widgets.CaseRegionLine()]
 
 
 class CaseTypePieBox(Box):
-    title = '你的使用者都在意哪些議題？'
+    title = '分類案件百分比'
     description = ''
-    widgets = [CaseTypePie()]
+    widgets = [widgets.CaseTypePie()]
+
+
+class CaseTypePackedBubbleBox(Box):
+    title = '分類案件數'
+    description = ''
+    widgets = [widgets.CaseTypePackedBubble()]
 
 
 class CaseTypeLineBox(Box):
-    title = '每個月處理了多少案件？（按類別）'
+    title = '累計案件數（按類別）'
     description = ''
-    widgets = [CaseTypeLineMonthly()]
+    widgets = [widgets.CaseTypeLine()]
 
 
 class CaseContentWordCloudBox(Box):
     title = '最常出現的關鍵字'
     description = ''
-    widgets = [CaseContentWordCloud()]
+    widgets = [widgets.CaseContentWordCloud()]

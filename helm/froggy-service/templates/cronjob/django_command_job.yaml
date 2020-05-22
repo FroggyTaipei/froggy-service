@@ -1,0 +1,52 @@
+{{- $image := printf "%s:%s" .Values.backend.image.repository .Values.backend.image.tag }}
+{{- $service_account_name := .Values.serviceAccount.secretName }}
+{{- $service_account_mount_path := .Values.serviceAccount.mountPath }}
+{{- $env_name := include "froggy-service.environment" . }}
+
+{{- range $job := .Values.cronjob }}
+{{- if $job.enable }}
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ $job.name }}
+spec:
+  schedule: {{ $job.schedule }}
+  backoffLimit: {{ default 3 $job.backoffLimit }}
+  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          {{- if $job.nodeSelector }}
+          nodeSelector:
+{{ toYaml $job.nodeSelector | indent 12 }}
+          {{- end }}
+          volumes:
+            - name: {{ $service_account_name }}
+              secret:
+                secretName: {{ $service_account_name }}
+          containers:
+            - name: {{ $job.name }}
+              image: {{ $image }}
+              {{- with $job.command }}
+              command:
+{{ toYaml . | indent 16 }}
+              {{- end }}
+              {{- with $job.args }}
+              args:
+{{ toYaml . | indent 16 }}
+              {{- end }}
+              resources:
+{{ toYaml $job.resources | indent 16 }}
+              volumeMounts:
+                - name: {{ $service_account_name }}
+                  mountPath: {{ $service_account_mount_path }}
+                  readOnly: true
+              envFrom:
+                - secretRef:
+                    name: {{ $env_name }}
+          restartPolicy: {{ default "OnFailure" $job.restartPolicy }}
+{{- end }}
+{{- end }}

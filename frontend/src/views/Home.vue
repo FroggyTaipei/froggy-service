@@ -88,7 +88,7 @@ form
     font-size: x-large
     padding: 0
     background-color: transparent !important
-    max-width: 125px;
+    max-width: 125px
     color: #fff
     &::-webkit-input-placeholder
       color: #fff
