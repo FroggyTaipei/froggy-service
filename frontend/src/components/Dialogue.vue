@@ -201,8 +201,8 @@ export default {
     },
     reportArrowImg: function() {
       if (this.windowWidth >= 768) {
-        return require('@/assets/images/report_arrow_lg.png');
-      } else return require('@/assets/images/report_arrow_sm.png');
+        return "https://storage.googleapis.com/froggy-service/frontend/images/report_arrow_lg.png";
+      } else return "https://storage.googleapis.com/froggy-service/frontend/images/report_arrow_sm.png";
     },
     marqueeStr: function() {
       let message = "";

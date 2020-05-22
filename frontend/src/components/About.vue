@@ -49,7 +49,7 @@
               <img class="signImg" :src="froggySignUrl" />
             </el-col>
             <el-col class="hidden-xs-only" :span="8" :offset="1">
-              <img class="froggyServantImg" :src="froggyAboutUrl" />
+              <img class="froggyServantImg" src="https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png" />
             </el-col>
           </el-row>
         </el-col>
@@ -62,7 +62,7 @@
               <img
                 id="report"
                 class="report-logo"
-                :src="require('@/assets/images/report_logo.png')"
+                src="https://storage.googleapis.com/froggy-service/frontend/images/about/report_logo.png"
                 alt="report-logo"
               />
               <span>
@@ -81,7 +81,7 @@
               <Workflow v-if="!isSmall"></Workflow>
               <img v-if="isSmall"
                 class="report-flowchart"
-                :src="require('@/assets/images/workflow.svg')"
+                src="https://storage.googleapis.com/froggy-service/frontend/images/about/workflow.svg"
                 alt=""
               />
               <br />
@@ -126,7 +126,7 @@
                   <!-- <img :src="require('@/assets/images/chart3.jpg')" alt="" /> -->
                 </div>
                 <div class="chart-text chart-content">
-                  你知道嗎？「機車」是過去一年來，大家最常在魔鏡號跟我們提到的關鍵字，一共出現超過550次，出現在危險路段、禁行機車段、專用道等問題；第二名的關鍵字是「停車」，包含停車格太少、佔用通道；第三名則是「人行道」。點一下關鍵字，你就可以看到跟它相關的案件！
+                  你知道嗎？「機車」是過去一年來，大家最常在魔鏡號跟我們提到的關鍵字，一共出現超過550次，出現在危險路段、禁行機車段、專用道等問題；第二名的關鍵字是「停車」，包含停車格太少、佔用通道；第三名則是「交通」。點一下關鍵字，你就可以看到跟它相關的案件！
                 </div>
               </div>
               <!-- <div class="chart-paragraph">

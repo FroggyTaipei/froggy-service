@@ -646,11 +646,12 @@ export default {
   props: {},
   data() {
     return {
-      currentDetail: "",
+      currentDetail:
+        "",
       details: [
-        "<h3>可處理</h3> 沒錯，這些都是跟我們有關的案件！作為台北市議員，我們可以把你所遇到的問題或政策建議，透過舉辦會勘要求市府各局處一同檢討，或納入我們的質詢選題，要求市府做出正式、可追蹤的改善回覆。",
-        "<h3>可處理但涉及中央或其他縣市</h3>這些事情都是很重要的公共議題，但是它們可能不完全在台北市議員能夠處理的範圍。所以，我們會聯絡相關的辦公室，無論是立法委員、其他縣市的縣市議員辦公室，只要我們找得到人的，就一定會幫忙轉介你所遇到的問題，請我的好朋友們協助解決！",
-        "<h3>無法處理</h3>等等，你是不是搞錯了什麼？如果遇到這個分類，通常你是提出了一些與公益無關的要求，或者是與台北市議員職務無關的訊息。我們有遇過幫忙做寒假作業、腦內思想被讀取（？）、喬當兵時間等等的，實在是不好意思，我們會給你一個大大的「不受理」！"
+        "<div style='font-size: 1.17em; margin-bottom: 10px; font-weight: bold;'>可處理</div> <div style='text-align: left;'>沒錯，這些都是跟我們有關的案件！作為台北市議員，我們可以把你所遇到的問題或政策建議，透過舉辦會勘要求市府各局處一同檢討，或納入我們的質詢選題，要求市府做出正式、可追蹤的改善回覆。</div>",
+        "<div style='font-size: 1.17em; margin-bottom: 10px; font-weight: bold;'>可處理但涉及中央或其他縣市</div><div style='text-align: left;'>這些事情都是很重要的公共議題，但是它們可能不完全在台北市議員能夠處理的範圍。所以，我們會聯絡相關的辦公室，無論是立法委員、其他縣市的縣市議員辦公室，只要我們找得到人的，就一定會幫忙轉介你所遇到的問題，請我的好朋友們協助解決！</div>",
+        "<div style='font-size: 1.17em; margin-bottom: 10px; font-weight: bold;'>無法處理</div><div style='text-align: left;'>等等，你是不是搞錯了什麼？如果遇到這個分類，通常你是提出了一些與公益無關的要求，或者是與台北市議員職務無關的訊息。我們有遇過幫忙做寒假作業、腦內思想被讀取（？）、喬當兵時間等等的，實在是不好意思，我們會給你一個大大的「不受理」！</div>"
       ]
     };
   },
@@ -705,13 +706,13 @@ export default {
   display: none;
   width: 40vw;
   padding: 20px;
-  background-color: rgba(20,20,20,0.9);
+  background-color: rgba(20, 20, 20, 0.9);
   color: #fff;
   font-size: 1rem;
-  text-align: center;
   border-radius: 6px;
   position: fixed;
   z-index: 1;
+  text-align: center;
 }
 
 .tooltiptext.active {

@@ -18,7 +18,7 @@
       >
         <img
           class="card-logo"
-          :src="require('@/assets/images/card_logo.png')"
+          src="https://storage.googleapis.com/froggy-service/frontend/images/about/card_logo.png"
           alt=""
         />
         <div class="card-content">
@@ -54,58 +54,6 @@
       </div>
     </div>
   </div>
-
-  <!-- <carousel
-    class="carousel"
-    :perPage="1"
-    :perPageCustom="[
-      [0, 1],
-      [768, 2],
-      [1024, 3]
-    ]"
-    :scrollPerPage="false"
-    :centerMode="true"
-    :autoplay="false"
-    :loop="false"
-    :navigationEnabled="true"
-    :spacePadding="25"
-    :paginationEnabled="false"
-    :paginationPosition="`bottom`"
-  >
-    <slide v-for="i in 5">
-      <div class="card-case" @mousemove="mousemove" @mouseleave="mouseleave" @click="click(i)">
-        <img
-          class="card-logo"
-          :src="require('@/assets/images/card_logo.png')"
-          alt=""
-        />
-        <div class="card-content">
-          <div class="card-info">
-            <div class="card-info-title">案件標題：案件標題{{ i }}</div>
-            <div class="card-info-title">時間：2020 年 02 月 26 日</div>
-            <div class="card-info-title">地點：台北市信義區鬍鬚張附近</div>
-          </div>
-          <hr />
-          <div class="card-details">
-            <div class="card-info-title">案件內容</div>
-            <div class="card-details-text">
-              小弟我是台北市民，常常看到很多人亂倒垃圾，請問大家會不會覺得台北市的人太沒道德？
-            </div>
-          </div>
-          <hr />
-          <div class="card-progress">
-            <div class="card-info-title">案件處理進度</div>
-            <div class="card-progress-text">
-              無法幫忙，謝謝指教
-            </div>
-            <div class="card-progress-icon">
-              處理進度：已結案
-            </div>
-          </div>
-        </div>
-      </div>
-    </slide>
-  </carousel> -->
 </template>
 
 <style lang="scss" scoped>
