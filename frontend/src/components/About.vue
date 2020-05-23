@@ -168,9 +168,7 @@
               案件標題：{{ selectedCaseDetails.title }}
             </div>
             <div class="case-content-date">
-              時間：{{ selectedCaseDetails.create_time.split("-")[0] }} 年
-              {{ selectedCaseDetails.create_time.split("-")[1] }} 月
-              {{ selectedCaseDetails.create_time.split("-")[2] }} 日
+              時間：{{ selectedCaseDetails.create_time.split("-")[0] }} 年 {{ selectedCaseDetails.create_time.split("-")[1] }} 月 {{ selectedCaseDetails.create_time.split("-")[2] }} 日
             </div>
             <div
               class="case-content-location"
