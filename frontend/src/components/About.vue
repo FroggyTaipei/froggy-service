@@ -237,6 +237,7 @@ var Highcharts = require("highcharts");
 require("highcharts/highcharts-more")(Highcharts);
 require("highcharts/modules/wordcloud.js")(Highcharts);
 
+
 export default {
   name: "About",
   components: { BottomGameDialog, Workflow, SvgMap, CarouselCards },
@@ -405,11 +406,12 @@ export default {
           },
           xAxis: {
             type: "datetime",
-            tickInterval: 150,
             categories: ts,
             labels: {
               format: "{value:%Y}"
-            }
+            },
+            tickInterval: 150,
+            minTickInterval: 100
           },
           legend: {
             enabled: false,
