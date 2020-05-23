@@ -9,7 +9,9 @@
         v-show="isShowIntro"
       >
         <img class="intro-img" :src="logoUrl" />
-        <div class="intro-text" v-show="isShowIntroText" @click="start">START</div>
+        <div class="intro-text" v-show="isShowIntroText" @click="start">
+          START
+        </div>
       </el-row>
     </transition>
     <transition name="fade" @after-leave="redirect">
@@ -21,14 +23,19 @@
         v-show="isShowMainContent"
       >
         <img class="bkg-logo-img" :src="logoUrl" />
-        <VTextMarquee
-          ref="marquee"
-          :speed="70"
-        >{{marqueeMessage[0]}} {{marqueeMessage[1]}} {{marqueeMessage[2]}} {{marqueeMessage[3]}} {{marqueeMessage[4]}}</VTextMarquee>
+        <VTextMarquee ref="marquee" :speed="70">{{ marqueeStr }}</VTextMarquee>
         <img class="froggyImage" :src="froggyImageUrl" />
+        <img
+          class="reportArrow"
+          @click="$router.push({ name: 'about', hash: '#report' })"
+          :src="reportArrowImg"
+        />
       </el-row>
     </transition>
-    <BottomGameDialog :title="dialogMessage" v-show="isShowMainContent || isShowBtnBar"></BottomGameDialog>
+    <BottomGameDialog
+      :title="dialogMessage"
+      v-show="isShowMainContent || isShowBtnBar"
+    ></BottomGameDialog>
   </el-container>
 </template>
 
@@ -45,6 +52,7 @@ export default {
       isShowMainContent: false,
       isShowIntroText: false,
       isShowBtnBar: false,
+      windowWidth: window.innerWidth,
       froggyImageStorageUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/froggy/",
       logoUrl:
@@ -100,13 +108,6 @@ export default {
           ],
           froggyImage: ["night_1.png", "night_2.png", "night_3.png"]
         }
-      ],
-      marqueeMessage: [
-        "［系統］就職一週年啦！趕快點「呱吉做什麼」，看看我們有沒有做好、做滿！",
-        "［活動］Merry Christmas！你要金卡片還是銀卡片，平安夜香堤廣場見！",
-        "［中獎］恭喜您成功儲值 台灣價值，贈送您防滲透盔甲套裝（7日）！",
-        "［拜票］2022台北市長候選人邱威傑，需要您的每一份支持！",
-        "［告捷］歡樂無法黨攻得一席首都議員，榮譽總書記柚子表示欣慰！"
       ]
     };
   },
@@ -197,10 +198,27 @@ export default {
           return this.dialogue[this.sceneCount].textContent_mobile;
         } else return this.dialogue[this.sceneCount].textContent;
       }
+    },
+    reportArrowImg: function() {
+      if (this.windowWidth >= 768) {
+        return "https://storage.googleapis.com/froggy-service/frontend/images/report_arrow_lg.png";
+      } else return "https://storage.googleapis.com/froggy-service/frontend/images/report_arrow_sm.png";
+    },
+    marqueeStr: function() {
+      let message = "";
+      this.$store.state.marqueeMessages.forEach(msg => {
+        if (msg.display) {
+          message += `${msg.message} `;
+        }
+      });
+      return message;
     }
   },
   created: function() {},
   mounted: function() {
+    window.addEventListener('resize',()=>{
+      this.windowWidth = window.innerWidth
+    })
     let visited = this.$store.state.firstVisit;
     if (visited) {
       this.isShowMainContent = true;
@@ -304,17 +322,30 @@ export default {
 
 .forggyImage-wrapper
   flex: $flex_mainContentPart
+  max-height: 80vh
   @media screen and (max-width: $break_small)
     flex: $flex_small_mainContentPart
+    max-height: 60vh
   .froggyImage
     width: 100%
     max-width: 500px
-    // max-height: 500px
     transform: translateY(1000px)
     animation: flyin 1.5s forwards
     @media screen and (max-width: $break_small)
+      mask-image: linear-gradient(rgba(0, 0, 0, 1.0), 90% ,transparent)
       animation: flyin-mobile 1.5s forwards
       -webkit-animation: flyin-mobile 1.5s forwards
+  .reportArrow
+    position: absolute
+    right: 50px
+    bottom: 20px
+    width: 25vw
+    &:hover
+      cursor: pointer
+    @media screen and (max-width: $break_small)
+      width: 30vw
+      right: 20px
+      bottom: 0px
 
 .row-dialog
   flex: $flex_dialogPart

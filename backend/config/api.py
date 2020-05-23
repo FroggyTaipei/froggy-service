@@ -6,7 +6,9 @@ from apps.cases.views import (
     TypeViewSet,
     RegionViewSet,
     CaseViewSet,
+    CaseInsightViewSet,
 )
+from apps.marquees.views import MarqueeMessageViewSet
 
 
 # Settings
@@ -24,5 +26,9 @@ api.register(r'files/temp', TempFileViewSet)
 
 # Cases API
 api.register(r'cases', CaseViewSet)
+api.register(r'cases/insights', CaseInsightViewSet, base_name='cases-insights')
 api.register(r'types', TypeViewSet)
 api.register(r'regions', RegionViewSet)
+
+# Marquees API
+api.register(r'marquees', MarqueeMessageViewSet)

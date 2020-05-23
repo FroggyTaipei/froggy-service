@@ -16,19 +16,24 @@ On Linux, make sure you have the latest version of [Compose](https://docs.docker
 
 **Linux Containers**
 
-The Linux stack uses `Python`, `Node.js`, with `Postgres` for storage and `Nginx` for local proxying.
+The Linux stack uses `Python`, `Node.js`, with `Postgres` for storage, `Redis` for caching and `Nginx` for local proxying.
+
+To save your time from image rebuild, pull the cache image from our [DockerHub registry](https://hub.docker.com/r/froggytaipei):
+```
+$ make pull-cache
+```
 
 Create your own `.env` file at root, e.g. using `.env.example`:
 ```
-$ sudo cp .env.example .env
+$ cp .env.example .env
 ```
 
-Use `--build` to rebuild image, `-d` to run containers in the background :
+Start services, add `--build` to rebuild image, `-d` to run containers in the background :
 ```
-$ docker-compose up --build
+$ docker-compose up
 ```
 
-Use `-v` to clean volume while stop containers:
+Stop services, add `-v` to clean volume while stop containers:
 ```
 $ docker-compose down -v
 ```

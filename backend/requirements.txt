@@ -3,14 +3,14 @@ django-environ==0.4.5
 flake8==3.5.0
 gevent==1.3.6
 gunicorn==19.9.0
-Pillow==6.2.0
+Pillow==7.1.2
 psycopg2-binary==2.7.5
 requests==2.20.0
 raven==6.9.0
 PyYAML==5.1.1
 djangorestframework==3.9.4
 django-ckeditor==5.6.1
-django-storages==1.7.1
+django-storages[google]==1.9.1
 django-suit==0.2.26
 django-suit-ckeditor==0.0.2
 django-fsm==2.6.0
@@ -25,9 +25,9 @@ django-suit-daterange-filter==0.0.6
 django-suit-dashboard==2.0.6
 jieba==0.39
 django-tagulous==0.13.2
-google-cloud-storage==1.13.2
 slackclient==1.3.0
 slackeventsapi==2.1.0
 Unidecode==1.0.23
 python-dateutil==2.8.1
 firebase-admin==4.0.0
+django-redis==4.11.0

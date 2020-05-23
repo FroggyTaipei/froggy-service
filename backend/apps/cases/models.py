@@ -4,7 +4,6 @@ from django.utils import timezone, formats
 from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.urls import reverse
-from django.core.files.base import ContentFile
 from django.db.models import (
     Model,
     CASCADE,
@@ -24,8 +23,7 @@ from tagulous.models import TagField
 
 from apps.cases.slack import new_case_notify
 from apps.mails.models import SendGridMail, SendGridMailTemplate
-from apps.files.models import TempFile, CaseFile
-from apps.files.storages import TempStorage
+from apps.files.models import TempFile
 
 
 class Type(Model):

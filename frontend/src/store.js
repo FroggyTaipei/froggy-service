@@ -20,7 +20,8 @@ const store = new Vuex.Store({
     isMobile: false,
     isInApp: false,
     authentication: false,
-    browser: ''
+    browser: '',
+    marqueeMessages: []
   },
   getters: {},
   mutations: {
@@ -59,6 +60,9 @@ const store = new Vuex.Store({
     },
     setAuthenticated (state, auth) {
       state.authentication = auth
+    },
+    setMarqueeMessages (state, marqueeMessages) {
+      state.marqueeMessages = marqueeMessages;
     }
   },
   actions: {
@@ -70,6 +74,11 @@ const store = new Vuex.Store({
     getTypeList (context) {
       return axios.get('/api/types')
         .then(response => { context.commit('setTypes', response.data) })
+        .catch(e => { console.log(e) })
+    },
+    getMarqueeMessages (context) {
+      return axios.get('/api/marquees')
+        .then(response => { context.commit('setMarqueeMessages', response.data) })
         .catch(e => { console.log(e) })
     }
   }

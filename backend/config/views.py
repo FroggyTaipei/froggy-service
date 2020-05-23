@@ -11,14 +11,17 @@ class DashboardMainView(DashboardView):
     grid = Grid(
         Row(
             Column(boxes.CaseStatePieBox(), width=4),
-            Column(boxes.CaseContentWordCloudBox(), width=8),
-        ),
-        Row(
             Column(boxes.CaseTypePieBox(), width=4),
-            Column(boxes.CaseTypeLineBox(), width=8),
+            Column(boxes.CaseRegionPieBox(), width=4),
         ),
         Row(
-            Column(boxes.CaseRegionPieBox(), width=4),
-            Column(boxes.CaseRegionLineBox(), width=8),
+            Column(boxes.CaseStatePackedBubbleBox(), width=4),
+            Column(boxes.CaseTypePackedBubbleBox(), width=4),
+            Column(boxes.CaseRegionPackedBubbleBox(), width=4),
+        ),
+        Row(
+            Column(boxes.CaseContentWordCloudBox(), width=4),
+            Column(boxes.CaseTypeLineBox(), width=4),
+            Column(boxes.CaseRegionLineBox(), width=4),
         ),
     )
