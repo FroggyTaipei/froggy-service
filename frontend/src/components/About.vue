@@ -49,7 +49,10 @@
               <img class="signImg" :src="froggySignUrl" />
             </el-col>
             <el-col class="hidden-xs-only" :span="8" :offset="1">
-              <img class="froggyServantImg" src="https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png" />
+              <img
+                class="froggyServantImg"
+                src="https://storage.googleapis.com/froggy-service/frontend/images/about/g2-2_s_center.png"
+              />
             </el-col>
           </el-row>
         </el-col>
@@ -79,7 +82,8 @@
               </div>
               <br />
               <Workflow v-if="!isSmall"></Workflow>
-              <img v-if="isSmall"
+              <img
+                v-if="isSmall"
                 class="report-flowchart"
                 src="https://storage.googleapis.com/froggy-service/frontend/images/about/workflow.svg"
                 alt=""
@@ -233,6 +237,7 @@ var Highcharts = require("highcharts");
 require("highcharts/highcharts-more")(Highcharts);
 require("highcharts/modules/wordcloud.js")(Highcharts);
 
+
 export default {
   name: "About",
   components: { BottomGameDialog, Workflow, SvgMap, CarouselCards },
@@ -261,7 +266,8 @@ export default {
       ],
       froggyservantUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_servant.png",
-      froggyAboutUrl: "https://storage.cloud.google.com/froggy-service/frontend/images/about/g2-2_s_center.png",
+      froggyAboutUrl:
+        "https://storage.cloud.google.com/froggy-service/frontend/images/about/g2-2_s_center.png",
       froggySignUrl:
         "https://storage.googleapis.com/froggy-service/frontend/images/about/froggy_sign_s.png"
     };
@@ -311,12 +317,53 @@ export default {
       },
       legend: {
         itemStyle: {
-          font: "9pt Trebuchet MS, Verdana, sans-serif",
+          font:
+            "PingFangSC-Regular, Microsoft JhengHei, DejaVu Sans, sans-serif",
           color: "black"
         },
         itemHoverStyle: {
           color: "gray"
         }
+      },
+      lang: {
+        loading: "讀取中...",
+        months: [
+          "1月",
+          "2月",
+          "3月",
+          "4月",
+          "5月",
+          "6月",
+          "7月",
+          "8月",
+          "9月",
+          "10月",
+          "11月",
+          "12月"
+        ],
+        shortMonths: [
+          "1月",
+          "2月",
+          "3月",
+          "4月",
+          "5月",
+          "6月",
+          "7月",
+          "8月",
+          "9月",
+          "10月",
+          "11月",
+          "12月"
+        ],
+        weekdays: [
+          "星期日",
+          "星期一",
+          "星期二",
+          "星期三",
+          "星期四",
+          "星期五",
+          "星期六"
+        ]
       }
     };
     // Apply the theme
@@ -358,9 +405,13 @@ export default {
             }
           },
           xAxis: {
-            accessibility: {
-              // rangeDescription: ""
-            }
+            type: "datetime",
+            categories: ts,
+            labels: {
+              format: "{value:%Y}"
+            },
+            tickInterval: 150,
+            minTickInterval: 100
           },
           legend: {
             enabled: false,
@@ -376,32 +427,15 @@ export default {
               marker: {
                 enabled: false
               },
-              // pointInterval: 24 * 3600 * 1000 * 30,
-              // pointStart: Date.UTC(2019, 3, 1),
               shadow: true
             }
           },
-          xAxis: {
-            // min: Date.UTC(2019, 3, 1),
-            // max: Date.UTC(2020, 3, 31),
-            // allowDecimals: false,
-            type: "datetime",
-            // tickInterval: 24 * 3600 * 1000 * 30, //one day
-            // labels: {
-            //   rotation: 1
-            // },
-            categories: ts,
-            labels: {
-              format: "{value:%Y %b}"
-            }
-          },
           tooltip: {
-            xDateFormat: "%Y %b"
+            xDateFormat: "%Y 年 %m 月 %d 日"
           },
           series: [
             {
               name: "案件總數",
-              // type : "area",
               data: amount
             }
           ]
