@@ -1,27 +1,8 @@
-import logging
-import json
 from django.conf import settings
-from slackclient import SlackClient
-
-logger = logging.getLogger('raven')
+from slack_sdk import WebClient
 
 
-def list_channels():
-    """
-    helper method for listing all slack channels
-    """
-    token = settings.SLACK_BOT_USER_TOKEN
-    if not token:
-        return {}
-    sc = SlackClient(token)
-    channels = sc.api_call('channels.list')
-    # this is to make this function backwards-compatible with older version of SlackClient which returns a string
-    if isinstance(channels, str):
-        channels = json.loads(channels)
-    return channels
-
-
-def new_case_notify(case, channels=[], topic='froggyservice'):
+def new_case_notify(case, topic='froggyservice'):
     """
     helper method to post notify while new case is created.
     """
@@ -35,12 +16,8 @@ def new_case_notify(case, channels=[], topic='froggyservice'):
     """
     token = settings.SLACK_BOT_USER_TOKEN
     if token:
-        sc = SlackClient(token)
-        channels = channels or list_channels()
-        for channel in channels['channels']:
+        sc = WebClient(token)
+        channels = sc.conversations_list()['channels']
+        for channel in channels:
             if channel['topic']['value'] == topic:
-                sc.api_call(
-                    'chat.postMessage',
-                    channel=channel['id'],
-                    text=context,
-                )
+                sc.chat_postMessage(channel=channel['id'], text=context)
