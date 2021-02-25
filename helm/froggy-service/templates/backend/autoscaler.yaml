@@ -11,7 +11,7 @@ spec:
   maxReplicas: {{ .Values.backend.podAutoscaler.max }}
   minReplicas: {{ .Values.backend.podAutoscaler.min }}
   scaleTargetRef:
-    apiVersion: apps/v1beta2
+    apiVersion: apps/v1
     kind: Deployment
     name: {{ template "froggy-service.backend" . }}
   metrics:
