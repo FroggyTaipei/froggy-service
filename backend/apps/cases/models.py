@@ -1,7 +1,6 @@
 import uuid
 from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone, formats
-from django.db.models.signals import post_save
 from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.db.models import (
@@ -21,7 +20,6 @@ from django.db.models import (
 from django_fsm import FSMField, transition
 from tagulous.models import TagField
 
-from apps.cases.slack import new_case_notify
 from apps.mails.models import SendGridMail, SendGridMailTemplate
 from apps.files.models import TempFile
 
@@ -150,13 +148,11 @@ class Case(Model):
     def save(self, *args, **kwargs):
         created = self.pk is None
         super(Case, self).save(*args, **kwargs)
-
         if created:
             self.number = str(self.pk).zfill(6)
             self.save()
-            self.migrate_files_from_temp_storage()  # 搬移暫存檔案
-            self.confirm(template_name='收件通知')  # 發送確認信
-            new_case_notify(self)  # 發送slack通知
+            self.migrate_files_from_temp_storage()
+            self.confirm(template_name='收件通知')
 
     def __str__(self):
         return self.number
@@ -291,19 +287,6 @@ class Case(Model):
         if self.state == 'disapproved':
             self.disapprove_info += f'(已於{now}設回處理中)'
         self.open_time = timezone.now()
-
-
-def case_mode_save(sender, instance, *args, **kwargs):
-    """案件新增與每次更新時建立案件歷史"""
-    history, created = CaseHistory.objects.get_or_create(case=instance, **instance.to_dict())
-    if created:
-        # Get editor via admin save_model()
-        if hasattr(instance, 'user'):
-            history.editor = instance.user
-            history.save()
-
-
-post_save.connect(case_mode_save, sender=Case)
 
 
 class CaseHistory(Model):
