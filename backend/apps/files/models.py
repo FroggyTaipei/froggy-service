@@ -3,9 +3,7 @@ import datetime
 import imghdr
 
 from django.db import models
-from django.db.models.signals import pre_delete
 from django.core.files.base import ContentFile
-from django.dispatch import receiver
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
 from django.utils.safestring import mark_safe
@@ -93,7 +91,7 @@ class TempFile(models.Model):
         if self.check_size_per_day():
             raise ValidationError('您的手機號碼已超出上傳限制，請聯絡本團隊為您處理')
         self.file.name = f'{self.case_uuid}/{self.file_name}'
-        super(TempFile, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def migrate_to_case(self, case):
         new_file = ContentFile(self.file.read())
@@ -128,6 +126,14 @@ class CaseFile(models.Model):
     def __str__(self):
         return f'{self.case} - {self.file_name}'
 
+    def save(self, *args, **kwargs):
+        # Check if upload from admin
+        if not self.pk and not self.file.name.startswith(str(self.case.uuid)):
+            clean_name = self.file.name
+            self.file_name = clean_name
+            self.file.name = f'{self.case.uuid}/{clean_name}'
+        super().save(*args, **kwargs)
+
     @property
     def url(self):
         return self.file.url
@@ -141,13 +147,3 @@ class CaseFile(models.Model):
             """)
         return mark_safe(f'<a target="_blank" href="{self.file.url}">{self.file_name}</a>')
     preview.short_description = _('Preview')
-
-
-@receiver(pre_delete, sender=TempFile)
-def temp_file_delete_handler(sender, instance, **kwargs):
-    instance.file.storage.delete(name=instance.file.name)
-
-
-@receiver(pre_delete, sender=CaseFile)
-def case_file_delete_handler(sender, instance, **kwargs):
-    instance.file.storage.delete(name=instance.file.name)
