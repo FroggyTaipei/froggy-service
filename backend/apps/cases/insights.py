@@ -202,7 +202,7 @@ def get_case_content_wordcloud_data():
             data = data.strip()
             stop.append(data)
 
-    pattern = re.compile('[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？“”、~@#￥%……&*（）(\d+)]+')
+    pattern = re.compile(r'[\s+\.\!\/_,$%^*(+\"\']+|[+——！，。？“”、~@#￥%……&*（）(\d+)]+')
     content = pattern.sub("", content)
 
     words_2 = [word for word in jieba.cut_for_search(content) if len(word) == 2 and word not in stop]

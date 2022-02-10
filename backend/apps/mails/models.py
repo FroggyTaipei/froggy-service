@@ -5,7 +5,7 @@ from python_http_client.exceptions import HTTPError
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.translation import ugettext_lazy as _
-from sendgrid.helpers.mail import Email, Mail
+from sendgrid.helpers.mail import Email, Mail, From, To
 from django.contrib.postgres.fields import HStoreField
 from django.db.models import (
     Model,
@@ -39,7 +39,7 @@ class SendGridMailTemplate(Model):
         super(SendGridMailTemplate, self).save(*args, **kwargs)
 
     def retrieve_template(self):
-        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
+        sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
         return sg.client.templates._(self.tid).get()
 
 
@@ -89,14 +89,14 @@ class SendGridMail(Model):
     @staticmethod
     def send_template(from_email, to_email, data, template_id):
         """Call Sendgrid Transactional Template API"""
-        sg = sendgrid.SendGridAPIClient(apikey=settings.SENDGRID_API_KEY)
+        sg = sendgrid.SendGridAPIClient(api_key=settings.SENDGRID_API_KEY)
         if from_email == settings.SERVER_EMAIL:
-            from_email = Email(from_email, name=settings.SERVER_EMAIL_NAME)
+            from_email = From(from_email, name=settings.SERVER_EMAIL_NAME)
         else:
-            from_email = Email(from_email)
+            from_email = From(from_email)
 
-        mail = Mail(from_email=from_email, to_email=Email(to_email))
-        mail.personalizations[0].dynamic_template_data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
+        mail = Mail(from_email=from_email, to_emails=To(to_email))
+        mail.dynamic_template_data = json.loads(json.dumps(data, cls=DjangoJSONEncoder))
         mail.template_id = template_id
         try:
             return sg.client.mail.send.post(request_body=mail.get())
