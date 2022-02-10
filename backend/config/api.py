@@ -26,7 +26,7 @@ api.register(r'files/temp', TempFileViewSet)
 
 # Cases API
 api.register(r'cases', CaseViewSet)
-api.register(r'cases/insights', CaseInsightViewSet, base_name='cases-insights')
+api.register(r'cases/insights', CaseInsightViewSet, basename='cases-insights')
 api.register(r'types', TypeViewSet)
 api.register(r'regions', RegionViewSet)
 
